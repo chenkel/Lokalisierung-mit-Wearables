@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:orientation="vertical"
+    tools:context=".activities.TitleScreen">
+
+    <Button
+        android:id="@+id/wlan"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/title_activity_wlan"/>
+
+    <Button
+        android:id="@+id/ble"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/title_activity_ble"/>
+
+    <Button
+        android:id="@+id/qr_code"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/title_activity_qrcode"/>
+    <Button
+        android:id="@+id/db_manager_measurements"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/db_manager_measurements"/>
+
+    <Button
+        android:id="@+id/db_manager_averages"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/db_manager_averages"/>
+
+
+</LinearLayout>

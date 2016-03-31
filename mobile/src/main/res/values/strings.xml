@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">Smartphonelocalization</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="wlan">WLAN</string>
+    <string name="ble">Bluetooth</string>
+    <string name="qrcode">QR-Code</string>
+    <string name="db_manager_measurements">Messungen - DB-Manager</string>
+    <string name="db_manager_averages">Durchschnitt - DB-Manager</string>
+    <string name="title_activity_wlan">WLAN RSSI</string>
+    <string name="ble_hallo">Hallo im BLE Screen</string>
+    <string name="qrcode_hallo">Hallo im QR-Code Screen</string>
+    <string name="title_activity_ble">Bluetooth Low Energy</string>
+    <string name="title_activity_qrcode">QR-Code</string>
+    <string name="wlan_scan_button">Scanne diesen Ort</string>
+    <string name="wlan_commit_button">Speichere Messwerte</string>
+    <string name="wlan_model_button">Durchschnittswerte berechnen</string>
+    <string name="place_id">Ort-ID</string>
+    <string name="wlan_prev_scan_count_text">Scan Informationen diesem Ort: "</string>
+    <string name="wlan_delete_all_for_place">Lösche alle Messungen zu diesem Ort</string>
+    <string name="wlan_place_choose">Keine</string>
+    <string name="wlan_lokalisierung_button">Lokalisiere mich</string>
+    <string name="averages_text">Debugging Ausgabe</string>
+
+</resources>
