@@ -36,6 +36,11 @@
             <meta-data android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.TitleScreen" />
         </activity>
+        <activity android:name=".activities.GraphicActivity"
+            android:parentActivityName=".activities.TitleScreen">
+            <meta-data android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.TitleScreen" />
+        </activity>
         <activity android:name=".helper.DBManagerMeasurements"
             android:parentActivityName=".activities.TitleScreen">
             <meta-data android:name="android.support.PARENT_ACTIVITY"

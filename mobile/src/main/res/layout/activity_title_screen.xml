@@ -25,6 +25,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/title_activity_qrcode"/>
+
+    <Button
+        android:id="@+id/localization_graphic"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Grafik"/>
+
     <Button
         android:id="@+id/db_manager_measurements"
         android:layout_width="match_parent"

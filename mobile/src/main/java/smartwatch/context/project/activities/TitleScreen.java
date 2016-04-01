@@ -24,6 +24,7 @@ public class TitleScreen extends Activity {
         addListenerWlan();
         addListenerBle();
         addListenerQrcode();
+        addListenerGraphic();
         addListenerDBManagerMeasurements();
         addListenerDBManagerAverages();
     }
@@ -59,6 +60,19 @@ public class TitleScreen extends Activity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(view.getContext(), QrcodeActivity.class);
+                startActivity(intent);
+
+            }
+        });
+    }
+
+    public void addListenerGraphic(){
+        final Button graphicswitchact =(Button)findViewById(R.id.localization_graphic);
+        graphicswitchact.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(view.getContext(), GraphicActivity.class);
                 startActivity(intent);
 
             }
