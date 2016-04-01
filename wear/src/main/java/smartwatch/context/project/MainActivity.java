@@ -17,7 +17,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 import java.util.ArrayList;
 
-public class MainActivity extends Activity {
+import smartwatch.context.common.superclasses.CommonActivity;
+
+public class MainActivity extends CommonActivity {
     private static ArrayList<Integer> mIcons;
     private TextView mHeader;
 
