@@ -9,10 +9,22 @@
     tools:context=".TitleScreen">
 
     <Button
-        android:id="@+id/ble_calculate_distance"
+        android:id="@+id/calculate_average"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:text="Distance bestimmen"/>
+
+    <Button
+        android:id="@+id/delete_list"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:text="Liste löschen"/>
+
+    <TextView
+        android:id="@+id/calibration_average"
+        android:text="Output für die Kalibrierung"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
     <TextView
         android:id="@+id/ble_rssi"

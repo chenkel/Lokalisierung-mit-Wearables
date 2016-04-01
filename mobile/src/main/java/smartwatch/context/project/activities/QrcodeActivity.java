@@ -4,7 +4,11 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.os.RemoteException;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
+
+import com.google.android.gms.fitness.request.BleScanCallback;
 
 import smartwatch.context.project.R;
 import smartwatch.context.common.helper.BleHelper;
@@ -19,9 +23,10 @@ import org.altbeacon.beacon.distance.CurveFittedDistanceCalculator;
 
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 
-public class QrcodeActivity extends Activity implements BeaconConsumer{
+public class QrcodeActivity extends Activity implements BeaconConsumer, View.OnClickListener {
     protected static final String TAG = "RangingActivity";
     private BeaconManager beaconManager;
     private double rssi;
@@ -29,6 +34,8 @@ public class QrcodeActivity extends Activity implements BeaconConsumer{
     private Queue<Integer> rssiQueueYellow= new LinkedList<Integer>();
     private Queue<Integer> rssiQueueRed = new LinkedList<Integer>();
     private int queueSize = 10;
+
+    private List<Integer> calibrationList = new LinkedList<Integer>();
 
     /*Blue, Yelloow. Red*/
     private double[] distances = new double[3];
@@ -41,18 +48,32 @@ public class QrcodeActivity extends Activity implements BeaconConsumer{
     private int txPowerYellow;
     private int txPowerRed;
 
-    private final double const1 = 0.9401940951;
-    private final double const2 = 7;
-    private final double const3 = 0.0;
+    //*^+ oder
+    private final double const1 = 0.5981395;
+    private final double const2 = 3.3779302;
+    private final double const3 = -0.9850486;
 
+    Button calculateAverage;
+    Button deleteList;
     TextView distanceOutput;
+    TextView calibrationOutput;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_qrcode);
 
+        calculateAverage = (Button) findViewById(R.id.calculate_average);
+        calculateAverage.setOnClickListener(this);
+
+        deleteList = (Button) findViewById(R.id.delete_list);
+        deleteList.setOnClickListener(this);
+
+        calibrationOutput = (TextView) findViewById(R.id.calibration_average);
         distanceOutput = (TextView) findViewById(R.id.ble_rssi);
+
+
 
         beaconManager = BeaconManager.getInstanceForApplication(this);
         beaconManager.getBeaconParsers().add(new BeaconParser().
@@ -61,6 +82,22 @@ public class QrcodeActivity extends Activity implements BeaconConsumer{
         /*Beacon.setDistanceCalculator(curveDistanceCalculator);*/
         beaconManager.bind(this);
 
+    }
+
+    public void onClick(View view) {
+        if(view.getId()==R.id.calculate_average){
+            if(calibrationList.size()>=20) {
+                double calibrationAverage = BleHelper.calculateAverage(calibrationList);
+                calibrationOutput.setText("AvgRssi: "+calibrationAverage+"\n"+
+                        "Value: "+calibrationAverage/txPowerBlue);
+            } else {
+                calibrationOutput.setText("Not enough values collected: " + calibrationList.size());
+            }
+        }
+
+        if(view.getId()==R.id.delete_list){
+            calibrationList.clear();
+        }
     }
 
     @Override
@@ -75,31 +112,6 @@ public class QrcodeActivity extends Activity implements BeaconConsumer{
             @Override
             public void didRangeBeaconsInRegion(Collection<Beacon> beacons, Region region) {
 
-                /* if (rssiQueue.size() < queueSize) {
-
-                        Log.i(TAG, "+Does match, Address is " +
-                                beacons.iterator().next().getBluetoothAddress());
-                    } else if (rssiQueue.size() >= queueSize) {
-                        rssiQueue.remove();
-                        rssiQueue.add(beacons.iterator().next().getRssi());
-                        Log.i(TAG, "+Does match, Address is " +
-                                beacons.iterator().next().getBluetoothAddress());
-                    }
-                } else {
-                    Log.i(TAG, "!!!Does not match, because Address is " +
-                            beacons.iterator().next().getBluetoothAddress());
-
-
-                    double avgSum = 0;
-                    for (Integer element : rssiQueue) {
-                        avgSum += element;
-                    }
-                    avgSum = avgSum / rssiQueue.size();
-                    Log.i(TAG, "AvgSum ist " + avgSum);*/
-                    /*Log.i(TAG, "Avg Sum " + avgSum + "\n" +
-                            "Einzelwert Rssi " + beacons.iterator().next().getRssi() + "\n" +
-                            "Erster Wert in der Queue " + rssiQueue.peek() + "\n" +
-                            "Größe der Queue "+rssiQueue.size());*/
 
 
                 if (beacons.size() > 0) {
@@ -117,6 +129,10 @@ public class QrcodeActivity extends Activity implements BeaconConsumer{
                                     rssiQueueBlue.add(beacons.iterator().next().getRssi());
                                     Log.i(TAG, "BLAU signal2" + beacons.iterator().next().getRssi());
                                 }
+                                if(calibrationList.size()<30){
+                                    calibrationList.add(beacons.iterator().next().getRssi());
+                                }
+
                                 txPowerBlue = beacons.iterator().next().getTxPower();
                                 Log.i(TAG, "Tx Power ist" + txPowerBlue);
                                 Log.i(TAG, "Queue size ist" + rssiQueueBlue.size());
@@ -169,6 +185,8 @@ public class QrcodeActivity extends Activity implements BeaconConsumer{
                     Log.i(TAG, distances[0] + " Distanz Blau");
                     Log.i(TAG, distances[1]+" Distanz Gelb");
                     Log.i(TAG, distances[2]+" Distanz Rot");
+                    Log.i(TAG, "Größe Kalibrierungsliste: " + calibrationList.size());
+
                 }
 
                     runOnUiThread(new Runnable() {
@@ -176,7 +194,8 @@ public class QrcodeActivity extends Activity implements BeaconConsumer{
                         public void run() {
                             distanceOutput.setText("Blau: " + distances[0]+"\n"+
                                                 "Gelb: "+distances[1]+"\n"+
-                                                "Rot: "+distances[2]);
+                                                "Rot: "+distances[2]+"\n"+
+                                                "Kalibrierungsliste: "+calibrationList.size());
                         }
                     });
             /*Log.i(TAG, "Die Distanz zu den Beacons ist 1,2,3");*/

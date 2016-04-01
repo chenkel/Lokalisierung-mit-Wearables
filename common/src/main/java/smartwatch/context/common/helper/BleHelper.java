@@ -1,5 +1,6 @@
 package smartwatch.context.common.helper;
 
+import java.util.Collection;
 import java.util.Queue;
 
 /**
@@ -8,7 +9,7 @@ import java.util.Queue;
 public class BleHelper {
     private static final String TAG = "BleHelper";
 
-    public static double calculateAverage(Queue<Integer> queue) {
+    public static double calculateAverage(Collection<Integer> queue) {
         double avgSum = 0;
         for (Integer element : queue) {
             avgSum += element;
