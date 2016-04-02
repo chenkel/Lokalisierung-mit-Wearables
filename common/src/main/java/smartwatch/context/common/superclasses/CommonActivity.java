@@ -297,7 +297,7 @@ public class CommonActivity extends Activity {
 
     }
 
-    protected void locateUser() {
+    private void locateUser() {
         Log.i(TAG, "Now in locate user");
 
         if (wlanMeasure == null || wlanMeasure.size() == 0) {

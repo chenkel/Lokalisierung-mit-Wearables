@@ -21,6 +21,7 @@ public class MainActivity extends CommonActivity {
         ArrayList<Integer> mIcons = new ArrayList<>();
         mIcons.add(R.drawable.ic_action_locate);
         mIcons.add(R.drawable.ic_action_star);
+        mIcons.add(R.drawable.ic_action_star);
         mIcons.add(R.drawable.ic_action_user);
 
 
@@ -39,11 +40,23 @@ public class MainActivity extends CommonActivity {
             new WearableListView.ClickListener() {
                 @Override
                 public void onClick(WearableListView.ViewHolder viewHolder) {
-                    int clickedMenu = viewHolder.getLayoutPosition()+1;
+                    int clickedMenu = viewHolder.getLayoutPosition();
                     switch (clickedMenu){
+                        case 0:
+                            startLocalization();
+                            break;
                         case 1:
                             placeIdString = "1";
+                            deleteAllMeasurementsForPlace();
                             scanWlan();
+                            break;
+                        case 2:
+                            placeIdString = "2";
+                            deleteAllMeasurementsForPlace();
+                            scanWlan();
+                            break;
+                        case 3:
+                            new DoCalculationTask().execute();
                             break;
                         default:
                             Toast.makeText(MainActivity.this,

@@ -34,13 +34,16 @@ public class WearableAdapter extends WearableListView.Adapter {
         TextView textView = itemViewHolder.mItemTextView;
         switch (position ){
             case 0:
-                textView.setText("Scan Wlan");
+                textView.setText("Lokalisieren");
                 break;
             case 1:
-                textView.setText("Test 1");
+                textView.setText("Ort 1 messen");
                 break;
             case 2:
-                textView.setText("Test 2");
+                textView.setText("Ort 2 messen");
+                break;
+            case 3:
+                textView.setText("Durchschnitt berechnen");
                 break;
         }
 

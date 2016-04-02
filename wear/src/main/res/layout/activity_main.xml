@@ -28,7 +28,7 @@
             android:layout_centerHorizontal="true"
             android:fontFamily="sans-serif-light"
             android:gravity="bottom"
-            android:text="Settings"
+            android:text="@string/header_text"
             android:textSize="20sp" />
 
     </RelativeLayout>
