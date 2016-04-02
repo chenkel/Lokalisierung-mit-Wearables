@@ -19,7 +19,7 @@ public class GraphicActivity extends Activity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mCustomDrawableView = new CustomDrawableView(this);
+        mCustomDrawableView = new CustomDrawableView(this, 50, 50, 500, 300);
 
         setContentView(mCustomDrawableView);
 
