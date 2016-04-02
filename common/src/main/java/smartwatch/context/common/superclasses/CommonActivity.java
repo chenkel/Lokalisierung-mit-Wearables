@@ -123,29 +123,7 @@ public class CommonActivity extends Activity {
                     wifiManager.startScan();
                     /* All scans finished */
                 } else {
-                    /* ONLY NEEDED FOR DEBUGGING ON PHONE */
-
-                    /*Sorting of WlanMeasurements*//*
-                    Comparator<WlanMeasurements> wlanComparator = new Comparator<WlanMeasurements>() {
-                        @Override
-                        public int compare(WlanMeasurements lhs, WlanMeasurements rhs) {
-                            return (lhs.getRssi() > rhs.getRssi() ? -1 : (lhs.getRssi() == rhs.getRssi() ? 0 : 1));
-                        }
-                    };
-
-                    Collections.sort(wlanMeasure, wlanComparator);
-
-                        *//* only show last measurement in list *//*
-                    for (WlanMeasurements ap : wlanMeasure) {
-                        String helperString = "SSID: " + ap.getSsid()
-                                + "\nRSSI: " + ap.getRssi()
-                                + "\nBSSI: " + ap.getBssi()
-                                + "\nOrientation: " + ap.getOrientation();
-                        outputList.add(helperString);
-                    }
-                    *//* Update the table *//*
-                    wifiArrayAdapter.notifyDataSetChanged();*/
-                    /* -- END: ONLY NEEDED FOR DEBUGGING ON PHONE */
+                    outputDebugInfos();
 
                     /* Stop the continous scan */
                     unregisterReceiver(scanResultReceiver);
@@ -267,7 +245,7 @@ public class CommonActivity extends Activity {
         }
     }
 
-    protected void updateMeasurementsCount(){}
+
 
     public class DoCalculationTask extends AsyncTask<Void, Integer, Integer> {
         @Override
@@ -418,5 +396,10 @@ public class CommonActivity extends Activity {
         AlertDialog alert = builder.create();
         alert.show();
     }
+
+    /* Stubs to be overridden by subclass*/
+    protected void updateMeasurementsCount(){}
+    protected void outputDebugInfos(){}
+
 
 }

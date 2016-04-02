@@ -32,7 +32,20 @@ public class WearableAdapter extends WearableListView.Adapter {
         CircledImageView circledView = itemViewHolder.mCircledImageView;
         circledView.setImageResource(mItems.get(position));
         TextView textView = itemViewHolder.mItemTextView;
-        textView.setText(String.format("Item %d", position + 1));
+        switch (position ){
+            case 0:
+                textView.setText("Scan Wlan");
+                break;
+            case 1:
+                textView.setText("Test 1");
+                break;
+            case 2:
+                textView.setText("Test 2");
+                break;
+        }
+
+
+
     }
 
     @Override

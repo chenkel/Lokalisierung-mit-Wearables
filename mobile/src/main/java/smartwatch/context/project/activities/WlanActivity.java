@@ -13,6 +13,10 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.util.Collections;
+import java.util.Comparator;
+
+import smartwatch.context.common.helper.WlanMeasurements;
 import smartwatch.context.common.superclasses.CommonActivity;
 import smartwatch.context.project.R;
 
@@ -21,6 +25,7 @@ public class WlanActivity extends CommonActivity implements View.OnClickListener
     private static final String TAG = "WlanActivity";
 
     private EditText editPlaceId;
+    private ArrayAdapter wifiArrayAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -68,7 +73,8 @@ public class WlanActivity extends CommonActivity implements View.OnClickListener
         textViewAverages = (TextView) findViewById(R.id.averages_text);
 
         /* Setup ArrayAdapter displaying scan results */
-        ArrayAdapter wifiArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, outputList);
+
+        wifiArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, outputList);
         wifiListView.setAdapter(wifiArrayAdapter);
 
 
@@ -99,10 +105,38 @@ public class WlanActivity extends CommonActivity implements View.OnClickListener
     @Override
     protected void updateMeasurementsCount() {
         placeIdString = editPlaceId.getText().toString();
+        /* Sanity checks */
         if (!(placeIdString.isEmpty())) {
             TextView textViewMCount = (TextView) findViewById(R.id.wlan_prev_scan_count);
             textViewMCount.setText(measurementDB.getNumberOfBssisForPlace(placeIdString));
         }
+    }
+
+    @Override
+    protected void outputDebugInfos(){
+        /* ONLY NEEDED FOR DEBUGGING ON PHONE */
+
+        /*Sorting of WlanMeasurements*/
+        Comparator<WlanMeasurements> wlanComparator = new Comparator<WlanMeasurements>() {
+            @Override
+            public int compare(WlanMeasurements lhs, WlanMeasurements rhs) {
+                return (lhs.getRssi() > rhs.getRssi() ? -1 : (lhs.getRssi() == rhs.getRssi() ? 0 : 1));
+            }
+        };
+
+        Collections.sort(wlanMeasure, wlanComparator);
+
+        /*only show last measurement in list*/
+        for (WlanMeasurements ap : wlanMeasure) {
+            String helperString = "SSID: " + ap.getSsid()
+                    + "\nRSSI: " + ap.getRssi()
+                    + "\nBSSI: " + ap.getBssi()
+                    + "\nOrientation: " + ap.getOrientation();
+            outputList.add(helperString);
+        }
+        /*Update the table*/
+        wifiArrayAdapter.notifyDataSetChanged();
+                    /* -- END: ONLY NEEDED FOR DEBUGGING ON PHONE */
     }
 
 
