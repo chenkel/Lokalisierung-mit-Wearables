@@ -47,12 +47,12 @@ public class MainActivity extends CommonActivity {
                             break;
                         case 1:
                             placeIdString = "1";
-                            deleteAllMeasurementsForPlace();
+//                            deleteAllMeasurementsForPlace();
                             scanWlan();
                             break;
                         case 2:
                             placeIdString = "2";
-                            deleteAllMeasurementsForPlace();
+//                            deleteAllMeasurementsForPlace();
                             scanWlan();
                             break;
                         case 3:

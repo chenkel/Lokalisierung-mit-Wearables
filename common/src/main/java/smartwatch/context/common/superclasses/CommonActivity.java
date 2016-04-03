@@ -14,7 +14,6 @@ import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,7 +25,6 @@ import java.util.Map;
 import smartwatch.context.common.db.WlanAveragesDBAccess;
 import smartwatch.context.common.db.WlanMeasurementsDBAccess;
 import smartwatch.context.common.helper.CalculationHelper;
-import smartwatch.context.common.helper.OrientationHelper;
 import smartwatch.context.common.helper.WlanMeasurements;
 
 public class CommonActivity extends Activity {
@@ -42,7 +40,7 @@ public class CommonActivity extends Activity {
     protected int scanCountLocalization = 1;
     protected int scanCountScanning = 3;
     protected boolean scanAndSave = true;
-    OrientationHelper mOrientationHelper = null;
+    /*OrientationHelper mOrientationHelper = null;*/
     protected List<WlanMeasurements> wlanMeasure = new ArrayList<>();
 
 
@@ -63,10 +61,10 @@ public class CommonActivity extends Activity {
 
         /* Customize toast*/
         toast = Toast.makeText(CommonActivity.this, "", Toast.LENGTH_SHORT);
-        toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 0);
+        /*toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 0);*/
 
         /*Initialize Data Collection for Orientation*/
-        mOrientationHelper = new OrientationHelper(this);
+        /*mOrientationHelper = new OrientationHelper(this);*/
 
         /* Init DB */
         measurementDB = new WlanMeasurementsDBAccess(this);
@@ -88,24 +86,25 @@ public class CommonActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        mOrientationHelper.register();
+        /*mOrientationHelper.register();*/
     }
 
     @Override
     protected void onPause() {
         /* Unregister since the activity is not visible */
         super.onPause();
-        mOrientationHelper.unregister();
+        /*mOrientationHelper.unregister();*/
     }
 
     /* handler for received Intents for the "SCAN_RESULTS_AVAILABLE_ACTION" event */
     protected BroadcastReceiver scanResultReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.i(TAG, "Orientation aus der Wlan Activity " + OrientationHelper.orientationValue);
+            Log.i(TAG, "scanResultReceiver onReceive");
             List<ScanResult> currentResults = wifiManager.getScanResults();
 
             measurementCount = currentResults.size();
+            Log.i(TAG, "measurementCount: " + measurementCount);
             if (measurementCount > 0) {
                 scanCount++;
                 progress.setProgress(scanCount);
@@ -115,7 +114,7 @@ public class CommonActivity extends Activity {
                             result.BSSID,
                             result.level,
                             result.SSID,
-                            OrientationHelper.orientationValue
+                            0
                     ));
                 }
 
