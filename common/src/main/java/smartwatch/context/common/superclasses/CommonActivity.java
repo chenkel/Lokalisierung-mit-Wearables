@@ -361,8 +361,8 @@ public class CommonActivity extends Activity {
                     sbSse.append(sseValue).append("\n");
                 }
                 String textViewAveragesString = outputTextview + sicherheitString + sbSse.toString();
-
                 textViewAverages.setText(textViewAveragesString);
+
             } else {
                 toast.setText("Durchschnittswerte fehlen");
                 toast.show();
