@@ -16,11 +16,11 @@
         android:id="@+id/magneticFieldData"
         android:layout_width="133dp"
         android:layout_height="wrap_content"
-        android:text="Messwert"/>
+        android:text="@string/ble_messwert"/>
 
     <ListView
         android:id="@+id/listViewTest"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"></ListView>
+        android:layout_height="match_parent"/>
 
 </LinearLayout>

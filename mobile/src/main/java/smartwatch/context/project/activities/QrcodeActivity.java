@@ -30,12 +30,12 @@ public class QrcodeActivity extends Activity implements BeaconConsumer, View.OnC
     protected static final String TAG = "RangingActivity";
     private BeaconManager beaconManager;
     private double rssi;
-    private Queue<Integer> rssiQueueBlue = new LinkedList<Integer>();
-    private Queue<Integer> rssiQueueYellow= new LinkedList<Integer>();
-    private Queue<Integer> rssiQueueRed = new LinkedList<Integer>();
+    private Queue<Integer> rssiQueueBlue = new LinkedList<>();
+    private Queue<Integer> rssiQueueYellow= new LinkedList<>();
+    private Queue<Integer> rssiQueueRed = new LinkedList<>();
     private int queueSize = 10;
 
-    private List<Integer> calibrationList = new LinkedList<Integer>();
+    private List<Integer> calibrationList = new LinkedList<>();
 
     /*Blue, Yelloow. Red*/
     private double[] distances = new double[3];
@@ -206,6 +206,7 @@ public class QrcodeActivity extends Activity implements BeaconConsumer, View.OnC
         try {
             beaconManager.startRangingBeaconsInRegion(new Region("myRangingUniqueId", null, null, null));
         } catch (RemoteException e) {
+            Log.e(TAG, e.toString());
         }
     }
 

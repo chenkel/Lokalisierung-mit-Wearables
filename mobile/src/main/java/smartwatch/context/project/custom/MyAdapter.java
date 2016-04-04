@@ -31,7 +31,9 @@ public class MyAdapter extends ArrayAdapter<DataHelper> {
 
             inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         }
-        catch (Exception e){}
+        catch (Exception e){
+            Log.e(TAG, e.toString());
+        }
     }
 
 
@@ -59,7 +61,7 @@ public class MyAdapter extends ArrayAdapter<DataHelper> {
         final ViewHolder holder;
         try {
             if (convertView == null) {
-                vi = inflater.inflate(R.layout.row_layout, null);
+                vi = inflater.inflate(R.layout.row_layout, parent, false);
                 holder = new ViewHolder();
 
                 holder.display_name = (TextView) vi.findViewById(R.id.textview1);

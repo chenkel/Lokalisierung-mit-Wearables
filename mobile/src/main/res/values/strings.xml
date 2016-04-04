@@ -23,5 +23,15 @@
     <string name="wlan_place_choose">Keine</string>
     <string name="wlan_lokalisierung_button">Lokalisiere mich</string>
     <string name="averages_text">Debugging Ausgabe</string>
+    <string name="google_app_id">790214873108</string>
+    <string name="graphic_test_text">Test Textfield</string>
+    <string name="ble_calculate_distance">Distance bestimmen</string>
+    <string name="ble_delete_list">Liste löschen</string>
+    <string name="ble_calibration_average">Output für die Kalibrierung</string>
+    <string name="ble_row_name">Name</string>
+    <string name="ble_row_number">Number</string>
+    <string name="ble_messwert">Messwert</string>
+    <string name="title_activity_graphic">Grafik</string>
+
 
 </resources>

@@ -29,6 +29,6 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.2.1'
     compile 'com.google.android.gms:play-services:8.4.0'
-    compile 'org.altbeacon:android-beacon-library:2+'
+    compile 'org.altbeacon:android-beacon-library:2.7'
     compile project(':common')
 }

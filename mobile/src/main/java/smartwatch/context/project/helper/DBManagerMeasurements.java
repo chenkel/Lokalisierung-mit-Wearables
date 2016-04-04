@@ -265,7 +265,7 @@ public class DBManagerMeasurements extends Activity implements OnItemClickListen
 		String msg = Message.getString(0);
 		Log.d("Message from sql = ",msg);
 
-		ArrayList<String> tablenames = new ArrayList<String>();
+		ArrayList<String> tablenames = new ArrayList<>();
 		
 		if(c!=null)
 		{
@@ -349,12 +349,12 @@ public class DBManagerMeasurements extends Activity implements OnItemClickListen
 
 	            	 //removes any data if present in the table layout
                        tableLayout.removeAllViews();
-	            	ArrayList<String> spinnertablevalues = new ArrayList<String>();
+	            	ArrayList<String> spinnertablevalues = new ArrayList<>();
 	            	spinnertablevalues.add("Click here to change this table");
 	                spinnertablevalues.add("Add row to this table");
 	                spinnertablevalues.add("Delete this table");
 	                spinnertablevalues.add("Drop this table");
-	                ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_dropdown_item, spinnertablevalues);
+	                ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_dropdown_item, spinnertablevalues);
 	                spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
 
 			// a array adapter which add values to the spinner which helps in user making changes to the table
@@ -510,8 +510,8 @@ public class DBManagerMeasurements extends Activity implements OnItemClickListen
 	                    	{
 	                    		//we create a layout which has textviews with column names of the table and edittexts where
 	                    		//user can enter value which will be inserted into the datbase.
-	                    		final LinkedList<TextView> addnewrownames = new LinkedList<TextView>();
-	                        	  final LinkedList<EditText> addnewrowvalues = new LinkedList<EditText>();
+	                    		final LinkedList<TextView> addnewrownames = new LinkedList<>();
+	                        	  final LinkedList<EditText> addnewrowvalues = new LinkedList<>();
 	                        	  final ScrollView addrowsv =new ScrollView(DBManagerMeasurements.this);
 	                        	  Cursor c4 = indexInfo.maincursor;
 	                        	  if(indexInfo.isEmpty)
@@ -745,7 +745,7 @@ public class DBManagerMeasurements extends Activity implements OnItemClickListen
     	{
     	indexInfo.isEmpty=true;
     	
-    	ArrayList<String> emptytablecolumnnames= new ArrayList<String>();
+    	ArrayList<String> emptytablecolumnnames= new ArrayList<>();
     	c5.moveToFirst();
     	do
     	{
@@ -762,7 +762,7 @@ public class DBManagerMeasurements extends Activity implements OnItemClickListen
 	{
 		Cursor c2=indexInfo.maincursor;
 	// a spinner which gives options to update or delete the row which user has selected
-  	  ArrayList<String> spinnerArray = new ArrayList<String>();
+  	  ArrayList<String> spinnerArray = new ArrayList<>();
   	    spinnerArray.add("Click Here to Change this row");
   	    spinnerArray.add("Update this row");
   	    spinnerArray.add("Delete this row");
@@ -770,8 +770,8 @@ public class DBManagerMeasurements extends Activity implements OnItemClickListen
 	//create a layout with text values which has the column names and 
 	//edit texts which has the values of the row which user has selected
       	final ArrayList<String> value_string = indexInfo.value_string;
-  	  final LinkedList<TextView> columnames = new LinkedList<TextView>();
-  	  final LinkedList<EditText> columvalues = new LinkedList<EditText>();
+  	  final LinkedList<TextView> columnames = new LinkedList<>();
+  	  final LinkedList<EditText> columvalues = new LinkedList<>();
   	  
   	  for(int i=0;i<c2.getColumnCount();i++)
   	  {
@@ -1162,7 +1162,7 @@ public class DBManagerMeasurements extends Activity implements OnItemClickListen
              tableRow.setOnClickListener(new OnClickListener(){
                  public void onClick(View v) {
                	  
-               	  final ArrayList<String> value_string = new ArrayList<String>();
+               	  final ArrayList<String> value_string = new ArrayList<>();
                	  for(int i=0;i<c3.getColumnCount();i++)
                	  {
                		LinearLayout llcolumn = (LinearLayout) tableRow.getChildAt(i);

@@ -12,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="Name"
+        android:text="@string/ble_row_name"
         android:layout_weight="1"/>
 
     <TextView
@@ -20,7 +20,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="Number"
+        android:text="@string/ble_row_number"
         android:layout_weight="1"/>
 
 </LinearLayout>

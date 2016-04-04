@@ -9,7 +9,7 @@
     tools:context=".TitleScreen">
 
     <TextView
-        android:text="Test Textfield"
+        android:text="@string/graphic_test_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 

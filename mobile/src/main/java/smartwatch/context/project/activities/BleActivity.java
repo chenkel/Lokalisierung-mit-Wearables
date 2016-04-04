@@ -47,7 +47,7 @@ public class BleActivity extends Activity implements SensorEventListener {
         datenArray[3] = new DataHelper("04:db", 40);
         datenArray[4] = new DataHelper("05:eb", 25);
 
-        ArrayList<DataHelper> datenList = new ArrayList<DataHelper>(Arrays.asList(datenArray));
+        ArrayList<DataHelper> datenList = new ArrayList<>(Arrays.asList(datenArray));
 
 
         ListView theListView = (ListView) findViewById(R.id.listViewTest);

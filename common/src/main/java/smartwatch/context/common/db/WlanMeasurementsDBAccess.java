@@ -93,6 +93,7 @@ public class WlanMeasurementsDBAccess {
         };
         Cursor mCursor = database.rawQuery(queryString, whereArgs);
 
+
         if(mCursor != null) {
             if (mCursor.moveToFirst()) {
                 foundCount = "APs: " + String.valueOf(mCursor.getInt(0));
@@ -101,7 +102,9 @@ public class WlanMeasurementsDBAccess {
                     foundCount = foundCount + " || Messungen: " + String.valueOf(Math.round(mCursor.getFloat(1)/mCursor.getFloat(0)));
                 }
             }
+            mCursor.close();
         }
+
         return foundCount;
     }
 

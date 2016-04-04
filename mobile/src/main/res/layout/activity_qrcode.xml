@@ -12,17 +12,17 @@
         android:id="@+id/calculate_average"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:text="Distance bestimmen"/>
+        android:text="@string/ble_calculate_distance"/>
 
     <Button
         android:id="@+id/delete_list"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:text="Liste löschen"/>
+        android:text="@string/ble_delete_list"/>
 
     <TextView
         android:id="@+id/calibration_average"
-        android:text="Output für die Kalibrierung"
+        android:text="@string/ble_calibration_average"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 

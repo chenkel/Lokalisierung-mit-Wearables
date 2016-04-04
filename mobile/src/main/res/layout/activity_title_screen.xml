@@ -30,7 +30,7 @@
         android:id="@+id/localization_graphic"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Grafik"/>
+        android:text="@string/title_activity_graphic"/>
 
     <Button
         android:id="@+id/db_manager_measurements"
