@@ -8,8 +8,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.google.android.gms.fitness.request.BleScanCallback;
-
 import smartwatch.context.project.R;
 import smartwatch.context.common.helper.BleHelper;
 
@@ -30,10 +28,10 @@ public class QrcodeActivity extends Activity implements BeaconConsumer, View.OnC
     protected static final String TAG = "RangingActivity";
     private BeaconManager beaconManager;
     private double rssi;
-    private Queue<Integer> rssiQueueBlue = new LinkedList<>();
-    private Queue<Integer> rssiQueueYellow= new LinkedList<>();
-    private Queue<Integer> rssiQueueRed = new LinkedList<>();
-    private int queueSize = 10;
+    private Queue<Integer> rssiQueueBlue = new LinkedList<Integer>();
+    private Queue<Integer> rssiQueueYellow= new LinkedList<Integer>();
+    private Queue<Integer> rssiQueueRed = new LinkedList<Integer>();
+    private int queueSize = 20;
 
     private List<Integer> calibrationList = new LinkedList<>();
 
@@ -49,9 +47,9 @@ public class QrcodeActivity extends Activity implements BeaconConsumer, View.OnC
     private int txPowerRed;
 
     //*^+ oder
-    private final double const1 = 0.5981395;
-    private final double const2 = 3.3779302;
-    private final double const3 = -0.9850486;
+    private final double constMult = 0.0001060777;
+    private final double constPower = 17.4228892910;
+    private final double constPlus = 0.7610257596;
 
     Button calculateAverage;
     Button deleteList;
@@ -89,7 +87,8 @@ public class QrcodeActivity extends Activity implements BeaconConsumer, View.OnC
             if(calibrationList.size()>=20) {
                 double calibrationAverage = BleHelper.calculateAverage(calibrationList);
                 calibrationOutput.setText("AvgRssi: "+calibrationAverage+"\n"+
-                        "Value: "+calibrationAverage/txPowerBlue);
+                        "Value: "+calibrationAverage/txPowerBlue+"\n"+
+                        "TxPwr: "+txPowerBlue);
             } else {
                 calibrationOutput.setText("Not enough values collected: " + calibrationList.size());
             }
@@ -129,7 +128,7 @@ public class QrcodeActivity extends Activity implements BeaconConsumer, View.OnC
                                     rssiQueueBlue.add(beacons.iterator().next().getRssi());
                                     Log.i(TAG, "BLAU signal2" + beacons.iterator().next().getRssi());
                                 }
-                                if(calibrationList.size()<30){
+                                if(calibrationList.size()<25){
                                     calibrationList.add(beacons.iterator().next().getRssi());
                                 }
 
@@ -163,7 +162,7 @@ public class QrcodeActivity extends Activity implements BeaconConsumer, View.OnC
                         }
                     /*}*/
 
-
+                    /*Calculate Average for each List of RSSI Values*/
                     double avgRssiBlue = BleHelper.calculateAverage(rssiQueueBlue);
                     Log.i(TAG,"AvgRssi blau ist" + avgRssiBlue);
                     double avgRssiYellow = BleHelper.calculateAverage(rssiQueueYellow);
@@ -171,9 +170,9 @@ public class QrcodeActivity extends Activity implements BeaconConsumer, View.OnC
                     double avgRssiRed = BleHelper.calculateAverage(rssiQueueRed);
                     Log.i(TAG,"AvgRssi rot ist" + avgRssiRed);
 
-                    /*Berechnung aus Queues*/
+                    /*Calculate Distance based on received RSSI*/
                     CurveFittedDistanceCalculator curveDistanceCalculator =
-                            new CurveFittedDistanceCalculator(const1, const2, const3);
+                            new CurveFittedDistanceCalculator(constMult, constPower, constPlus);
 
                     distances[0] =
                             curveDistanceCalculator.calculateDistance(txPowerBlue,avgRssiBlue);
@@ -186,19 +185,18 @@ public class QrcodeActivity extends Activity implements BeaconConsumer, View.OnC
                     Log.i(TAG, distances[1]+" Distanz Gelb");
                     Log.i(TAG, distances[2]+" Distanz Rot");
                     Log.i(TAG, "Größe Kalibrierungsliste: " + calibrationList.size());
-
                 }
 
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            distanceOutput.setText("Blau: " + distances[0]+"\n"+
-                                                "Gelb: "+distances[1]+"\n"+
-                                                "Rot: "+distances[2]+"\n"+
-                                                "Kalibrierungsliste: "+calibrationList.size());
-                        }
-                    });
-            /*Log.i(TAG, "Die Distanz zu den Beacons ist 1,2,3");*/
+                /*Necessary to change UI data when no in the main thread*/
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        distanceOutput.setText("Blau: " + distances[0]+"\n"+
+                                            "Gelb: "+distances[1]+"\n"+
+                                            "Rot: "+distances[2]+"\n"+
+                                            "Kalibrierungsliste: "+calibrationList.size());
+                    }
+                });
             }
 
         });

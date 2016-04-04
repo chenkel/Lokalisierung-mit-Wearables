@@ -304,6 +304,15 @@ public class CommonActivity extends Activity {
             toast.show();
             return;
         }
+
+        //if(receivedBluetooth)
+        //Hashmap mit Key Bluetooth Cell und Value Array aus Places    ("BeaconBlau"| [1130, 1132, 1134, 1336])
+        //placeList = [1130, 1132, 1134, 1336]
+
+        //else
+        //placeList = measurementDB.getAllPlaces();
+
+
                     /*Saves all places to placeList*/
         Cursor placeCursor = measurementDB.getAllPlaces();
         if (placeCursor.getCount() == 0) {
@@ -337,6 +346,11 @@ public class CommonActivity extends Activity {
             }
 
             double sseValue = CalculationHelper.calculateSse(wlanMeasure, modellWerte);
+
+            /*If not in range of expected Bluetooth Beacon
+            AND Sicherheitswert<20 THEN sseValue+20/modellWerte.size()
+             */
+
             Log.i(TAG, " " + sseValue);
             sseMap.put(place, sseValue);
         }
@@ -360,8 +374,8 @@ public class CommonActivity extends Activity {
                     sbSse.append(sseValue).append("\n");
                 }
                 String textViewAveragesString = outputTextview + sicherheitString + sbSse.toString();
-
                 textViewAverages.setText(textViewAveragesString);
+
             } else {
                 toast.setText("Durchschnittswerte fehlen");
                 toast.show();
