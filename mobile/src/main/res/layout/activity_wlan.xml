@@ -19,21 +19,21 @@
         android:id="@+id/wlan_prev_scan_count_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="@string/wlan_prev_scan_count_text"/>
+        android:text="@string/wlan_prev_scan_count_text"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
         android:id="@+id/wlan_prev_scan_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="@string/wlan_place_choose"/>
+        android:text="@string/wlan_place_choose"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <Button
         android:id="@+id/wlan_scan"
-        android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:text="@string/wlan_scan_button"/>
+        android:layout_height="wrap_content"
+        android:text="@string/wlan_scan_button" />
 
     <Space
         android:layout_width="match_parent"
@@ -44,8 +44,8 @@
         android:id="@+id/wlan_delete_measurements_for_place"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/wlan_delete_all_for_place"
-        android:background="#ff8e8e" />
+        android:background="#ff8e8e"
+        android:text="@string/wlan_delete_all_for_place" />
 
     <Space
         android:layout_width="match_parent"
@@ -54,9 +54,9 @@
 
     <Button
         android:id="@+id/wlan_calculate_averages"
-        android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:text="@string/wlan_model_button"/>
+        android:layout_height="wrap_content"
+        android:text="@string/wlan_model_button" />
 
     <Space
         android:layout_width="match_parent"
@@ -65,9 +65,9 @@
 
     <Button
         android:id="@+id/wlan_localization"
-        android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:text="@string/wlan_lokalisierung_button"/>
+        android:layout_height="wrap_content"
+        android:text="@string/wlan_lokalisierung_button" />
 
     <Space
         android:layout_width="match_parent"
@@ -78,7 +78,7 @@
         android:id="@+id/averages_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/averages_text"/>
+        android:text="@string/averages_text" />
 
     <!--<ListView
         android:id="@+id/listLokalisierungWifi"
@@ -86,9 +86,9 @@
         android:layout_height="match_parent"/>-->
 
     <ListView
+        android:id="@+id/listViewWifi"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/listViewWifi" />
+        android:layout_height="match_parent" />
 
 </LinearLayout>
 

@@ -6,22 +6,21 @@
 
     <TextView
         android:id="@android:id/text1"
-        android:gravity="left"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="6dip"
+        android:layout_marginStart="6dip"
         android:layout_marginTop="6dip"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        />
+        android:gravity="start"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
     <TextView
         android:id="@android:id/text2"
-        android:gravity="right"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="6dip"
-        android:layout_marginTop="6dip"
         android:layout_marginRight="6dip"
-        android:layout_toRightOf="@android:id/text1"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        />
+        android:layout_marginTop="6dip"
+        android:layout_toEndOf="@android:id/text1"
+        android:gravity="end"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 </LinearLayout>

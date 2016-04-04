@@ -10,8 +10,8 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class WearableAdapter extends WearableListView.Adapter {
-    private ArrayList<Integer> mItems;
+class WearableAdapter extends WearableListView.Adapter {
+    private final ArrayList<Integer> mItems;
     private final LayoutInflater mInflater;
 
     public WearableAdapter(Context context, ArrayList<Integer> items) {
@@ -32,7 +32,7 @@ public class WearableAdapter extends WearableListView.Adapter {
         CircledImageView circledView = itemViewHolder.mCircledImageView;
         circledView.setImageResource(mItems.get(position));
         TextView textView = itemViewHolder.mItemTextView;
-        switch (position ){
+        switch (position) {
             case 0:
                 textView.setText("Lokalisieren");
                 break;
@@ -48,7 +48,6 @@ public class WearableAdapter extends WearableListView.Adapter {
         }
 
 
-
     }
 
     @Override
@@ -57,8 +56,8 @@ public class WearableAdapter extends WearableListView.Adapter {
     }
 
     private static class ItemViewHolder extends WearableListView.ViewHolder {
-        private CircledImageView mCircledImageView;
-        private TextView mItemTextView;
+        private final CircledImageView mCircledImageView;
+        private final TextView mItemTextView;
 
         public ItemViewHolder(View itemView) {
             super(itemView);

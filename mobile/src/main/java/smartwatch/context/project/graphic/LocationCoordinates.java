@@ -1,15 +1,17 @@
 package smartwatch.context.project.graphic;
 
-import java.util.HashMap;
 
-/**
- * Created by jan on 02.04.16.
- */
-public class LocationCoordinates {
+class LocationCoordinates {
 
     private String name;
     private int xcoord;
     private int ycoord;
+
+    public LocationCoordinates(String name, int x, int y) {
+        this.name = name;
+        this.xcoord = x;
+        this.ycoord = y;
+    }
 
     public String getName() {
         return name;
@@ -34,16 +36,6 @@ public class LocationCoordinates {
     public void setYcoord(int ycoord) {
         this.ycoord = ycoord;
     }
-
-    public LocationCoordinates(String name, int x, int y){
-        this.name = name;
-        this.xcoord = x;
-        this.ycoord = y;
-    }
-
-
-
-
 
 
 }

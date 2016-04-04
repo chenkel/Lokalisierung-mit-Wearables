@@ -29,81 +29,29 @@ import smartwatch.context.common.helper.WlanMeasurements;
 
 public class CommonActivity extends Activity {
     private static final String TAG = "CommonActivity";
-
-    /* Measurement variables */
-    protected WifiManager wifiManager;
-    protected int measurementCount;
-
-    protected List<String> outputList = new ArrayList<>();
-    protected int scanCount = 0;
-    protected int scanCountMax = 10;
-    protected int scanCountLocalization = 1;
-    protected int scanCountScanning = 3;
-    protected boolean scanAndSave = true;
+    protected final List<String> outputList = new ArrayList<>();
     /*OrientationHelper mOrientationHelper = null;*/
-    protected List<WlanMeasurements> wlanMeasure = new ArrayList<>();
-
-
+    protected final List<WlanMeasurements> wlanMeasure = new ArrayList<>();
     /* DBs*/
     protected WlanMeasurementsDBAccess measurementDB;
-    protected WlanAveragesDBAccess averagesDB;
-
     protected String placeIdString;
-
     protected TextView textViewAverages;
-    protected ProgressDialog progress;
-    protected Toast toast;
-
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        /* Customize toast*/
-        toast = Toast.makeText(CommonActivity.this, "", Toast.LENGTH_SHORT);
-        /*toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 0);*/
-
-        /*Initialize Data Collection for Orientation*/
-        /*mOrientationHelper = new OrientationHelper(this);*/
-
-        /* Init DB */
-        measurementDB = new WlanMeasurementsDBAccess(this);
-        averagesDB = new WlanAveragesDBAccess(this);
-
-        /* Enable Wi-Fi, if necessary */
-        wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
-        if (!wifiManager.isWifiEnabled()) {
-            toast.setText("WLAN wird eingeschaltet...");
-            toast.show();
-            wifiManager.setWifiEnabled(true);
-        }
-
-        /* Initialize loading spinner */
-        progress = new ProgressDialog(this);
-
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        /*mOrientationHelper.register();*/
-    }
-
-    @Override
-    protected void onPause() {
-        /* Unregister since the activity is not visible */
-        super.onPause();
-        /*mOrientationHelper.unregister();*/
-    }
-
+    /* Measurement variables */
+    private WifiManager wifiManager;
+    private int scanCount = 0;
+    private int scanCountMax = 10;
+    private boolean scanAndSave = true;
+    private WlanAveragesDBAccess averagesDB;
+    private ProgressDialog progress;
+    private Toast toast;
     /* handler for received Intents for the "SCAN_RESULTS_AVAILABLE_ACTION" event */
-    protected BroadcastReceiver scanResultReceiver = new BroadcastReceiver() {
+    private final BroadcastReceiver scanResultReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             Log.i(TAG, "scanResultReceiver onReceive");
             List<ScanResult> currentResults = wifiManager.getScanResults();
 
-            measurementCount = currentResults.size();
+            int measurementCount = currentResults.size();
             Log.i(TAG, "measurementCount: " + measurementCount);
             if (measurementCount > 0) {
                 scanCount++;
@@ -148,6 +96,47 @@ public class CommonActivity extends Activity {
         }
     };
 
+    /*@Override
+    protected void onResume() {
+        super.onResume();
+        *//*mOrientationHelper.register();*//*
+    }
+
+    @Override
+    protected void onPause() {
+        *//* Unregister since the activity is not visible *//*
+        super.onPause();
+        *//*mOrientationHelper.unregister();*//*
+    }*/
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        /* Customize toast*/
+        toast = Toast.makeText(CommonActivity.this, "", Toast.LENGTH_SHORT);
+        /*toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 0);*/
+
+        /*Initialize Data Collection for Orientation*/
+        /*mOrientationHelper = new OrientationHelper(this);*/
+
+        /* Init DB */
+        measurementDB = new WlanMeasurementsDBAccess(this);
+        averagesDB = new WlanAveragesDBAccess(this);
+
+        /* Enable Wi-Fi, if necessary */
+        wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+        if (!wifiManager.isWifiEnabled()) {
+            toast.setText("WLAN wird eingeschaltet...");
+            toast.show();
+            wifiManager.setWifiEnabled(true);
+        }
+
+        /* Initialize loading spinner */
+        progress = new ProgressDialog(this);
+
+    }
+
     protected void scanWlan() {
         if (placeIdString == null || placeIdString.isEmpty()) {
             toast.setText("Bitte geben Sie eine ID für den aktuellen Ort an");
@@ -159,7 +148,7 @@ public class CommonActivity extends Activity {
 
 
         scanCount = 0;
-        scanCountMax = scanCountScanning;
+        scanCountMax = 3;
         scanAndSave = true;
         /* Register Listener to collect results */
         registerReceiver(scanResultReceiver,
@@ -189,7 +178,7 @@ public class CommonActivity extends Activity {
         outputList.clear();
         wlanMeasure.clear();
 
-        scanCountMax = scanCountLocalization;
+        scanCountMax = 1;
 
         /* Register Listener to collect results */
         registerReceiver(scanResultReceiver,
@@ -200,100 +189,8 @@ public class CommonActivity extends Activity {
     }
 
     /*Activated when scanAndSave is true*/
-    protected void saveMeasurements() {
+    private void saveMeasurements() {
         new SaveScansTask().execute();
-    }
-
-    public class SaveScansTask extends AsyncTask<Void, Integer, Integer> {
-        @Override
-        protected void onPreExecute() {
-            progress.setTitle("Alle Scandaten werden gespeichert");
-            progress.setMessage("Bitte warten Sie einen Moment...");
-            progress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-            progress.setMax(wlanMeasure.size());
-            progress.show();
-        }
-
-        @Override
-        protected Integer doInBackground(Void... arg0) {
-            int scansCount = 0;
-            try {
-                for (WlanMeasurements ap : wlanMeasure) {
-                    /* create a new record in DB */
-                    measurementDB.createRecords(ap.getBssi(), ap.getSsid(), ap.getRssi(), placeIdString);
-                    scansCount = scansCount + 1;
-                    publishProgress(scansCount);
-                }
-                toast.setText("Alle Messungen wurden mit der Orientierung gespeichert");
-                toast.show();
-            } catch (Exception e) {
-                Log.e(TAG, e.toString());
-                toast.setText("Die Messung konnte nicht gespeichert werden");
-                toast.show();
-            }
-            return scansCount;
-        }
-
-        protected void onProgressUpdate(Integer... calcProgress) {
-            progress.setProgress(calcProgress[0]);
-        }
-
-        protected void onPostExecute(Integer result) {
-            progress.hide();
-            updateMeasurementsCount();
-        }
-    }
-
-
-
-    public class DoCalculationTask extends AsyncTask<Void, Integer, Integer> {
-        @Override
-        protected void onPreExecute() {
-            progress.setTitle("Durchschnittliche Signalstärke aller APs für verschiede Orte wird berechnet");
-            progress.setMessage("Bitte warten Sie einen Moment...");
-            progress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-            progress.show();
-        }
-
-        @Override
-        protected Integer doInBackground(Void... arg0) {
-            int calculationsCount = 0;
-            try {
-
-                /* Clear previous averages */
-                averagesDB.deleteMeasurements();
-
-                /* Create list that contains average of all BSSIs for all places */
-                Cursor bssiCursor = measurementDB.getRssiAvgByBssi();
-                progress.setMax(bssiCursor.getCount());
-
-                /*Cursor has placeId, bssi, ssid, avgrssi*/
-                for (bssiCursor.moveToFirst(); !bssiCursor.isAfterLast(); bssiCursor.moveToNext()) {
-
-                    /* Escape early if cancel() is called */
-                    if (isCancelled()) break;
-                    averagesDB.createRecords(bssiCursor.getString(0), bssiCursor.getString(1),
-                            bssiCursor.getString(2), bssiCursor.getDouble(3));
-                    calculationsCount = calculationsCount + 1;
-                    publishProgress(calculationsCount);
-                }
-
-                bssiCursor.close();
-
-            } catch (Exception e) {
-                Log.i(TAG, e.toString());
-            }
-            return calculationsCount;
-        }
-
-        protected void onProgressUpdate(Integer... calcProgress) {
-            progress.setProgress(calcProgress[0]);
-        }
-
-        protected void onPostExecute(Integer result) {
-            progress.hide();
-        }
-
     }
 
     private void locateUser() {
@@ -411,8 +308,101 @@ public class CommonActivity extends Activity {
     }
 
     /* Stubs to be overridden by subclass*/
-    protected void updateMeasurementsCount(){}
-    protected void outputDebugInfos(){}
+    protected void updateMeasurementsCount() {
+    }
+
+    protected void outputDebugInfos() {
+    }
+
+    private class SaveScansTask extends AsyncTask<Void, Integer, Integer> {
+        @Override
+        protected void onPreExecute() {
+            progress.setTitle("Alle Scandaten werden gespeichert");
+            progress.setMessage("Bitte warten Sie einen Moment...");
+            progress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            progress.setMax(wlanMeasure.size());
+            progress.show();
+        }
+
+        @Override
+        protected Integer doInBackground(Void... arg0) {
+            int scansCount = 0;
+            try {
+                for (WlanMeasurements ap : wlanMeasure) {
+                    /* create a new record in DB */
+                    measurementDB.createRecords(ap.getBssi(), ap.getSsid(), ap.getRssi(), placeIdString);
+                    scansCount = scansCount + 1;
+                    publishProgress(scansCount);
+                }
+                toast.setText("Alle Messungen wurden mit der Orientierung gespeichert");
+                toast.show();
+            } catch (Exception e) {
+                Log.e(TAG, e.toString());
+                toast.setText("Die Messung konnte nicht gespeichert werden");
+                toast.show();
+            }
+            return scansCount;
+        }
+
+        protected void onProgressUpdate(Integer... calcProgress) {
+            progress.setProgress(calcProgress[0]);
+        }
+
+        protected void onPostExecute(Integer result) {
+            progress.hide();
+            updateMeasurementsCount();
+        }
+    }
+
+    public class DoCalculationTask extends AsyncTask<Void, Integer, Integer> {
+        @Override
+        protected void onPreExecute() {
+            progress.setTitle("Durchschnittliche Signalstärke aller APs für verschiede Orte wird berechnet");
+            progress.setMessage("Bitte warten Sie einen Moment...");
+            progress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            progress.show();
+        }
+
+        @Override
+        protected Integer doInBackground(Void... arg0) {
+            int calculationsCount = 0;
+            try {
+
+                /* Clear previous averages */
+                averagesDB.deleteMeasurements();
+
+                /* Create list that contains average of all BSSIs for all places */
+                Cursor bssiCursor = measurementDB.getRssiAvgByBssi();
+                progress.setMax(bssiCursor.getCount());
+
+                /*Cursor has placeId, bssi, ssid, avgrssi*/
+                for (bssiCursor.moveToFirst(); !bssiCursor.isAfterLast(); bssiCursor.moveToNext()) {
+
+                    /* Escape early if cancel() is called */
+                    if (isCancelled()) break;
+                    averagesDB.createRecords(bssiCursor.getString(0), bssiCursor.getString(1),
+                            bssiCursor.getString(2), bssiCursor.getDouble(3));
+                    calculationsCount = calculationsCount + 1;
+                    publishProgress(calculationsCount);
+                }
+
+                bssiCursor.close();
+
+            } catch (Exception e) {
+                Log.i(TAG, e.toString());
+            }
+            return calculationsCount;
+        }
+
+        protected void onProgressUpdate(Integer... calcProgress) {
+            progress.setProgress(calcProgress[0]);
+        }
+
+        protected void onPostExecute(Integer result) {
+            progress.hide();
+        }
+
+    }
 
 
 }

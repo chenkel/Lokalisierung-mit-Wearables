@@ -1,21 +1,20 @@
 package smartwatch.context.project.activities;
 
+import android.app.Activity;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.app.Activity;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-
-import smartwatch.context.project.R;
-import smartwatch.context.common.helper.DataHelper;
-import smartwatch.context.project.custom.MyAdapter;
-
 import java.util.Arrays;
+
+import smartwatch.context.common.helper.DataHelper;
+import smartwatch.context.project.R;
+import smartwatch.context.project.custom.MyAdapter;
 
 public class BleActivity extends Activity implements SensorEventListener {
 
@@ -23,18 +22,17 @@ public class BleActivity extends Activity implements SensorEventListener {
     private Sensor mAccelerometer;
     private Sensor mMagnetometer;
 
-    TextView sensorText;
+    private TextView sensorText;
 
-    float[] mGravity;
-    float[] mGeomagnetic;
+    private float[] mGravity;
+    private float[] mGeomagnetic;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ble);
-        getActionBar().setDisplayHomeAsUpEnabled(true);
 
-        mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
+        mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         mMagnetometer = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
 
@@ -91,7 +89,8 @@ public class BleActivity extends Activity implements SensorEventListener {
                 SensorManager.getOrientation(R, orientation);
 
                 float azimuthInDegress = ((float) Math.toDegrees(orientation[0]) + 360) % 360;
-                sensorText.setText(azimuthInDegress+" ");
+                String sensorTextString = azimuthInDegress + " ";
+                sensorText.setText(sensorTextString);
             }
         }
     }

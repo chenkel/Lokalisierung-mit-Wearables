@@ -1,8 +1,5 @@
 package smartwatch.context.project.custom;
 
-import smartwatch.context.common.helper.DataHelper;
-import smartwatch.context.project.R;
-
 import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
@@ -14,33 +11,24 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-/**
- * Created by jan on 23.03.16.
- */
+import smartwatch.context.common.helper.DataHelper;
+import smartwatch.context.project.R;
+
+
 public class MyAdapter extends ArrayAdapter<DataHelper> {
     private static final String TAG = "MyAdapter";
-    private Activity activity;
-    private ArrayList<DataHelper> data;
     private static LayoutInflater inflater = null;
+    private ArrayList<DataHelper> data;
 
-    public MyAdapter(Activity activity, int textViewResourceId,ArrayList<DataHelper> data) {
+    public MyAdapter(Activity activity, int textViewResourceId, ArrayList<DataHelper> data) {
         super(activity, textViewResourceId, data);
-        try{
-            this.activity = activity;
+        try {
             this.data = data;
 
             inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             Log.e(TAG, e.toString());
         }
-    }
-
-
-    public static class ViewHolder {
-        public TextView display_name;
-        public TextView display_number;
-
     }
 
     public int getCount() {
@@ -76,10 +64,16 @@ public class MyAdapter extends ArrayAdapter<DataHelper> {
             holder.display_number.setText(String.valueOf(data.get(position).getRssi()));
             /*String.valueOf(data.get(position).getRssi())*/
 
-        }catch (Exception e) {
+        } catch (Exception e) {
             Log.i(TAG, e.toString());
 
         }
         return vi;
+    }
+
+    public static class ViewHolder {
+        public TextView display_name;
+        public TextView display_number;
+
     }
 }

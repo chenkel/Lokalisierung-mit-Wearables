@@ -10,45 +10,63 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
-    <application android:allowBackup="false" android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name" android:theme="@style/AppTheme">
-        <activity android:name=".activities.TitleScreen" android:label="@string/app_name">
+    <application
+        android:allowBackup="false"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme">
+        <activity
+            android:name=".activities.TitleScreen"
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.WlanActivity"
+        <activity
+            android:name=".activities.WlanActivity"
             android:label="@string/title_activity_wlan"
             android:parentActivityName=".activities.TitleScreen">
-            <meta-data android:name="android.support.PARENT_ACTIVITY"
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.TitleScreen" />
         </activity>
-        <activity android:name=".activities.BleActivity" android:label="@string/title_activity_ble"
+        <activity
+            android:name=".activities.BleActivity"
+            android:label="@string/title_activity_ble"
             android:parentActivityName=".activities.TitleScreen">
-            <meta-data android:name="android.support.PARENT_ACTIVITY"
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.TitleScreen" />
         </activity>
-        <activity android:name=".activities.QrcodeActivity"
+        <activity
+            android:name=".activities.QrcodeActivity"
             android:label="@string/title_activity_qrcode"
             android:parentActivityName=".activities.TitleScreen">
-            <meta-data android:name="android.support.PARENT_ACTIVITY"
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.TitleScreen" />
         </activity>
-        <activity android:name=".activities.GraphicActivity"
+        <activity
+            android:name=".activities.GraphicActivity"
             android:parentActivityName=".activities.TitleScreen">
-            <meta-data android:name="android.support.PARENT_ACTIVITY"
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.TitleScreen" />
         </activity>
-        <activity android:name=".helper.DBManagerMeasurements"
+        <activity
+            android:name=".helper.DBManagerMeasurements"
             android:parentActivityName=".activities.TitleScreen">
-            <meta-data android:name="android.support.PARENT_ACTIVITY"
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.TitleScreen" />
         </activity>
-        <activity android:name=".helper.DBManagerAverages"
+        <activity
+            android:name=".helper.DBManagerAverages"
             android:parentActivityName=".activities.TitleScreen">
-            <meta-data android:name="android.support.PARENT_ACTIVITY"
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.TitleScreen" />
         </activity>
 

@@ -1,14 +1,14 @@
 package smartwatch.context.common.helper;
 
-import java.util.List;
-
-/**
- * Created by jan on 17.03.16.
- */
 public class DataHelper {
 
     private double rssi;
     private String bssi;
+
+    public DataHelper(String bssi, double rssi) {
+        this.bssi = bssi;
+        this.rssi = rssi;
+    }
 
     public String getBssi() {
         return bssi;
@@ -23,12 +23,6 @@ public class DataHelper {
     }
 
     public void setRssi(double rssi) {
-        this.rssi = rssi;
-    }
-
-
-    public DataHelper(String bssi, double rssi){
-        this.bssi = bssi;
         this.rssi = rssi;
     }
 

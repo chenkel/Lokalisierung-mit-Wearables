@@ -29,7 +29,7 @@ public class TitleScreen extends Activity {
         addListenerDBManagerAverages();
     }
 
-    public void addListenerWlan() {
+    private void addListenerWlan() {
         final Button wlanswitchact = (Button) findViewById(R.id.wlan);
         wlanswitchact.setOnClickListener(new View.OnClickListener() {
 
@@ -41,7 +41,7 @@ public class TitleScreen extends Activity {
         });
     }
 
-    public void addListenerBle(){
+    private void addListenerBle() {
         final Button bleswitchact = (Button) findViewById(R.id.ble);
         bleswitchact.setOnClickListener(new View.OnClickListener() {
 
@@ -53,8 +53,8 @@ public class TitleScreen extends Activity {
         });
     }
 
-    public void addListenerQrcode(){
-        final Button qrcodeswitchact =(Button)findViewById(R.id.qr_code);
+    private void addListenerQrcode() {
+        final Button qrcodeswitchact = (Button) findViewById(R.id.qr_code);
         qrcodeswitchact.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -66,8 +66,8 @@ public class TitleScreen extends Activity {
         });
     }
 
-    public void addListenerGraphic(){
-        final Button graphicswitchact =(Button)findViewById(R.id.localization_graphic);
+    private void addListenerGraphic() {
+        final Button graphicswitchact = (Button) findViewById(R.id.localization_graphic);
         graphicswitchact.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -79,8 +79,8 @@ public class TitleScreen extends Activity {
         });
     }
 
-    public void addListenerDBManagerMeasurements(){
-        final Button dbManagerButton = (Button)findViewById(R.id.db_manager_measurements);
+    private void addListenerDBManagerMeasurements() {
+        final Button dbManagerButton = (Button) findViewById(R.id.db_manager_measurements);
         dbManagerButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -92,8 +92,8 @@ public class TitleScreen extends Activity {
         });
     }
 
-    public void addListenerDBManagerAverages(){
-        final Button dbManagerButton = (Button)findViewById(R.id.db_manager_averages);
+    private void addListenerDBManagerAverages() {
+        final Button dbManagerButton = (Button) findViewById(R.id.db_manager_averages);
         dbManagerButton.setOnClickListener(new View.OnClickListener() {
 
             @Override

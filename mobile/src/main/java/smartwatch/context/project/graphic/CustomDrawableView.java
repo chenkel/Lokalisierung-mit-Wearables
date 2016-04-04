@@ -2,20 +2,13 @@ package smartwatch.context.project.graphic;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.drawable.ShapeDrawable;
-import android.graphics.drawable.shapes.OvalShape;
-import android.graphics.drawable.shapes.RectShape;
-import android.view.MotionEvent;
-import android.view.View;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.drawable.ShapeDrawable;
+import android.view.View;
 
-import com.google.android.gms.maps.model.Circle;
 
-/**
- * Created by jan on 02.04.16.
- */
 public class CustomDrawableView extends View {
 
     private ShapeDrawable mDrawable;
@@ -39,7 +32,7 @@ public class CustomDrawableView extends View {
         super.onDraw(canvas);
 
 
-
+        /* Todo: Avoid object allocations during draw/layout operations (preallocate and reuse instead) */
         LocationCoordinates place1 = new LocationCoordinates("place1", 20, 20);
         LocationCoordinates place2 = new LocationCoordinates("place2", 500, 20);
         LocationCoordinates place3 = new LocationCoordinates("place3", 260, 300);

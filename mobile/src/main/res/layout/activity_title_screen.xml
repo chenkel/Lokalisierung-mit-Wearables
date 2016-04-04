@@ -3,46 +3,46 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
-    android:orientation="vertical"
     tools:context=".activities.TitleScreen">
 
     <Button
         android:id="@+id/wlan"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/title_activity_wlan"/>
+        android:text="@string/title_activity_wlan" />
 
     <Button
         android:id="@+id/ble"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/title_activity_ble"/>
+        android:text="@string/title_activity_ble" />
 
     <Button
         android:id="@+id/qr_code"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/title_activity_qrcode"/>
+        android:text="@string/title_activity_qrcode" />
 
     <Button
         android:id="@+id/localization_graphic"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/title_activity_graphic"/>
+        android:text="@string/title_activity_graphic" />
 
     <Button
         android:id="@+id/db_manager_measurements"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/db_manager_measurements"/>
+        android:text="@string/db_manager_measurements" />
 
     <Button
         android:id="@+id/db_manager_averages"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/db_manager_averages"/>
+        android:text="@string/db_manager_averages" />
 
 
 </LinearLayout>

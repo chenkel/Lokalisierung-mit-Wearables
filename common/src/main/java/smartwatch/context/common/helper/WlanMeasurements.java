@@ -1,15 +1,32 @@
 package smartwatch.context.common.helper;
 
-/**
- * Created by jan on 17.03.16.
- */
-public class WlanMeasurements{
+
+public class WlanMeasurements {
 
     private String bssi;
     private int rssi;
     private String ssid;
     private double orientation;
 
+
+    public WlanMeasurements(String bssi, int rssi, String ssid, double orientation) {
+        this.bssi = bssi;
+        this.rssi = rssi;
+        this.ssid = ssid;
+        this.orientation = orientation;
+    }
+
+    public WlanMeasurements(String bssi, int rssi, double orientation) {
+        this.bssi = bssi;
+        this.rssi = rssi;
+        this.orientation = orientation;
+    }
+
+    public WlanMeasurements(String bssi, int rssi, String ssid) {
+        this.bssi = bssi;
+        this.rssi = rssi;
+        this.ssid = ssid;
+    }
 
     public String getBssi() {
         return bssi;
@@ -42,24 +59,6 @@ public class WlanMeasurements{
     public void setOrientation(double orientation) {
         this.orientation = orientation;
     }
-
-    public WlanMeasurements(String bssi, int rssi,String ssid,double orientation){
-        this.bssi = bssi;
-        this.rssi = rssi;
-        this.ssid = ssid;
-        this.orientation = orientation;
-    }
-    public WlanMeasurements(String bssi, int rssi, double orientation){
-        this.bssi = bssi;
-        this.rssi = rssi;
-        this.orientation = orientation;
-    }
-    public WlanMeasurements(String bssi, int rssi, String ssid){
-        this.bssi = bssi;
-        this.rssi = rssi;
-        this.ssid = ssid;
-    }
-
 
     @Override
     public String toString() {

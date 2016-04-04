@@ -2,16 +2,12 @@ package smartwatch.context.common.helper;
 
 import android.util.Log;
 
-import smartwatch.context.common.helper.WlanMeasurements;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by jan on 14.03.16.
- */
+
 public class CalculationHelper {
     private static final String TAG = "CalculationHelper";
 
@@ -30,14 +26,14 @@ public class CalculationHelper {
         boolean valueFound = false;
         int iteCounter = 0;
         Log.i(TAG, "Nun in calculate SSE");
-        Log.i(TAG, "Größe Modellwerte: "+modellwerte.size());
+        Log.i(TAG, "Größe Modellwerte: " + modellwerte.size());
         double overallSum = 0;
         if (messwerte.size() == 0) {
             return 0;
         }
 
         for (WlanMeasurements modellwert : modellwerte) {
-            for(WlanMeasurements messwert : messwerte) {
+            for (WlanMeasurements messwert : messwerte) {
                 if (messwert.getBssi().equals(modellwert.getBssi())) {
                     valueFound = true;
                     double diff = Math.abs(modellwert.getRssi() - messwert.getRssi());
@@ -49,17 +45,17 @@ public class CalculationHelper {
                 }
             }
 
-            if (!valueFound && modellwerte.indexOf(modellwert)<modellwerte.size()/5) {
+            if (!valueFound && modellwerte.indexOf(modellwert) < modellwerte.size() / 5) {
                 /*Log.i(TAG, "!!!Modellwert nicht in Messwerten gefunden. Die Daten sind: "+
                     modellwert.toString());
                 Log.i(TAG, "!!!Die Zwischensumme ist: " + overallSum +
                         "\n-----------------------------------");*/
                 overallSum += 20;
             }
-            else if(!valueFound){
-                /*Log.i(TAG, "***Modellwert nicht in Messwerten gefundenund nicht relevant: "+
-                        modellwert.toString());*/
-            }
+            /*else if(!valueFound){
+                *//*Log.i(TAG, "***Modellwert nicht in Messwerten gefundenund nicht relevant: "+
+                        modellwert.toString());*//*
+            }*/
             valueFound = false;
             iteCounter++;
         }
@@ -83,10 +79,10 @@ public class CalculationHelper {
         return min;
     }
 
-    public static double sicherheitsWert(double ortsWert, HashMap<String,Double> sseMap){
+    public static double sicherheitsWert(double ortsWert, HashMap<String, Double> sseMap) {
         double sumAbweichungen = 0;
-        for(String key : sseMap.keySet()){
-            sumAbweichungen += Math.abs(ortsWert-sseMap.get(key));
+        for (String key : sseMap.keySet()) {
+            sumAbweichungen += Math.abs(ortsWert - sseMap.get(key));
         }
         return sumAbweichungen;
     }

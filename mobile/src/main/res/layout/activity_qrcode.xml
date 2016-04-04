@@ -3,33 +3,33 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
-    android:orientation="vertical"
     tools:context=".TitleScreen">
 
     <Button
         android:id="@+id/calculate_average"
-        android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:text="@string/ble_calculate_distance"/>
+        android:layout_height="wrap_content"
+        android:text="@string/ble_calculate_distance" />
 
     <Button
         android:id="@+id/delete_list"
-        android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:text="@string/ble_delete_list"/>
+        android:layout_height="wrap_content"
+        android:text="@string/ble_delete_list" />
 
     <TextView
         android:id="@+id/calibration_average"
-        android:text="@string/ble_calibration_average"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:text="@string/ble_calibration_average" />
 
     <TextView
         android:id="@+id/ble_rssi"
-        android:text="@string/qrcode_hallo"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:text="@string/qrcode_hallo" />
 
 </LinearLayout>

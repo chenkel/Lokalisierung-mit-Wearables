@@ -7,20 +7,17 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.util.Log;
 
-/**
- * Created by jan on 24.03.16.
- */
-public class OrientationHelper implements SensorEventListener {
+
+class OrientationHelper implements SensorEventListener {
 
     private static final String TAG = "OrientationHelper";
 
-    private SensorManager mSensorManager;
-    private Sensor mAccelerometer;
-    private Sensor mMagnetometer;
-    public static  float orientationValue;
+    private final SensorManager mSensorManager;
+    private final Sensor mAccelerometer;
+    private final Sensor mMagnetometer;
 
-    float[] mGravity;
-    float[] mGeomagnetic;
+    private float[] mGravity;
+    private float[] mGeomagnetic;
 
 
     public OrientationHelper(Context context) {
@@ -54,18 +51,17 @@ public class OrientationHelper implements SensorEventListener {
                 float orientation[] = new float[3];
                 SensorManager.getOrientation(R, orientation);
 
-                float azimuthInDegress = ((float) Math.toDegrees(orientation[0]) + 360) % 360;
-                orientationValue = azimuthInDegress;
+                float orientationValue = ((float) Math.toDegrees(orientation[0]) + 360) % 360;
             }
         }
     }
 
-    public void register(){
+    public void register() {
         mSensorManager.registerListener(this, mMagnetometer, SensorManager.SENSOR_DELAY_NORMAL);
         mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
-    public void unregister(){
+    public void unregister() {
         mSensorManager.unregisterListener(this);
     }
 
