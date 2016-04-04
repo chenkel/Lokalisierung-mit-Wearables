@@ -271,6 +271,7 @@ public class CommonActivity extends Activity {
                     sbSse.append(sseValue).append("\n");
                 }
                 String textViewAveragesString = outputTextview + sicherheitString + sbSse.toString();
+                /* Todo: auslagern und nur auf phone ausführen */
                 textViewAverages.setText(textViewAveragesString);
 
             } else {

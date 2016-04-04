@@ -56,6 +56,7 @@ public class MainActivity extends CommonActivity {
             new WearableListView.OnScrollListener() {
                 @Override
                 public void onAbsoluteScrollChange(int i) {
+                    /* Todo: fix deprecated function */
                     // Only scroll the title up from its original base position
                     // and not down.
                     if (i > 0) {
