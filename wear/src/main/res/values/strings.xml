@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Project</string>
-    <string name="hello_world">Hello World!</string>
-    <string name="header_text">Settings</string>
+    <string name="app_name">Hilfe!</string>
+    <string name="header_text">Nottreppe</string>
+    <string name="long_press_intro">Beenden?</string>
 </resources>

@@ -104,4 +104,8 @@ public class WlanMeasurementsDBAccess {
     public void deleteMeasurementForPlaceId(String placeIdString) {
         database.delete(M_TABLE, M_PLACE + " = ?", new String[]{placeIdString});
     }
+
+    public void deleteAllMeasurements() {
+        database.delete(M_TABLE, null, null);
+    }
 }

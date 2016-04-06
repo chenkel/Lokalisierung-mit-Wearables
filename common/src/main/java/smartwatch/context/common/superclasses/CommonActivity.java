@@ -13,12 +13,14 @@ import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.IllegalFormatCodePointException;
 import java.util.List;
 import java.util.Map;
 
@@ -29,6 +31,7 @@ import smartwatch.context.common.helper.WlanMeasurements;
 
 public class CommonActivity extends Activity {
     private static final String TAG = "CommonActivity";
+    private Context context;
     protected final List<String> outputList = new ArrayList<>();
     /*OrientationHelper mOrientationHelper = null;*/
     protected final List<WlanMeasurements> wlanMeasure = new ArrayList<>();
@@ -39,11 +42,15 @@ public class CommonActivity extends Activity {
     /* Measurement variables */
     private WifiManager wifiManager;
     private int scanCount = 0;
-    private int scanCountMax = 10;
+    protected int scanCountMax = 5;
     private boolean scanAndSave = true;
     private WlanAveragesDBAccess averagesDB;
+    /* Initialize loading spinner */
     private ProgressDialog progress;
-    private Toast toast;
+
+    private String priorPlaceId = "";
+    private String foundPlaceId;
+    private Vibrator v;
     /* handler for received Intents for the "SCAN_RESULTS_AVAILABLE_ACTION" event */
     private final BroadcastReceiver scanResultReceiver = new BroadcastReceiver() {
         @Override
@@ -52,11 +59,8 @@ public class CommonActivity extends Activity {
             List<ScanResult> currentResults = wifiManager.getScanResults();
 
             int measurementCount = currentResults.size();
-            Log.i(TAG, "measurementCount: " + measurementCount);
+            /*Log.i(TAG, "measurementCount: " + measurementCount);*/
             if (measurementCount > 0) {
-                scanCount++;
-                progress.setProgress(scanCount);
-
                 for (ScanResult result : currentResults) {
                     wlanMeasure.add(new WlanMeasurements(
                             result.BSSID,
@@ -66,56 +70,61 @@ public class CommonActivity extends Activity {
                     ));
                 }
 
-                if (scanCount < scanCountMax) {
+                if (!scanAndSave) {
+                    locateUser();
                     wifiManager.startScan();
-                    /* All scans finished */
                 } else {
-                    outputDebugInfos();
+                    scanCount++;
+                    progress.setProgress(scanCount);
 
-                    /* Stop the continous scan */
-                    unregisterReceiver(scanResultReceiver);
-
-                    /* Hide the loading spinner */
-                    progress.dismiss();
-
-                    if (scanAndSave) {
-                        saveMeasurements();
+                    if (scanCount < scanCountMax) {
+                        wifiManager.startScan();
+                    /* All scans finished */
                     } else {
-                        locateUser();
+                        outputDebugInfos();
+                        stopScanningAndCloseProgressDialog();
+                        saveMeasurements();
                     }
                 }
             } else {
-                /* Stop the continous scan */
-                unregisterReceiver(scanResultReceiver);
-                /* Hide the loading spinner */
-                progress.dismiss();
-                toast.setText("Keine APs in der Umgebung gefunden");
-                toast.show();
+                stopScanningAndCloseProgressDialog();
+                Toast.makeText(context, "Keine APs in der Umgebung gefunden", Toast.LENGTH_SHORT).show();
             }
-
         }
     };
 
-    /*@Override
+    private void stopScanningAndCloseProgressDialog() {
+        try {
+            /* Stop the continous scan */
+            unregisterReceiver(scanResultReceiver);
+        } catch (IllegalArgumentException e){
+            Log.e(TAG, e.toString());
+        }
+
+        /* Hide the loading spinner */
+        if (progress != null){
+            progress.hide();
+        }
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
-        *//*mOrientationHelper.register();*//*
     }
 
     @Override
     protected void onPause() {
-        *//* Unregister since the activity is not visible *//*
+        /* Unregister since the activity is not visible*/
         super.onPause();
-        *//*mOrientationHelper.unregister();*//*
-    }*/
+        /*unregisterReceiver(scanResultReceiver);*/
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        context = CommonActivity.this;
 
-        /* Customize toast*/
-        toast = Toast.makeText(CommonActivity.this, "", Toast.LENGTH_SHORT);
-        /*toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 0);*/
+        progress = new ProgressDialog(this);
 
         /*Initialize Data Collection for Orientation*/
         /*mOrientationHelper = new OrientationHelper(this);*/
@@ -127,28 +136,25 @@ public class CommonActivity extends Activity {
         /* Enable Wi-Fi, if necessary */
         wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
         if (!wifiManager.isWifiEnabled()) {
-            toast.setText("WLAN wird eingeschaltet...");
-            toast.show();
+            Toast.makeText(context, "WLAN wird eingeschaltet...", Toast.LENGTH_SHORT).show();
             wifiManager.setWifiEnabled(true);
         }
 
-        /* Initialize loading spinner */
-        progress = new ProgressDialog(this);
 
+
+        v = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
     }
 
     protected void scanWlan() {
         if (placeIdString == null || placeIdString.isEmpty()) {
-            toast.setText("Bitte geben Sie eine ID für den aktuellen Ort an");
-            toast.show();
+            Toast.makeText(context, "Bitte geben Sie eine ID für den aktuellen Ort an", Toast.LENGTH_SHORT).show();
             return;
         }
         outputList.clear();
         wlanMeasure.clear();
 
-
         scanCount = 0;
-        scanCountMax = 3;
+
         scanAndSave = true;
         /* Register Listener to collect results */
         registerReceiver(scanResultReceiver,
@@ -158,34 +164,50 @@ public class CommonActivity extends Activity {
         wifiManager.startScan();
 
         /* show loading spinner */
+        /*if (progress == null){
+            progress = new ProgressDialog(this);
+        }*/
+        progress = new ProgressDialog(CommonActivity.this);
+
         progress.setTitle("Scan der WLAN-Umgebung läuft");
         progress.setMessage("Bitte warten Sie einen Moment...");
         progress.setProgress(0);
         progress.setMax(scanCountMax);
+        progress.setCancelable(false);
         progress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         progress.show();
     }
 
     protected void startLocalization() {
-        scanAndSave = false;
-        progress.setTitle("Lokalisierung läuft");
-        progress.setMessage("Bitte warten Sie einen Moment...");
-        progress.setProgress(0);
-        progress.setMax(1);
-        progress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        progress.show();
-
         outputList.clear();
         wlanMeasure.clear();
 
-        scanCountMax = 1;
-
+        scanAndSave = false;
         /* Register Listener to collect results */
         registerReceiver(scanResultReceiver,
                 new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
 
         /* Starts the wifi scanner */
         wifiManager.startScan();
+
+
+        progress = new ProgressDialog(CommonActivity.this);
+
+        progress.setTitle("Lokalisierung läuft");
+        progress.setMessage("Bitte warten Sie einen Moment...");
+        progress.setProgress(0);
+        progress.setMax(scanCountMax);
+        progress.setCancelable(true);
+        progress.setCanceledOnTouchOutside(true);
+        progress.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                Log.w(TAG, "Dialog canceled");
+                stopScanningAndCloseProgressDialog();
+            }
+        });
+        progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progress.show();
     }
 
     /*Activated when scanAndSave is true*/
@@ -197,9 +219,8 @@ public class CommonActivity extends Activity {
         Log.i(TAG, "Now in locate user");
 
         if (wlanMeasure == null || wlanMeasure.size() == 0) {
-            toast.setText("Bitte führen sie eine Messung durch");
-            toast.show();
-            return;
+            Toast.makeText(context, "Bitte führen sie eine Messung durch", Toast.LENGTH_SHORT).show();
+            stopScanningAndCloseProgressDialog();
         }
 
         //if(receivedBluetooth)
@@ -213,14 +234,14 @@ public class CommonActivity extends Activity {
                     /*Saves all places to placeList*/
         Cursor placeCursor = measurementDB.getAllPlaces();
         if (placeCursor.getCount() == 0) {
-            toast.setText("Keine Messdaten vorhanden");
-            toast.show();
-            return;
+            Toast.makeText(context, "Keine Messdaten vorhanden", Toast.LENGTH_SHORT).show();
+            stopScanningAndCloseProgressDialog();
         }
         ArrayList<String> placeList = new ArrayList<>();
         for (placeCursor.moveToFirst(); !placeCursor.isAfterLast(); placeCursor.moveToNext()) {
             placeList.add(placeCursor.getString(0));
         }
+        placeCursor.close();
 
                     /*Am Ende wird jedem Ort eine sse zugeordnet*/
         HashMap<String, Double> sseMap = new HashMap<>();
@@ -241,6 +262,7 @@ public class CommonActivity extends Activity {
                         modelCursor.getInt(1), modelCursor.getString(2));
                 modellWerte.add(messWert);
             }
+            modelCursor.close();
 
             double sseValue = CalculationHelper.calculateSse(wlanMeasure, modellWerte);
 
@@ -248,14 +270,23 @@ public class CommonActivity extends Activity {
             AND Sicherheitswert<20 THEN sseValue+20/modellWerte.size()
              */
 
-            Log.i(TAG, " " + sseValue);
+            /*Log.i(TAG, " " + sseValue);*/
             sseMap.put(place, sseValue);
         }
         if (!sseMap.isEmpty()) {
             Map.Entry<String, Double> minEntry = CalculationHelper.minMapValue(sseMap);
             if (minEntry != null) {
-                String foundPlaceId = minEntry.getKey();
-                String outputTextview = "Der Ort ist: " + foundPlaceId + "\n";
+                foundPlaceId = minEntry.getKey();
+                String outputTextview = "Der Ort ist: " + foundPlaceId + " mit Wert: " + minEntry.getValue() + "\n";
+
+                progress.setTitle("Ort: " + foundPlaceId);
+                progress.setMessage("Gehen Sie zur Tür raus und dann nach links");
+
+                /*Toast.makeText(context, "Ort: " + foundPlaceId, Toast.LENGTH_SHORT).show();*/
+                if (!priorPlaceId.equals(foundPlaceId)){
+                    notifyLocationChange();
+                }
+                priorPlaceId = foundPlaceId;
 
                 /*Mit steigendem Sicherheitswert ist der sse klein für die Lokation und groß für
                 die anderen Orte
@@ -271,24 +302,35 @@ public class CommonActivity extends Activity {
                     sbSse.append(sseValue).append("\n");
                 }
                 String textViewAveragesString = outputTextview + sicherheitString + sbSse.toString();
-                /* Todo: auslagern und nur auf phone ausführen */
-                textViewAverages.setText(textViewAveragesString);
-
+                outputDetailedPlaceInfoDebug(textViewAveragesString);
+                /*Log.i(TAG, textViewAveragesString);*/
             } else {
-                toast.setText("Durchschnittswerte fehlen");
-                toast.show();
+                Toast.makeText(context, "Durchschnittswerte fehlen", Toast.LENGTH_SHORT).show();
             }
         } else {
             Log.e(TAG, "sseMap empty");
         }
     }
 
+    protected void notifyLocationChange() {
+        // Vibrate for 500 milliseconds if place changed
+        v.vibrate(500);
+    }
+
+    protected void outputDetailedPlaceInfoDebug(String output) {}
+
+    protected void deleteAllMeasurements() {
+        measurementDB.deleteAllMeasurements();
+        updateMeasurementsCount();
+        Toast.makeText(context, "Alles Messungen wurden gelöscht", Toast.LENGTH_SHORT).show();
+    }
+
     protected void deleteAllMeasurementsForPlace() {
         if (placeIdString == null || placeIdString.isEmpty()) {
-            toast.setText("Bitte geben Sie eine Ort-ID an.");
-            toast.show();
+            Toast.makeText(context, "Bitte geben Sie eine Ort-ID an.", Toast.LENGTH_SHORT).show();
             return;
         }
+
         AlertDialog.Builder builder = new AlertDialog.Builder(CommonActivity.this);
         builder.setTitle("Messungen löschen...");
         builder.setMessage("Wirklich alle Messungen zu Ort-ID " + placeIdString + " löschen?");
@@ -306,6 +348,8 @@ public class CommonActivity extends Activity {
         });
         AlertDialog alert = builder.create();
         alert.show();
+
+
     }
 
     /* Stubs to be overridden by subclass*/
@@ -335,12 +379,10 @@ public class CommonActivity extends Activity {
                     scansCount = scansCount + 1;
                     publishProgress(scansCount);
                 }
-                toast.setText("Alle Messungen wurden mit der Orientierung gespeichert");
-                toast.show();
+                /*Toast.makeText(context, "Alle Messungen wurden mit der Orientierung gespeichert", Toast.LENGTH_SHORT).show();*/
             } catch (Exception e) {
                 Log.e(TAG, e.toString());
-                toast.setText("Die Messung konnte nicht gespeichert werden");
-                toast.show();
+                /*Toast.makeText(context, "Die Messung konnte nicht gespeichert werden", Toast.LENGTH_SHORT).show();*/
             }
             return scansCount;
         }
@@ -390,7 +432,7 @@ public class CommonActivity extends Activity {
                 bssiCursor.close();
 
             } catch (Exception e) {
-                Log.i(TAG, e.toString());
+                Log.e(TAG, e.toString());
             }
             return calculationsCount;
         }

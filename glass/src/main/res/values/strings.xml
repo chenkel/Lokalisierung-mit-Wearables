@@ -2,4 +2,21 @@
     <string name="app_name">Project</string>
     <string name="title_activity_main">Hello World Immersion</string>
     <string name="hello_world">Hello world!</string>
+    <string name="text_wifi_ble">Kombiniert</string>
+    <string name="wifi_ble_localization">Kombinierte Lokalisierung</string>
+    <string name="wifi_ble_footnote">Per WiFi und Bluetooth Beacons</string>
+    <string name="qr_code_localization">Einfache\u0020\u0020\u0020\u0020\u0020 QR-Code Lokalisierung</string>
+    <string name="qr_code_footnote">Per Kamera</string>
+    <string name="wifi_ble_localization_start">Hilfe!</string>
+    <string name="wifi_ble_localization_footnote">Wo ist der Notausgang?</string>
+    <string name="wifi_ble_scan_place1">Messdaten für Ort 1 aufnehmen</string>
+    <string name="wifi_ble_scan_place2">Messdaten für Ort 2 aufnehmen</string>
+    <string name="wifi_ble_scan_place3">Messdaten für Ort 3 aufnehmen</string>
+    <string name="wifi_ble_scan_place4">Messdaten für Ort 4 aufnehmen</string>
+    <string name="wifi_ble_scan_place5">Messdaten für Ort 5 aufnehmen</string>
+    <string name="wifi_ble_scan_place_footnote">20 Messungen</string>
+    <string name="wifi_ble_calculate">Durschnitt aller Messdaten berechnen</string>
+    <string name="wifi_ble_scan_caclulate_footnote">Dauert einen Moment</string>
+    <string name="wifi_ble_delete_all">Alle Messdaten löschen</string>
+    <string name="wifi_ble_scan_delete_all_footnote">Ohne Vorwarnung!</string>
 </resources>

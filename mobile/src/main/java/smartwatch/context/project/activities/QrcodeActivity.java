@@ -29,7 +29,7 @@ public class QrcodeActivity extends Activity implements BeaconConsumer, View.OnC
     private final Queue<Integer> rssiQueueBlue = new LinkedList<>();
     private final Queue<Integer> rssiQueueYellow = new LinkedList<>();
     private final Queue<Integer> rssiQueueRed = new LinkedList<>();
-    private final int queueSize = 20;
+    private final int queueSize = 5;
     private final List<Integer> calibrationList = new LinkedList<>();
     /*Blue, Yelloow. Red*/
     private final double[] distances = new double[3];

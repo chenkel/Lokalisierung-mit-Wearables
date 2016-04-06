@@ -80,16 +80,16 @@ public class WlanActivity extends CommonActivity implements View.OnClickListener
 
     public void onClick(View view) {
         switch (view.getId()) {
+            case R.id.wlan_localization:
+                startLocalization();
+                break;
+
             case R.id.wlan_scan:
                 scanWlan();
                 break;
 
             case R.id.wlan_calculate_averages:
                 new DoCalculationTask().execute();
-                break;
-
-            case R.id.wlan_localization:
-                startLocalization();
                 break;
 
             case R.id.wlan_delete_measurements_for_place:
@@ -134,6 +134,11 @@ public class WlanActivity extends CommonActivity implements View.OnClickListener
         /*Update the table*/
         wifiArrayAdapter.notifyDataSetChanged();
                     /* -- END: ONLY NEEDED FOR DEBUGGING ON PHONE */
+    }
+
+    @Override
+    protected void outputDetailedPlaceInfoDebug(String output){
+        textViewAverages.setText(output);
     }
 
 

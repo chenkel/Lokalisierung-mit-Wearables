@@ -12,11 +12,14 @@
         app:layout_box="left|bottom|right">
 
         <android.support.wearable.view.WearableListView
+            android:keepScreenOn="true"
             android:id="@+id/wearable_List"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:dividerHeight="0dp"
-            android:scrollbars="none"></android.support.wearable.view.WearableListView>
+            android:scrollbars="none">
+
+        </android.support.wearable.view.WearableListView>
 
         <TextView
             android:id="@+id/header"
@@ -28,6 +31,11 @@
             android:gravity="bottom"
             android:text="@string/header_text"
             android:textSize="20sp" />
+
+        <android.support.wearable.view.DismissOverlayView
+            android:id="@+id/dismiss_overlay"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"/>
 
     </RelativeLayout>
 

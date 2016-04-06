@@ -25,8 +25,8 @@ public class CalculationHelper {
         /*modellwerte entsprechend dem jeweiligen Place der aufrufenden Methode*/
         boolean valueFound = false;
         int iteCounter = 0;
-        Log.i(TAG, "Nun in calculate SSE");
-        Log.i(TAG, "Größe Modellwerte: " + modellwerte.size());
+        /*Log.i(TAG, "Nun in calculate SSE");
+        Log.i(TAG, "Größe Modellwerte: " + modellwerte.size());*/
         double overallSum = 0;
         if (messwerte.size() == 0) {
             return 0;
