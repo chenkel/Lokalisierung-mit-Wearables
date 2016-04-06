@@ -69,7 +69,7 @@ public class CommonActivity extends Activity {
                             0
                     ));
                 }
-
+                Log.i(TAG, "wlanMeasure size: " + wlanMeasure.size());
                 if (!scanAndSave) {
                     locateUser();
                     wifiManager.startScan();
@@ -216,6 +216,7 @@ public class CommonActivity extends Activity {
     }
 
     private void locateUser() {
+
         Log.i(TAG, "Now in locate user");
 
         if (wlanMeasure == null || wlanMeasure.size() == 0) {
@@ -303,6 +304,7 @@ public class CommonActivity extends Activity {
                 }
                 String textViewAveragesString = outputTextview + sicherheitString + sbSse.toString();
                 outputDetailedPlaceInfoDebug(textViewAveragesString);
+                wlanMeasure.clear();
                 /*Log.i(TAG, textViewAveragesString);*/
             } else {
                 Toast.makeText(context, "Durchschnittswerte fehlen", Toast.LENGTH_SHORT).show();
