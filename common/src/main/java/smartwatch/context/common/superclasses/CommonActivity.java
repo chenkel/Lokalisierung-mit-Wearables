@@ -93,7 +93,7 @@ public class CommonActivity extends Activity {
         }
     };
 
-    private void stopScanningAndCloseProgressDialog() {
+    protected void stopScanningAndCloseProgressDialog() {
         try {
             /* Stop the continous scan */
             unregisterReceiver(scanResultReceiver);
