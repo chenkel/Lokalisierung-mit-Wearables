@@ -17,10 +17,12 @@
 package smartwatch.context.project.card;
 
 import android.content.Context;
+import android.content.Intent;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 
 import com.google.android.glass.media.Sounds;
@@ -31,12 +33,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import smartwatch.context.common.superclasses.CommonActivity;
+import smartwatch.context.common.superclasses.LocalizationActivity;
 import smartwatch.context.project.R;
 
 /**
  * Creates a card scroll view with examples of different image layout cards.
  */
-public final class WiFiBleActivity extends CommonActivity {
+public final class WiFiBleActivity extends LocalizationActivity {
 
     private static final String TAG = WiFiBleActivity.class.getSimpleName();
 
@@ -54,10 +57,12 @@ public final class WiFiBleActivity extends CommonActivity {
     @Override
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         mCardScroller = new CardScrollView(this);
         mCardScroller.setAdapter(new CardAdapter(createCards(this)));
         setContentView(mCardScroller);
         setCardScrollerListener();
+
     }
 
     /**
@@ -133,7 +138,7 @@ public final class WiFiBleActivity extends CommonActivity {
                 int soundEffect = Sounds.TAP;
                 switch (position) {
                     case CARD_LOCALIZATION:
-                        startLocalization();
+                        startActivity(new Intent(WiFiBleActivity.this, GlassLocalizationActivity.class));
                         break;
 
                     case CARD_SCAN1:
@@ -172,8 +177,4 @@ public final class WiFiBleActivity extends CommonActivity {
         am.playSoundEffect(Sounds.SUCCESS);
     }
 
-    @Override
-    protected void outputDetailedPlaceInfoDebug(String output) {
-        Log.i(TAG, output);
-    }
 }
