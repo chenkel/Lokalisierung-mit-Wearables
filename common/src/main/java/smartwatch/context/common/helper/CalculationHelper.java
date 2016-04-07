@@ -33,11 +33,17 @@ public class CalculationHelper {
         }
 
         for (WlanMeasurements modellwert : modellwerte) {
+
             for (WlanMeasurements messwert : messwerte) {
                 if (messwert.getBssi().equals(modellwert.getBssi())) {
                     valueFound = true;
                     double diff = Math.abs(modellwert.getRssi() - messwert.getRssi());
                     overallSum = overallSum + diff;
+                    /*If modellwert was found in messwerte, the search in messwerte
+                    can be interrpted and we can continue with the search for the
+                    next modellwert
+                     */
+                    if(valueFound){break;}
                     /*Log.i(TAG, "#Modellwert gefunden. Die Daten sind: "+
                             modellwert.toString()+ "Und Diff ist "+diff);
                     Log.i(TAG, "#Die Zwischensumme ist: " + overallSum +
