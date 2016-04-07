@@ -2,7 +2,6 @@ package smartwatch.context.common.superclasses;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -15,12 +14,12 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.util.Log;
+import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.IllegalFormatCodePointException;
 import java.util.List;
 import java.util.Map;
 
@@ -29,7 +28,7 @@ import smartwatch.context.common.db.WlanMeasurementsDBAccess;
 import smartwatch.context.common.helper.CalculationHelper;
 import smartwatch.context.common.helper.WlanMeasurements;
 
-public class CommonActivity extends Activity {
+public abstract class CommonActivity extends Activity {
     private static final String TAG = "CommonActivity";
     private Context context;
     protected final List<String> outputList = new ArrayList<>();
@@ -46,11 +45,10 @@ public class CommonActivity extends Activity {
     private boolean scanAndSave = true;
     private WlanAveragesDBAccess averagesDB;
     /* Initialize loading spinner */
-    private ProgressDialog progress;
+
 
     private String priorPlaceId = "";
-    private String foundPlaceId;
-    private Vibrator v;
+    protected Vibrator v;
     /* handler for received Intents for the "SCAN_RESULTS_AVAILABLE_ACTION" event */
     private final BroadcastReceiver scanResultReceiver = new BroadcastReceiver() {
         @Override
@@ -75,7 +73,8 @@ public class CommonActivity extends Activity {
                     wifiManager.startScan();
                 } else {
                     scanCount++;
-                    progress.setProgress(scanCount);
+                    updateProgressOutput(scanCount);
+
 
                     if (scanCount < scanCountMax) {
                         wifiManager.startScan();
@@ -93,19 +92,23 @@ public class CommonActivity extends Activity {
         }
     };
 
+    protected abstract void updateProgressOutput(int scanCount);
+
     protected void stopScanningAndCloseProgressDialog() {
         try {
             /* Stop the continous scan */
             unregisterReceiver(scanResultReceiver);
-        } catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             Log.e(TAG, e.toString());
+        } finally {
+            /* Hide the loading spinner */
+            hideProgressOutput();
         }
 
-        /* Hide the loading spinner */
-        if (progress != null){
-            progress.hide();
-        }
+
     }
+
+    protected abstract void hideProgressOutput();
 
     @Override
     protected void onResume() {
@@ -124,7 +127,8 @@ public class CommonActivity extends Activity {
         super.onCreate(savedInstanceState);
         context = CommonActivity.this;
 
-        progress = new ProgressDialog(this);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
 
         /*Initialize Data Collection for Orientation*/
         /*mOrientationHelper = new OrientationHelper(this);*/
@@ -139,7 +143,6 @@ public class CommonActivity extends Activity {
             Toast.makeText(context, "WLAN wird eingeschaltet...", Toast.LENGTH_SHORT).show();
             wifiManager.setWifiEnabled(true);
         }
-
 
 
         v = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
@@ -167,16 +170,10 @@ public class CommonActivity extends Activity {
         /*if (progress == null){
             progress = new ProgressDialog(this);
         }*/
-        progress = new ProgressDialog(CommonActivity.this);
-
-        progress.setTitle("Scan der WLAN-Umgebung läuft");
-        progress.setMessage("Bitte warten Sie einen Moment...");
-        progress.setProgress(0);
-        progress.setMax(scanCountMax);
-        progress.setCancelable(false);
-        progress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        progress.show();
+        showScanProgress();
     }
+
+    protected abstract void showScanProgress();
 
     protected void startLocalization() {
         outputList.clear();
@@ -190,25 +187,10 @@ public class CommonActivity extends Activity {
         /* Starts the wifi scanner */
         wifiManager.startScan();
 
-
-        progress = new ProgressDialog(CommonActivity.this);
-
-        progress.setTitle("Lokalisierung läuft");
-        progress.setMessage("Bitte warten Sie einen Moment...");
-        progress.setProgress(0);
-        progress.setMax(scanCountMax);
-        progress.setCancelable(true);
-        progress.setCanceledOnTouchOutside(true);
-        progress.setOnCancelListener(new DialogInterface.OnCancelListener() {
-            @Override
-            public void onCancel(DialogInterface dialog) {
-                Log.w(TAG, "Dialog canceled");
-                stopScanningAndCloseProgressDialog();
-            }
-        });
-        progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        progress.show();
+        showLocalizationProgressDialog();
     }
+
+    protected abstract void showLocalizationProgressDialog();
 
     /*Activated when scanAndSave is true*/
     private void saveMeasurements() {
@@ -277,14 +259,13 @@ public class CommonActivity extends Activity {
         if (!sseMap.isEmpty()) {
             Map.Entry<String, Double> minEntry = CalculationHelper.minMapValue(sseMap);
             if (minEntry != null) {
-                foundPlaceId = minEntry.getKey();
+                String foundPlaceId = minEntry.getKey();
                 String outputTextview = "Der Ort ist: " + foundPlaceId + " mit Wert: " + minEntry.getValue() + "\n";
 
-                progress.setTitle("Ort: " + foundPlaceId);
-                progress.setMessage("Gehen Sie zur Tür raus und dann nach links");
+                updateLocalizationProgressUI(foundPlaceId, getWaypointDescription(foundPlaceId));
 
                 /*Toast.makeText(context, "Ort: " + foundPlaceId, Toast.LENGTH_SHORT).show();*/
-                if (!priorPlaceId.equals(foundPlaceId)){
+                if (!priorPlaceId.equals(foundPlaceId)) {
                     notifyLocationChange();
                 }
                 priorPlaceId = foundPlaceId;
@@ -304,22 +285,45 @@ public class CommonActivity extends Activity {
                 }
                 String textViewAveragesString = outputTextview + sicherheitString + sbSse.toString();
                 outputDetailedPlaceInfoDebug(textViewAveragesString);
-                wlanMeasure.clear();
-                /*Log.i(TAG, textViewAveragesString);*/
             } else {
                 Toast.makeText(context, "Durchschnittswerte fehlen", Toast.LENGTH_SHORT).show();
             }
         } else {
             Log.e(TAG, "sseMap empty");
         }
+
+        if (wlanMeasure != null) {
+            wlanMeasure.clear();
+        }
     }
 
-    protected void notifyLocationChange() {
-        // Vibrate for 500 milliseconds if place changed
-        v.vibrate(500);
+    protected abstract void updateLocalizationProgressUI(String foundPlaceId, String waypointDescription);
+
+    protected String getWaypointDescription(String foundPlaceId) {
+        String waypointDescription = "";
+        switch (foundPlaceId) {
+            case "1":
+                waypointDescription = "Verlasse das Zimmer und gehe nach rechts";
+                break;
+            case "2":
+                waypointDescription = "Geh weiter den Gang runter";
+                break;
+            case "3":
+                waypointDescription = "Geh weiter durch die Tür";
+                break;
+            case "4":
+                waypointDescription = "Geh zur Treppe und dann nach unten";
+                break;
+            case "5":
+                waypointDescription = "Geh bis nach ganz unten";
+                break;
+        }
+        return waypointDescription;
     }
 
-    protected void outputDetailedPlaceInfoDebug(String output) {}
+    protected abstract void notifyLocationChange();
+
+    protected abstract void outputDetailedPlaceInfoDebug(String output);
 
     protected void deleteAllMeasurements() {
         measurementDB.deleteAllMeasurements();
@@ -355,20 +359,15 @@ public class CommonActivity extends Activity {
     }
 
     /* Stubs to be overridden by subclass*/
-    protected void updateMeasurementsCount() {
-    }
+    /* Todo: Define abstract classes */
+    protected abstract void updateMeasurementsCount();
 
-    protected void outputDebugInfos() {
-    }
+    protected abstract void outputDebugInfos();
 
     private class SaveScansTask extends AsyncTask<Void, Integer, Integer> {
         @Override
         protected void onPreExecute() {
-            progress.setTitle("Alle Scandaten werden gespeichert");
-            progress.setMessage("Bitte warten Sie einen Moment...");
-            progress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-            progress.setMax(wlanMeasure.size());
-            progress.show();
+            showScansSaveProgress();
         }
 
         @Override
@@ -390,22 +389,21 @@ public class CommonActivity extends Activity {
         }
 
         protected void onProgressUpdate(Integer... calcProgress) {
-            progress.setProgress(calcProgress[0]);
+            updateProgressOutput(calcProgress[0]);
         }
 
         protected void onPostExecute(Integer result) {
-            progress.hide();
+            hideProgressOutput();
             updateMeasurementsCount();
         }
     }
 
+    protected abstract void showScansSaveProgress();
+
     public class DoCalculationTask extends AsyncTask<Void, Integer, Integer> {
         @Override
         protected void onPreExecute() {
-            progress.setTitle("Durchschnittliche Signalstärke aller APs für verschiede Orte wird berechnet");
-            progress.setMessage("Bitte warten Sie einen Moment...");
-            progress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-            progress.show();
+            showCalculationProgressOutput();
         }
 
         @Override
@@ -418,7 +416,8 @@ public class CommonActivity extends Activity {
 
                 /* Create list that contains average of all BSSIs for all places */
                 Cursor bssiCursor = measurementDB.getRssiAvgByBssi();
-                progress.setMax(bssiCursor.getCount());
+                setMaxProgressOutput(bssiCursor.getCount());
+
 
                 /*Cursor has placeId, bssi, ssid, avgrssi*/
                 for (bssiCursor.moveToFirst(); !bssiCursor.isAfterLast(); bssiCursor.moveToNext()) {
@@ -440,14 +439,18 @@ public class CommonActivity extends Activity {
         }
 
         protected void onProgressUpdate(Integer... calcProgress) {
-            progress.setProgress(calcProgress[0]);
+            updateProgressOutput(calcProgress[0]);
         }
 
         protected void onPostExecute(Integer result) {
-            progress.hide();
+            hideProgressOutput();
         }
 
     }
+
+    protected abstract void setMaxProgressOutput(int count);
+
+    protected abstract void showCalculationProgressOutput();
 
 
 }

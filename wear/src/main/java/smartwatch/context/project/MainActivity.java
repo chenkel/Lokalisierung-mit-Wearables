@@ -2,21 +2,17 @@ package smartwatch.context.project;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.wearable.view.DismissOverlayView;
 import android.support.wearable.view.WearableListView;
-import android.view.GestureDetector;
-import android.view.MotionEvent;
+import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import smartwatch.context.common.superclasses.LocalizationActivity;
 import smartwatch.context.common.superclasses.CommonActivity;
 
 public class MainActivity extends CommonActivity {
-
-    private DismissOverlayView mDismissOverlay;
-    private GestureDetector mDetector;
 
     // Handle our Wearable List's click events
     private final WearableListView.ClickListener mClickListener =
@@ -97,6 +93,8 @@ public class MainActivity extends CommonActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
         // Sample icons for the list
         ArrayList<Integer> mIcons = new ArrayList<>();
         mIcons.add(R.drawable.ic_action_locate);
@@ -119,22 +117,6 @@ public class MainActivity extends CommonActivity {
         wearableListView.setClickListener(mClickListener);
         wearableListView.addOnScrollListener(mOnScrollListener);
 
-        // Obtain the DismissOverlayView element
-        mDismissOverlay = (DismissOverlayView) findViewById(R.id.dismiss_overlay);
-        mDismissOverlay.setIntroText(R.string.long_press_intro);
-        mDismissOverlay.showIntroIfNecessary();
 
-        // Configure a gesture detector
-        mDetector = new GestureDetector(this, new GestureDetector.SimpleOnGestureListener() {
-            public void onLongPress(MotionEvent ev) {
-                mDismissOverlay.show();
-            }
-        });
-    }
-
-    // Capture long presses
-    @Override
-    public boolean onTouchEvent(MotionEvent ev) {
-        return mDetector.onTouchEvent(ev) || super.onTouchEvent(ev);
     }
 }
