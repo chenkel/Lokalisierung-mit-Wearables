@@ -1,5 +1,6 @@
 package smartwatch.context.project;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.wearable.view.DismissOverlayView;
 import android.support.wearable.view.WearableListView;
@@ -25,7 +26,7 @@ public class MainActivity extends CommonActivity {
                     int clickedMenu = viewHolder.getLayoutPosition();
                     switch (clickedMenu) {
                         case 0:
-                            startLocalization();
+                            startActivity(new Intent(MainActivity.this, LocalizationActivity.class));
                             break;
                         case 1:
                         case 2:
