@@ -1,7 +1,9 @@
 package smartwatch.context.project;
 
-import android.content.Intent;
+import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.support.wearable.view.WearableListView;
 import android.view.WindowManager;
 import android.widget.TextView;
@@ -9,11 +11,16 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-import smartwatch.context.common.superclasses.LocalizationActivity;
-import smartwatch.context.common.superclasses.CommonActivity;
+import smartwatch.context.common.superclasses.AverageMeasures;
+import smartwatch.context.common.superclasses.Localization;
+import smartwatch.context.common.superclasses.Measure;
 
-public class MainActivity extends CommonActivity {
+public class MainActivity extends Activity {
 
+    private Localization mLocalization;
+    private Measure mMeasure;
+    private AverageMeasures mAverageMeasures;
+    private Vibrator v;
     // Handle our Wearable List's click events
     private final WearableListView.ClickListener mClickListener =
             new WearableListView.ClickListener() {
@@ -22,25 +29,25 @@ public class MainActivity extends CommonActivity {
                     int clickedMenu = viewHolder.getLayoutPosition();
                     switch (clickedMenu) {
                         case 0:
-                            startActivity(new Intent(MainActivity.this, LocalizationActivity.class));
+                            /*startActivity(new Intent(MainActivity.this, Localization.class));*/
+                            mLocalization.startLocalization();
                             break;
                         case 1:
                         case 2:
                         case 3:
                         case 4:
                         case 5:
-                            placeIdString = String.valueOf(clickedMenu);
-//                            deleteAllMeasurementsForPlace();
-                            scanWlan();
+                            mMeasure.setPlaceIdString(String.valueOf(clickedMenu));
+                            mMeasure.measureWlan();
                             break;
                         case 6:
-                            new DoCalculationTask().execute();
+                            mAverageMeasures.calculateAverageMeasures();
                             break;
                         case 7:
                             /* todo: call bluetooth scan! */
                             break;
                         case 8:
-                            deleteAllMeasurements();
+                            mMeasure.deleteAllMeasurements();
                             break;
                         default:
                             Toast.makeText(MainActivity.this,
@@ -117,6 +124,23 @@ public class MainActivity extends CommonActivity {
         wearableListView.setClickListener(mClickListener);
         wearableListView.addOnScrollListener(mOnScrollListener);
 
+        mLocalization = new Localization(this) {
+
+            @Override
+            protected void notifyLocationChange() {
+                v = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
+                // Vibrate for 500 milliseconds
+                v.vibrate(500);
+            }
+        };
+
+        mMeasure = new Measure(this) {
+            @Override
+            public void updateMeasurementsCount() {
+            }
+        };
+
+        mAverageMeasures = new AverageMeasures(this);
 
     }
 }

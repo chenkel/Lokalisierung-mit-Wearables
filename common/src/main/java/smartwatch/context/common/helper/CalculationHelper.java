@@ -43,7 +43,7 @@ public class CalculationHelper {
                     can be interrpted and we can continue with the search for the
                     next modellwert
                      */
-                    if(valueFound){break;}
+                    break;
                     /*Log.i(TAG, "#Modellwert gefunden. Die Daten sind: "+
                             modellwert.toString()+ "Und Diff ist "+diff);
                     Log.i(TAG, "#Die Zwischensumme ist: " + overallSum +

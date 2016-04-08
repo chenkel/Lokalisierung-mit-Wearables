@@ -16,6 +16,7 @@
 
 package smartwatch.context.project.card;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
@@ -32,14 +33,15 @@ import com.google.android.glass.widget.CardScrollView;
 import java.util.ArrayList;
 import java.util.List;
 
-import smartwatch.context.common.superclasses.CommonActivity;
-import smartwatch.context.common.superclasses.LocalizationActivity;
+import smartwatch.context.common.superclasses.AverageMeasures;
+import smartwatch.context.common.superclasses.Localization;
+import smartwatch.context.common.superclasses.Measure;
 import smartwatch.context.project.R;
 
 /**
  * Creates a card scroll view with examples of different image layout cards.
  */
-public final class WiFiBleActivity extends LocalizationActivity {
+public final class WiFiBleActivity extends Activity {
 
     private static final String TAG = WiFiBleActivity.class.getSimpleName();
 
@@ -53,6 +55,10 @@ public final class WiFiBleActivity extends LocalizationActivity {
     static final int CARD_DELETE = 7;
 
     private CardScrollView mCardScroller;
+    private Localization mLocalization;
+    private Measure mMeasure;
+    private AverageMeasures mAverageMeasures;
+
 
     @Override
     public void onCreate(Bundle bundle) {
@@ -63,6 +69,20 @@ public final class WiFiBleActivity extends LocalizationActivity {
         setContentView(mCardScroller);
         setCardScrollerListener();
 
+        mLocalization = new Localization(this) {
+            @Override
+            protected void notifyLocationChange() {
+                AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+                am.playSoundEffect(Sounds.SUCCESS);
+            }
+        };
+
+        mMeasure = new Measure(this){
+            @Override
+            public void updateMeasurementsCount() {}
+        };
+
+        mAverageMeasures = new AverageMeasures(this);
     }
 
     /**
@@ -146,17 +166,17 @@ public final class WiFiBleActivity extends LocalizationActivity {
                     case CARD_SCAN3:
                     case CARD_SCAN4:
                     case CARD_SCAN5:
-                        scanCountMax = 20;
-                        placeIdString = String.valueOf(position);
-                        scanWlan();
+                        mMeasure.setScanCountMax(20);
+                        mMeasure.setPlaceIdString(String.valueOf(position));
+                        mMeasure.measureWlan();
                         break;
 
                     case CARD_CALCULATE:
-                        new DoCalculationTask().execute();
+                        mAverageMeasures.calculateAverageMeasures();
                         break;
                     case CARD_DELETE:
                         soundEffect = Sounds.SUCCESS;
-                        deleteAllMeasurements();
+                        mMeasure.deleteAllMeasurements();
                         break;
                     default:
                         soundEffect = Sounds.ERROR;
@@ -168,13 +188,6 @@ public final class WiFiBleActivity extends LocalizationActivity {
                 am.playSoundEffect(soundEffect);
             }
         });
-    }
-
-    @Override
-    protected void notifyLocationChange() {
-        // Play sound.
-        AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-        am.playSoundEffect(Sounds.SUCCESS);
     }
 
 }

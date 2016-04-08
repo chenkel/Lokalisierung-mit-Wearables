@@ -7,12 +7,7 @@
 
 
     <application
-        android:allowBackup="false"
-        android:supportsRtl="false">
-        <activity android:name=".superclasses.CommonActivity">
-
-        </activity>
-
+        android:allowBackup="false">
     </application>
 
 </manifest>

@@ -9,8 +9,7 @@ import android.view.View;
 import android.widget.Button;
 
 import smartwatch.context.project.R;
-import smartwatch.context.project.helper.DBManagerAverages;
-import smartwatch.context.project.helper.DBManagerMeasurements;
+import smartwatch.context.project.helper.DBManager;
 
 
 public class TitleScreen extends Activity {
@@ -23,10 +22,10 @@ public class TitleScreen extends Activity {
         setContentView(R.layout.activity_title_screen);
         addListenerWlan();
         addListenerBle();
+
         addListenerQrcode();
         addListenerGraphic();
-        addListenerDBManagerMeasurements();
-        addListenerDBManagerAverages();
+        addListenerDBManager();
     }
 
     private void addListenerWlan() {
@@ -79,26 +78,14 @@ public class TitleScreen extends Activity {
         });
     }
 
-    private void addListenerDBManagerMeasurements() {
-        final Button dbManagerButton = (Button) findViewById(R.id.db_manager_measurements);
-        dbManagerButton.setOnClickListener(new View.OnClickListener() {
 
-            @Override
-            public void onClick(View view) {
-                Intent dbManager = new Intent(view.getContext(), DBManagerMeasurements.class);
-                startActivity(dbManager);
-
-            }
-        });
-    }
-
-    private void addListenerDBManagerAverages() {
+    private void addListenerDBManager() {
         final Button dbManagerButton = (Button) findViewById(R.id.db_manager_averages);
         dbManagerButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
-                Intent dbManager = new Intent(view.getContext(), DBManagerAverages.class);
+                Intent dbManager = new Intent(view.getContext(), DBManager.class);
                 startActivity(dbManager);
 
             }

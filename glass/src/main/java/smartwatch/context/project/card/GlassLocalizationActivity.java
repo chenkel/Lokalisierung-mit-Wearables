@@ -1,5 +1,6 @@
 package smartwatch.context.project.card;
 
+import android.app.Activity;
 import android.content.Context;
 import android.media.AudioManager;
 import android.os.Bundle;
@@ -16,12 +17,12 @@ import com.google.android.glass.widget.Slider;
 import java.util.ArrayList;
 import java.util.List;
 
-import smartwatch.context.common.superclasses.LocalizationActivity;
+import smartwatch.context.common.superclasses.Localization;
 
 /**
  * Created by chenkel on 07.04.16.
  */
-public class GlassLocalizationActivity extends LocalizationActivity {
+public class GlassLocalizationActivity extends Activity {
     private static final String TAG = GlassLocalizationActivity.class.getSimpleName();
 
     // Index of api demo cards.
@@ -90,18 +91,5 @@ public class GlassLocalizationActivity extends LocalizationActivity {
         });
     }
 
-    @Override
-    protected void updateLocalizationProgressUI(String foundPlaceId, String waypointDescription) {
-        Log.i(TAG, "foundPlaceId: " + foundPlaceId);
-        mScanCard.setText(waypointDescription);
-        mScanCard.setFootnote("Ort: " + foundPlaceId);
-        mAdapter.notifyDataSetChanged();
-        /*setContentView(mScanCard.getView());*/
-    }
 
-    @Override
-    protected void notifyLocationChange() {
-        AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-        am.playSoundEffect(Sounds.SUCCESS);
-    }
 }

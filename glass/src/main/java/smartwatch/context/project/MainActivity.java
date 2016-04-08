@@ -17,7 +17,6 @@ import android.widget.AdapterView;
 import java.util.ArrayList;
 import java.util.List;
 
-import smartwatch.context.common.superclasses.CommonActivity;
 import smartwatch.context.project.card.CardAdapter;
 import smartwatch.context.project.card.WiFiBleActivity;
 

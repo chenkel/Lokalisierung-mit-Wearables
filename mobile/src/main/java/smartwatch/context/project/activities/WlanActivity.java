@@ -1,7 +1,9 @@
 package smartwatch.context.project.activities;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
+import android.content.Context;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -12,39 +14,43 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import java.util.Collections;
-import java.util.Comparator;
+import java.util.List;
 
 import smartwatch.context.common.helper.WlanMeasurements;
-import smartwatch.context.common.superclasses.CommonActivity;
+import smartwatch.context.common.superclasses.AverageMeasures;
+import smartwatch.context.common.superclasses.Localization;
+import smartwatch.context.common.superclasses.Measure;
 import smartwatch.context.project.R;
 
 
-public class WlanActivity extends CommonActivity implements View.OnClickListener {
+public class WlanActivity extends Activity implements View.OnClickListener {
     private static final String TAG = "WlanActivity";
 
+    private Localization mLocalization;
+    private AverageMeasures mAverage;
+    private Measure mMeasure;
     private EditText editPlaceId;
-    private ArrayAdapter wifiArrayAdapter;
-    private ProgressDialog progress;
+    private TextView textViewDebug;
+    private TextView textViewMeasuresCount;
+    protected WifiManager wifiManager;
 
-    @Override
-    protected void updateProgressOutput(int scanCount) {
-        progress.setProgress(scanCount);
-    }
-
-    @Override
-    protected void hideProgressOutput() {
-        if (progress != null) {
-            progress.hide();
-        }
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wlan);
         Log.v(TAG, "WlanActivity constructor called.");
+
+        Context context = WlanActivity.this;
+
+        /* Enable Wi-Fi, if necessary */
+        wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+        if (!wifiManager.isWifiEnabled()) {
+            Toast.makeText(context, "WLAN wird eingeschaltet...", Toast.LENGTH_SHORT).show();
+            wifiManager.setWifiEnabled(true);
+        }
 
         /* Register components from activity */
         final ListView wifiListView = (ListView) findViewById(R.id.listViewWifi);
@@ -66,7 +72,7 @@ public class WlanActivity extends CommonActivity implements View.OnClickListener
             @Override
             public void onTextChanged(CharSequence s, int start,
                                       int before, int count) {
-                updateMeasurementsCount();
+                mMeasure.updateMeasurementsCount();
             }
         });
 
@@ -82,99 +88,85 @@ public class WlanActivity extends CommonActivity implements View.OnClickListener
         Button buttonDeleteAllMeasurements = (Button) findViewById(R.id.wlan_delete_measurements_for_place);
         buttonDeleteAllMeasurements.setOnClickListener(this);
 
-        /* Initialize textViewAverages */
-        textViewAverages = (TextView) findViewById(R.id.averages_text);
+        /* Initialize textViewDebug */
+        textViewDebug = (TextView) findViewById(R.id.debug_text);
+        textViewMeasuresCount = (TextView) findViewById(R.id.wlan_prev_scan_count);
 
         /* Setup ArrayAdapter displaying scan results */
 
-        wifiArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, outputList);
-        wifiListView.setAdapter(wifiArrayAdapter);
 
-
-    }
-
-    @Override
-    protected void showScanProgress() {
-        progress = new ProgressDialog(WlanActivity.this);
-
-        progress.setTitle("Scan der WLAN-Umgebung läuft");
-        progress.setMessage("Bitte warten Sie einen Moment...");
-        progress.setProgress(0);
-        progress.setMax(scanCountMax);
-        progress.setCancelable(false);
-        progress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        progress.show();
-    }
-
-    @Override
-    protected void showLocalizationProgressDialog() {
-        progress = new ProgressDialog(WlanActivity.this);
-
-        progress.setTitle("Lokalisierung läuft");
-        progress.setMessage("Bitte warten Sie einen Moment...");
-        progress.setProgress(0);
-        progress.setMax(scanCountMax);
-        progress.setCancelable(true);
-        progress.setCanceledOnTouchOutside(true);
-        progress.setOnCancelListener(new DialogInterface.OnCancelListener() {
+        mLocalization = new Localization(this) {
             @Override
-            public void onCancel(DialogInterface dialog) {
-                Log.w(TAG, "Dialog canceled");
-                stopScanningAndCloseProgressDialog();
+            protected void notifyLocationChange() {
+                // Vibrate for 500 milliseconds if place changed
+/*                v.vibrate(500);*/
             }
-        });
-        progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        progress.show();
-    }
 
-    @Override
-    protected void updateLocalizationProgressUI(String foundPlaceId, String waypointDescription) {
-        progress.setTitle("Ort: " + foundPlaceId);
-        progress.setMessage(waypointDescription);
-    }
+            @Override
+            protected void outputDetailedPlaceInfoDebug(String output) {
+                textViewDebug.setText(output);
+            }
+        };
 
-    @Override
-    protected void notifyLocationChange() {
-// Vibrate for 500 milliseconds if place changed
-        v.vibrate(500);
+        mMeasure = new Measure(this) {
+
+            @Override
+            protected void outputDebugInfos(List<WlanMeasurements> wlanMeasure) {
+                textViewDebug.setText(wlanMeasure.toString());
+            }
+
+            @Override
+            public void updateMeasurementsCount() {
+                this.setPlaceIdString(editPlaceId.getText().toString());
+                //* Sanity checks *//*
+                if (!(placeIdString.isEmpty())) {
+                    textViewMeasuresCount.setText(mMeasure.db.getMeasurementsNumberOfBssisForPlace(placeIdString));
+                }
+            }
+        };
+
+        mAverage = new AverageMeasures(this);
+
+        ArrayAdapter wifiArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, mMeasure.outputList);
+        wifiListView.setAdapter(wifiArrayAdapter);
     }
 
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.wlan_localization:
-                startLocalization();
+                mLocalization.startLocalization();
                 break;
 
             case R.id.wlan_scan:
-                scanWlan();
+                mMeasure.measureWlan();
                 break;
 
             case R.id.wlan_calculate_averages:
-                new DoCalculationTask().execute();
+                mAverage.calculateAverageMeasures();
                 break;
 
             case R.id.wlan_delete_measurements_for_place:
-                deleteAllMeasurementsForPlace();
+                mMeasure.deleteAllMeasurementsForPlace();
                 break;
         }
     }
 
-
     @Override
-    protected void updateMeasurementsCount() {
-        placeIdString = editPlaceId.getText().toString();
-        /* Sanity checks */
-        if (!(placeIdString.isEmpty())) {
-            TextView textViewMCount = (TextView) findViewById(R.id.wlan_prev_scan_count);
-            textViewMCount.setText(measurementDB.getNumberOfBssisForPlace(placeIdString));
-        }
+    protected void onPause() {
+        mMeasure.stopScanningAndCloseProgressDialog();
+        super.onPause();
     }
 
-    @Override
-    protected void outputDebugInfos() {
-        /* ONLY NEEDED FOR DEBUGGING ON PHONE */
+    /*@Override
+    protected void updateMeasurementsCount() {
 
-        /*Sorting of WlanMeasurements*/
+    }*/
+
+    /*@Override
+    protected void outputDebugInfos() {
+        *//* ONLY NEEDED FOR DEBUGGING ON PHONE *//*
+
+        *//*Sorting of WlanMeasurements*//*
         Comparator<WlanMeasurements> wlanComparator = new Comparator<WlanMeasurements>() {
             @Override
             public int compare(WlanMeasurements lhs, WlanMeasurements rhs) {
@@ -184,7 +176,7 @@ public class WlanActivity extends CommonActivity implements View.OnClickListener
 
         Collections.sort(wlanMeasure, wlanComparator);
 
-        /*only show last measurement in list*/
+        *//*only show last measurement in list*//*
         for (WlanMeasurements ap : wlanMeasure) {
             String helperString = "SSID: " + ap.getSsid()
                     + "\nRSSI: " + ap.getRssi()
@@ -192,37 +184,19 @@ public class WlanActivity extends CommonActivity implements View.OnClickListener
                     + "\nOrientation: " + ap.getOrientation();
             outputList.add(helperString);
         }
-        /*Update the table*/
+        *//*Update the table*//*
         wifiArrayAdapter.notifyDataSetChanged();
-                    /* -- END: ONLY NEEDED FOR DEBUGGING ON PHONE */
-    }
+                    *//* -- END: ONLY NEEDED FOR DEBUGGING ON PHONE *//*
+    }*/
 
-    @Override
-    protected void showScansSaveProgress() {
+    /*@Override
+    protected void showMeasuresSaveProgress() {
         progress.setTitle("Alle Scandaten werden gespeichert");
         progress.setMessage("Bitte warten Sie einen Moment...");
         progress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         progress.setMax(wlanMeasure.size());
         progress.show();
-    }
-
-    @Override
-    protected void setMaxProgressOutput(int count) {
-        progress.setMax(count);
-    }
-
-    @Override
-    protected void showCalculationProgressOutput() {
-        progress.setTitle("Durchschnittliche Signalstärke aller APs für verschiede Orte wird berechnet");
-        progress.setMessage("Bitte warten Sie einen Moment...");
-        progress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        progress.show();
-    }
-
-    @Override
-    protected void outputDetailedPlaceInfoDebug(String output) {
-        textViewAverages.setText(output);
-    }
+    }*/
 
 
 }
