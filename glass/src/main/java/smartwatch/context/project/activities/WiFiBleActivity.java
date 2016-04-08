@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package smartwatch.context.project.card;
+package smartwatch.context.project.activities;
 
 import android.app.Activity;
 import android.content.Context;
@@ -37,6 +37,7 @@ import smartwatch.context.common.superclasses.AverageMeasures;
 import smartwatch.context.common.superclasses.Localization;
 import smartwatch.context.common.superclasses.Measure;
 import smartwatch.context.project.R;
+import smartwatch.context.project.card.CardAdapter;
 
 /**
  * Creates a card scroll view with examples of different image layout cards.

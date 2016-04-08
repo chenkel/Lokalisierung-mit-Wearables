@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package smartwatch.context.project.card;
+package smartwatch.context.project.activities;
 
 import android.app.Activity;
 import android.content.Context;
@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import smartwatch.context.project.R;
+import smartwatch.context.project.card.CardAdapter;
 
 /**
  * Creates a card scroll view with examples of different image layout cards.

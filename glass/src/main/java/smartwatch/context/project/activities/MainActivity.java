@@ -1,4 +1,4 @@
-package smartwatch.context.project;
+package smartwatch.context.project.activities;
 
 import com.google.android.glass.media.Sounds;
 import com.google.android.glass.widget.CardBuilder;
@@ -17,8 +17,8 @@ import android.widget.AdapterView;
 import java.util.ArrayList;
 import java.util.List;
 
+import smartwatch.context.project.R;
 import smartwatch.context.project.card.CardAdapter;
-import smartwatch.context.project.card.WiFiBleActivity;
 
 /**
  * An {@link Activity} showing a tuggable "Hello World!" card.

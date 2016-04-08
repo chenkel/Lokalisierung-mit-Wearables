@@ -6,7 +6,7 @@ import java.util.Queue;
 
 
 public class BleHelper {
-    private static final String TAG = "BleHelper";
+    private static final String TAG = BleHelper.class.getSimpleName();
 
     private final Queue<Integer> rssiQueueBlue = new LinkedList<>();
     private final Queue<Integer> rssiQueueYellow = new LinkedList<>();
