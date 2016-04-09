@@ -66,6 +66,14 @@
                 android:value=".activities.TitleScreen" />
         </activity>
 
+        <service
+            android:enabled="true"
+            android:name="smartwatch.context.common.helper.BluetoothData">
+            <intent-filter>
+                <action android:name="com.project.BLUETOOTHSERVICE" />
+            </intent-filter>
+        </service>
+
 
     </application>
 

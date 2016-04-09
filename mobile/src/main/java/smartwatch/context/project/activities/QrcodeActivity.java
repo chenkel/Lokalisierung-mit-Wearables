@@ -1,44 +1,67 @@
 package smartwatch.context.project.activities;
 
 import android.app.Activity;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
-import android.os.RemoteException;
+import android.os.IBinder;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import org.altbeacon.beacon.Beacon;
-import org.altbeacon.beacon.BeaconConsumer;
-import org.altbeacon.beacon.BeaconManager;
-import org.altbeacon.beacon.BeaconParser;
-import org.altbeacon.beacon.RangeNotifier;
-import org.altbeacon.beacon.Region;
-import org.altbeacon.beacon.distance.CurveFittedDistanceCalculator;
-
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Queue;
-
-import smartwatch.context.common.helper.BleHelper;
 import smartwatch.context.common.helper.BluetoothData;
-import smartwatch.context.common.helper.BluetoothMeasurements;
 import smartwatch.context.project.R;
 
-public class QrcodeActivity extends Activity{
+public class QrcodeActivity extends Activity {
     private static final String TAG = "RangingActivity";
 
     /*Blue, Yelloow. Red*/
 
     private TextView distanceOutput;
     private TextView calibrationOutput;
-    BluetoothData bldata;
+    private ServiceConnection mConnection;
+    boolean mBound = false;
+    private BluetoothData bldata;
+
+    public QrcodeActivity() {
+        Log.d(TAG, "Constructor QrcodeActivity");
+        mConnection = new ServiceConnection() {
+
+            public void onServiceConnected(ComponentName className,
+                                           IBinder service) {
+                BluetoothData.LocalBinder binder = (BluetoothData.LocalBinder) service;
+                bldata = binder.getService();
+                mBound = true;
+                Toast.makeText(QrcodeActivity.this, "Connected", Toast.LENGTH_SHORT)
+                        .show();
+            }
+
+            public void onServiceDisconnected(ComponentName className) {
+                mBound = false;
+            }
+        };
+    }
 
     /*BluetoothData bldata;*/
     /*Map<String, Number> avgRssi;*/
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.i(TAG, "startService -- QRCodeActivty");
+        this.bindService(new Intent(this, BluetoothData.class), mConnection, Context.BIND_AUTO_CREATE);
+
+    }
+
+    @Override
+    protected void onPause() {
+        unbindService(mConnection);
+        bldata.unbindManager();
+
+        super.onPause();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,11 +70,8 @@ public class QrcodeActivity extends Activity{
 
         calibrationOutput = (TextView) findViewById(R.id.calibration_average);
         distanceOutput = (TextView) findViewById(R.id.ble_rssi);
-
-        startService(new Intent(this, BluetoothData.class));
-        /*bldata = new BluetoothData(this);*/
-        /*distanceOutput.setText(bldata.getRssiOutput());*/
     }
+
 
     @Override
     protected void onDestroy() {
@@ -76,7 +96,6 @@ public class QrcodeActivity extends Activity{
             calibrationList.clear();
         }
     }*/
-
 
 
 }
