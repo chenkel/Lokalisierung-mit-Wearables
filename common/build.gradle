@@ -7,6 +7,7 @@ android {
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 23
+        minSdkVersion 21
         versionCode 1
         versionName "1.0"
     }
@@ -21,6 +22,11 @@ android {
     }
 }
 
+repositories {
+    jcenter()
+}
+
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile 'org.altbeacon:android-beacon-library:2.7'
 }
