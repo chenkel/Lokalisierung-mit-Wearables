@@ -80,7 +80,7 @@ public class TitleScreen extends Activity {
 
 
     private void addListenerDBManager() {
-        final Button dbManagerButton = (Button) findViewById(R.id.db_manager_averages);
+        final Button dbManagerButton = (Button) findViewById(R.id.db_manager);
         dbManagerButton.setOnClickListener(new View.OnClickListener() {
 
             @Override

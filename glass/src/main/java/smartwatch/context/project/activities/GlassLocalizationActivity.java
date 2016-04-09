@@ -6,6 +6,7 @@ import android.media.AudioManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 
 import com.google.android.glass.media.Sounds;
@@ -17,11 +18,10 @@ import com.google.android.glass.widget.Slider;
 import java.util.ArrayList;
 import java.util.List;
 
+import smartwatch.context.common.superclasses.Localization;
 import smartwatch.context.project.card.CardAdapter;
 
-/**
- * Created by chenkel on 07.04.16.
- */
+
 public class GlassLocalizationActivity extends Activity {
     private static final String TAG = GlassLocalizationActivity.class.getSimpleName();
 
@@ -34,6 +34,7 @@ public class GlassLocalizationActivity extends Activity {
     private CardBuilder mScanCard;
     private Slider mSlider;
     private Slider.Indeterminate mIndeterminate;
+    private Localization mLocalization;
 
     // Visible for testing.
     CardScrollView getScroller() {
@@ -43,6 +44,7 @@ public class GlassLocalizationActivity extends Activity {
     @Override
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         mAdapter = new CardAdapter(createCards(this));
         mCardScroller = new CardScrollView(this);
@@ -51,16 +53,43 @@ public class GlassLocalizationActivity extends Activity {
         setCardScrollerListener();
         mSlider = Slider.from(mCardScroller);
         mIndeterminate = mSlider.startIndeterminate();
+        mLocalization = new Localization(this) {
+            @Override
+            protected void updateLocalizationProgressUI(String foundPlaceId, String waypointDescription) {
+                Log.i(TAG, "foundPlaceId: " + foundPlaceId);
+                mScanCard.setText(waypointDescription);
+                mScanCard.setFootnote("Ort: " + foundPlaceId);
+                mAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            protected void notifyLocationChange(String priorPlaceId, String foundPlaceId) {
+                if ((priorPlaceId.equals("2") && foundPlaceId.equals("4")) ||
+                        (priorPlaceId.equals("4") && foundPlaceId.equals("2")) ||
+                        (priorPlaceId.equals("3") && foundPlaceId.equals("5")) ||
+                        (priorPlaceId.equals("5") && foundPlaceId.equals("4"))) {
+                    return;
+                } else {
+                    AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+                    am.playSoundEffect(Sounds.SUCCESS);
+                }
+            }
+
+            @Override
+            protected void showLocalizationProgressOutput() {
+            }
+        };
+        mLocalization.startLocalization();
     }
 
     /**
      * Create list of API demo cards.
      */
     private List<CardBuilder> createCards(Context context) {
-        ArrayList<CardBuilder> cards = new ArrayList<CardBuilder>();
+        ArrayList<CardBuilder> cards = new ArrayList<>();
         mScanCard = new CardBuilder(context, CardBuilder.Layout.TEXT)
-                .setText("scanning")
-                .setFootnote("nothing found yet");
+                .setText("Scanne die Umgebung")
+                .setFootnote("einen Moment noch...");
         cards.add(CARD_STATUS, mScanCard);
         return cards;
     }
@@ -74,6 +103,7 @@ public class GlassLocalizationActivity extends Activity {
     @Override
     protected void onPause() {
         mCardScroller.deactivate();
+        mLocalization.stopScanningAndCloseProgressDialog();
         super.onPause();
     }
 

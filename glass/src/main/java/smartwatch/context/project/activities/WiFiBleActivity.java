@@ -72,7 +72,7 @@ public final class WiFiBleActivity extends Activity {
 
         mLocalization = new Localization(this) {
             @Override
-            protected void notifyLocationChange() {
+            protected void notifyLocationChange(String priorPlaceId, String foundPlaceId) {
                 AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
                 am.playSoundEffect(Sounds.SUCCESS);
             }
@@ -99,33 +99,27 @@ public final class WiFiBleActivity extends Activity {
 
         cards.add(new CardBuilder(context, CardBuilder.Layout.COLUMNS)
                 .setText(getString(R.string.wifi_ble_scan_place1))
-                .setIcon(R.drawable.ic_station)
-                .setFootnote(R.string.wifi_ble_scan_place_footnote));
+                .setIcon(R.drawable.ic_station));
 
         cards.add(new CardBuilder(context, CardBuilder.Layout.COLUMNS)
                 .setText(getString(R.string.wifi_ble_scan_place2))
-                .setIcon(R.drawable.ic_station)
-                .setFootnote(R.string.wifi_ble_scan_place_footnote));
+                .setIcon(R.drawable.ic_station));
 
         cards.add(new CardBuilder(context, CardBuilder.Layout.COLUMNS)
                 .setText(getString(R.string.wifi_ble_scan_place3))
-                .setIcon(R.drawable.ic_station)
-                .setFootnote(R.string.wifi_ble_scan_place_footnote));
+                .setIcon(R.drawable.ic_station));
 
         cards.add(new CardBuilder(context, CardBuilder.Layout.COLUMNS)
                 .setText(getString(R.string.wifi_ble_scan_place4))
-                .setIcon(R.drawable.ic_station)
-                .setFootnote(R.string.wifi_ble_scan_place_footnote));
+                .setIcon(R.drawable.ic_station));
 
         cards.add(new CardBuilder(context, CardBuilder.Layout.COLUMNS)
                 .setText(getString(R.string.wifi_ble_scan_place5))
-                .setIcon(R.drawable.ic_station)
-                .setFootnote(R.string.wifi_ble_scan_place_footnote));
+                .setIcon(R.drawable.ic_station));
 
         cards.add(new CardBuilder(context, CardBuilder.Layout.COLUMNS)
                 .setText(getString(R.string.wifi_ble_calculate))
-                .setIcon(R.drawable.ic_calculate)
-                .setFootnote(R.string.wifi_ble_scan_caclulate_footnote));
+                .setIcon(R.drawable.ic_calculate));
 
         cards.add(new CardBuilder(context, CardBuilder.Layout.COLUMNS)
                 .setText(getString(R.string.wifi_ble_delete_all))

@@ -7,8 +7,7 @@
     <string name="wlan">WLAN</string>
     <string name="ble">Bluetooth</string>
     <string name="qrcode">QR-Code</string>
-    <string name="db_manager_measurements">Messungen - DB-Manager</string>
-    <string name="db_manager_averages">Durchschnitt - DB-Manager</string>
+    <string name="db_manager">DB-Manager</string>
     <string name="title_activity_wlan">WLAN RSSI</string>
     <string name="ble_hallo">Hallo im BLE Screen</string>
     <string name="qrcode_hallo">Hallo im QR-Code Screen</string>

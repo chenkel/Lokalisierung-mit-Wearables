@@ -1,7 +1,6 @@
 package smartwatch.context.project.activities;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
@@ -16,6 +15,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import smartwatch.context.common.helper.WlanMeasurements;
@@ -34,6 +35,7 @@ public class WlanActivity extends Activity implements View.OnClickListener {
     private EditText editPlaceId;
     private TextView textViewDebug;
     private TextView textViewMeasuresCount;
+    private ArrayAdapter wifiArrayAdapter;
     protected WifiManager wifiManager;
 
 
@@ -97,7 +99,7 @@ public class WlanActivity extends Activity implements View.OnClickListener {
 
         mLocalization = new Localization(this) {
             @Override
-            protected void notifyLocationChange() {
+            protected void notifyLocationChange(String priorPlaceId, String foundPlaceId) {
                 // Vibrate for 500 milliseconds if place changed
 /*                v.vibrate(500);*/
             }
@@ -112,7 +114,26 @@ public class WlanActivity extends Activity implements View.OnClickListener {
 
             @Override
             protected void outputDebugInfos(List<WlanMeasurements> wlanMeasure) {
-                textViewDebug.setText(wlanMeasure.toString());
+                /* Sorting of WlanMeasurements */
+                Comparator<WlanMeasurements> wlanComparator = new Comparator<WlanMeasurements>() {
+                    @Override
+                    public int compare(WlanMeasurements lhs, WlanMeasurements rhs) {
+                        return (lhs.getRssi() > rhs.getRssi() ? -1 : (lhs.getRssi() == rhs.getRssi() ? 0 : 1));
+                    }
+                };
+
+                Collections.sort(wlanMeasure, wlanComparator);
+
+                /* only show last measurement in list */
+                for (WlanMeasurements ap : wlanMeasure) {
+                    String helperString = "SSID: " + ap.getSsid()
+                            + "\nRSSI: " + ap.getRssi()
+                            + "\nBSSI: " + ap.getBssi()
+                            + "\nOrientation: " + ap.getOrientation();
+                    outputList.add(helperString);
+                }
+                /* Update the table */
+                wifiArrayAdapter.notifyDataSetChanged();
             }
 
             @Override
@@ -127,7 +148,8 @@ public class WlanActivity extends Activity implements View.OnClickListener {
 
         mAverage = new AverageMeasures(this);
 
-        ArrayAdapter wifiArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, mMeasure.outputList);
+
+        wifiArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, mMeasure.outputList);
         wifiListView.setAdapter(wifiArrayAdapter);
     }
 
@@ -156,47 +178,4 @@ public class WlanActivity extends Activity implements View.OnClickListener {
         mMeasure.stopScanningAndCloseProgressDialog();
         super.onPause();
     }
-
-    /*@Override
-    protected void updateMeasurementsCount() {
-
-    }*/
-
-    /*@Override
-    protected void outputDebugInfos() {
-        *//* ONLY NEEDED FOR DEBUGGING ON PHONE *//*
-
-        *//*Sorting of WlanMeasurements*//*
-        Comparator<WlanMeasurements> wlanComparator = new Comparator<WlanMeasurements>() {
-            @Override
-            public int compare(WlanMeasurements lhs, WlanMeasurements rhs) {
-                return (lhs.getRssi() > rhs.getRssi() ? -1 : (lhs.getRssi() == rhs.getRssi() ? 0 : 1));
-            }
-        };
-
-        Collections.sort(wlanMeasure, wlanComparator);
-
-        *//*only show last measurement in list*//*
-        for (WlanMeasurements ap : wlanMeasure) {
-            String helperString = "SSID: " + ap.getSsid()
-                    + "\nRSSI: " + ap.getRssi()
-                    + "\nBSSI: " + ap.getBssi()
-                    + "\nOrientation: " + ap.getOrientation();
-            outputList.add(helperString);
-        }
-        *//*Update the table*//*
-        wifiArrayAdapter.notifyDataSetChanged();
-                    *//* -- END: ONLY NEEDED FOR DEBUGGING ON PHONE *//*
-    }*/
-
-    /*@Override
-    protected void showMeasuresSaveProgress() {
-        progress.setTitle("Alle Scandaten werden gespeichert");
-        progress.setMessage("Bitte warten Sie einen Moment...");
-        progress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        progress.setMax(wlanMeasure.size());
-        progress.show();
-    }*/
-
-
 }

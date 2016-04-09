@@ -127,7 +127,7 @@ public class MainActivity extends Activity {
         mLocalization = new Localization(this) {
 
             @Override
-            protected void notifyLocationChange() {
+            protected void notifyLocationChange(String priorPlaceId, String foundPlaceId) {
                 v = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
                 // Vibrate for 500 milliseconds
                 v.vibrate(500);

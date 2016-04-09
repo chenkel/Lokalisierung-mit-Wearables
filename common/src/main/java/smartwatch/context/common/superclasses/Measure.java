@@ -121,7 +121,11 @@ public abstract class Measure extends CommonClass {
     }
 
     protected void showMeasuresSaveProgress() {
-
+        progress.setTitle("Alle Scandaten werden gespeichert");
+        progress.setMessage("Bitte warten Sie einen Moment...");
+        progress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        progress.setMax(wlanMeasure.size());
+        progress.show();
     }
 
     public void deleteAllMeasurements() {

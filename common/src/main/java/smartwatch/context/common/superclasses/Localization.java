@@ -161,7 +161,7 @@ public abstract class Localization extends CommonClass {
 
                 /*Toast.makeText(context, "Ort: " + foundPlaceId, Toast.LENGTH_SHORT).show();*/
                 if (!priorPlaceId.equals(foundPlaceId)) {
-                    notifyLocationChange();
+                    notifyLocationChange(priorPlaceId, foundPlaceId);
                 }
                 priorPlaceId = foundPlaceId;
 
@@ -199,25 +199,25 @@ public abstract class Localization extends CommonClass {
         String sDescription = "";
         switch (foundPlaceId) {
             case "1":
-                sDescription = "Verlasse das Zimmer und gehe nach rechts";
+                sDescription = "Verlasse das Zimmer und gehe nach links";
                 break;
             case "2":
-                sDescription = "Geh weiter den Gang runter";
+                sDescription = "Gehe durch die Feuerschutztür und dann weiter den Gang runter";
                 break;
             case "3":
-                sDescription = "Geh weiter durch die Tür";
+                sDescription = "Gehe gerade aus durch den Notausgang links neben dem Vortragsraum";
                 break;
             case "4":
-                sDescription = "Geh zur Treppe und dann nach unten";
+                sDescription = "Gehe durch die Feuerschutztür und dann weiter den Gang runter";
                 break;
             case "5":
-                sDescription = "Geh bis nach ganz unten";
+                sDescription = "Gehe gerade aus durch den Notausgang links neben dem Vortragsraum";
                 break;
         }
         return sDescription;
     }
 
-    protected abstract void notifyLocationChange();
+    protected abstract void notifyLocationChange(String priorPlaceId, String foundPlaceId);
 
 
     protected void outputDetailedPlaceInfoDebug(String output){
