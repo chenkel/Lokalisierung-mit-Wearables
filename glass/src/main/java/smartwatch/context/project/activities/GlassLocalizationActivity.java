@@ -64,15 +64,8 @@ public class GlassLocalizationActivity extends Activity {
 
             @Override
             protected void notifyLocationChange(String priorPlaceId, String foundPlaceId) {
-                if ((priorPlaceId.equals("2") && foundPlaceId.equals("4")) ||
-                        (priorPlaceId.equals("4") && foundPlaceId.equals("2")) ||
-                        (priorPlaceId.equals("3") && foundPlaceId.equals("5")) ||
-                        (priorPlaceId.equals("5") && foundPlaceId.equals("4"))) {
-                    return;
-                } else {
-                    AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-                    am.playSoundEffect(Sounds.SUCCESS);
-                }
+                AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+                am.playSoundEffect(Sounds.SUCCESS);
             }
 
             @Override

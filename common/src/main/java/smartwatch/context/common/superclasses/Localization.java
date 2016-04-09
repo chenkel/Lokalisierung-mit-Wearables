@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
+import android.media.AudioManager;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.util.Log;
@@ -157,11 +158,19 @@ public abstract class Localization extends CommonClass {
                 String foundPlaceId = minEntry.getKey();
                 String outputTextview = "Der Ort ist: " + foundPlaceId + " mit Wert: " + minEntry.getValue() + "\n";
 
-                updateLocalizationProgressUI(foundPlaceId, getLocationDescription(foundPlaceId));
+
 
                 /*Toast.makeText(context, "Ort: " + foundPlaceId, Toast.LENGTH_SHORT).show();*/
                 if (!priorPlaceId.equals(foundPlaceId)) {
-                    notifyLocationChange(priorPlaceId, foundPlaceId);
+                    if ((priorPlaceId.equals("2") && foundPlaceId.equals("4")) ||
+                            (priorPlaceId.equals("4") && foundPlaceId.equals("2")) ||
+                            (priorPlaceId.equals("3") && foundPlaceId.equals("5")) ||
+                            (priorPlaceId.equals("5") && foundPlaceId.equals("4"))) {
+                        Log.d(TAG, "PlaceId changed but description stays the same");
+                    } else {
+                        notifyLocationChange(priorPlaceId, foundPlaceId);
+                        updateLocalizationProgressUI(foundPlaceId, getLocationDescription(foundPlaceId));
+                    }
                 }
                 priorPlaceId = foundPlaceId;
 

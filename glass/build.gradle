@@ -13,7 +13,7 @@ android {
 
     defaultConfig {
         applicationId "smartwatch.context.project"
-        minSdkVersion 19
+        minSdkVersion 21
         targetSdkVersion 19
         versionCode 1
         versionName "1.0"
