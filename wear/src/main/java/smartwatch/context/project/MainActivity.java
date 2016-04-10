@@ -1,26 +1,57 @@
 package smartwatch.context.project;
 
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.os.Vibrator;
 import android.support.wearable.view.WearableListView;
+import android.util.Log;
 import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import smartwatch.context.common.helper.BluetoothData;
 import smartwatch.context.common.superclasses.AverageMeasures;
 import smartwatch.context.common.superclasses.Localization;
 import smartwatch.context.common.superclasses.Measure;
 
 public class MainActivity extends Activity {
+    private static final String TAG = MainActivity.class.getSimpleName();
 
     private Localization mLocalization;
     private Measure mMeasure;
     private AverageMeasures mAverageMeasures;
     private Vibrator v;
+
+    private ServiceConnection mConnection;
+    boolean mBound = false;
+    private BluetoothData bldata;
+
+    public MainActivity(){
+        Log.w(TAG, "Constructor");
+        mConnection = new ServiceConnection() {
+
+            public void onServiceConnected(ComponentName className,
+                                           IBinder service) {
+                BluetoothData.LocalBinder binder = (BluetoothData.LocalBinder) service;
+                bldata = binder.getService();
+                mBound = true;
+                Toast.makeText(MainActivity.this, "Connected", Toast.LENGTH_SHORT)
+                        .show();
+            }
+
+            public void onServiceDisconnected(ComponentName className) {
+                mBound = false;
+            }
+        };
+    }
+
     // Handle our Wearable List's click events
     private final WearableListView.ClickListener mClickListener =
             new WearableListView.ClickListener() {
@@ -98,6 +129,7 @@ public class MainActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.w(TAG, "onCreate");
         setContentView(R.layout.activity_main);
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -142,5 +174,21 @@ public class MainActivity extends Activity {
 
         mAverageMeasures = new AverageMeasures(this);
 
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.i(TAG, "startService");
+
+        this.bindService(new Intent(this, BluetoothData.class), mConnection, Context.BIND_AUTO_CREATE);
+    }
+
+    @Override
+    protected void onPause() {
+        unbindService(mConnection);
+//        bldata.unbindManager();
+        super.onPause();
     }
 }

@@ -1,5 +1,6 @@
 package smartwatch.context.common.helper;
 
+import android.app.IntentService;
 import android.app.Service;
 import android.content.Intent;
 import android.content.ServiceConnection;
@@ -22,7 +23,7 @@ import java.util.Map;
 import java.util.Queue;
 
 
-public class BluetoothData extends Service implements BeaconConsumer {
+public class BluetoothData extends IntentService implements BeaconConsumer {
 
     private static final String TAG = "Bluetooth Data";
 
@@ -166,10 +167,11 @@ public class BluetoothData extends Service implements BeaconConsumer {
         return avgSum / queue.size();
     }
 
-    public void unbindManager() {
-        Log.w(TAG, "unbindManager - BluetoothData");
-        beaconManager.unbind(this);
-    }
+//    public void unbindManager() {
+////        Log.w(TAG, "unbindManager - BluetoothData");
+////        beaconManager.unbind(this);
+//
+//    }
 
 
     public String getRssiOutput() {
@@ -180,6 +182,11 @@ public class BluetoothData extends Service implements BeaconConsumer {
     public IBinder onBind(Intent intent) {
         Log.i(TAG, "onBind -- BluetoothData");
         return mBinder;
+    }
+
+    @Override
+    protected void onHandleIntent(Intent intent) {
+
     }
 
     @Override

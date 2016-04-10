@@ -32,9 +32,13 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="smartwatch.context.common.superclasses.Localization">
-
-        </activity>
+        <service
+            android:enabled="true"
+            android:name="smartwatch.context.common.helper.BluetoothData">
+            <intent-filter>
+                <action android:name="com.project.BLUETOOTHSERVICE" />
+            </intent-filter>
+        </service>
 
     </application>
 

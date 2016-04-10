@@ -21,6 +21,7 @@ public class QrcodeActivity extends Activity {
 
     private TextView distanceOutput;
     private TextView calibrationOutput;
+
     private ServiceConnection mConnection;
     boolean mBound = false;
     private BluetoothData bldata;
@@ -58,7 +59,7 @@ public class QrcodeActivity extends Activity {
     @Override
     protected void onPause() {
         unbindService(mConnection);
-        bldata.unbindManager();
+//        bldata.unbindManager();
 
         super.onPause();
     }
