@@ -58,8 +58,7 @@ public class QrcodeActivity extends Activity {
     @Override
     protected void onPause() {
         unbindService(mConnection);
-        bldata.unbindManager();
-
+        /*bldata.unbindManager();*/
         super.onPause();
     }
 
