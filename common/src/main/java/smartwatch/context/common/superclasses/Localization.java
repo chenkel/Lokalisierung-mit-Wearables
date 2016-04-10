@@ -8,7 +8,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
-import android.media.AudioManager;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.util.Log;
@@ -27,10 +26,22 @@ public abstract class Localization extends CommonClass {
     private List<WlanMeasurements> wlanMeasure = new ArrayList<>();
     private String priorPlaceId = "";
 
+    /*timestamp*/
+    long tstamp = 0;
+    long diff;
+
+
     protected final BroadcastReceiver localizationScanResultReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             /*Log.i(TAG, "localizationScanResultReceiver onReceive");*/
+
+            /*Timestamping*/
+            long tmp = tstamp;
+            tstamp = System.currentTimeMillis();
+            diff = tstamp - tmp;
+            Log.i(TAG, "###new Timestamp: " + diff);
+
             List<ScanResult> currentResults = wifiManager.getScanResults();
 
             int measurementCount = currentResults.size();
