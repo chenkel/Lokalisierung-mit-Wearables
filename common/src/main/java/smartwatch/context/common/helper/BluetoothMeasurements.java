@@ -17,9 +17,8 @@ public class BluetoothMeasurements {
         this.places=places;
     }
 
-    public BluetoothMeasurements(String name, String uuid, String[] places){
+    public BluetoothMeasurements(String name, String[] places){
         this.name=name;
-        this.uuid=uuid;
         this.places=places;
     }
 
