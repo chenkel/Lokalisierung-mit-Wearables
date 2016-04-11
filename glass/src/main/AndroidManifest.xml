@@ -4,6 +4,8 @@
 
     <!-- For free-style voice trigger and voice menus. -->
     <uses-permission android:name="com.google.android.glass.permission.DEVELOPMENT"/>
+    <uses-permission android:name="android.permission.CAMERA" />
+
 
     <application
 
@@ -32,6 +34,14 @@
             />
 
         <activity android:name=".activities.QRCodeActivity"
+            android:exported="true"
+            />
+
+        <activity android:name=".qr.barcode.scan.CaptureActivity"
+            android:exported="true"
+            />
+
+        <activity android:name=".qr.qrlens.MainActivity"
             android:exported="true"
             />
 

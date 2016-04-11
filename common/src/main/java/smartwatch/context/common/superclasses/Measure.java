@@ -151,7 +151,7 @@ public abstract class Measure extends CommonClass {
     protected void showMeasureProgress() {
         progress = new ProgressDialog(getActivity());
 
-        progress.setTitle("Messung der Signalstärken der WiFi-APs in der Umgebung läuft...");
+        progress.setTitle("Messung der Signalstärken der WiFi-APs...");
 //        progress.setMessage("Durchschnittliche Signalstärke aller APs für verschiede Orte wird berechnet");
 
 //        progress.setMessage("Bitte warten Sie einen Moment...");

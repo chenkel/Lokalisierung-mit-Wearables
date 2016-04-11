@@ -19,7 +19,7 @@ public class AverageMeasures extends CommonClass {
     protected void showCalculationProgressOutput(){
         progress = new ProgressDialog(getActivity());
 
-        progress.setTitle("Durchschnittliche Signalstärken aller Router für die verschieden Messpunkte werden berechnet...");
+        progress.setTitle("Berechnung der durchschn. Signalstärken...");
 //        progress.setMessage("Durchschnittliche Signalstärke aller APs für verschiede Orte wird berechnet");
 
 

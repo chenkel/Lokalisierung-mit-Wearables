@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.os.Bundle;
+import android.speech.RecognizerIntent;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -19,6 +20,7 @@ import java.util.List;
 
 import smartwatch.context.project.R;
 import smartwatch.context.project.card.CardAdapter;
+import smartwatch.context.project.qr.barcode.scan.CaptureActivity;
 
 /**
  * An {@link Activity} showing a tuggable "Hello World!" card.
@@ -103,7 +105,7 @@ public class MainActivity extends Activity {
                 int soundEffect = Sounds.TAP;
                 switch (position) {
                     case CARD_QR:
-                        startActivity(new Intent(MainActivity.this, WiFiBleActivity.class));
+                        startActivity(new Intent(MainActivity.this, CaptureActivity.class));
                         break;
                     case CARD_WIFI_BLE:
                         startActivity(new Intent(MainActivity.this, WiFiBleActivity.class));
@@ -119,5 +121,32 @@ public class MainActivity extends Activity {
                 am.playSoundEffect(soundEffect);
             }
         });
+    }
+
+    @Override
+    public void startActivityForResult(Intent intent, int requestCode) {
+        Log.w(TAG, "blaaaa");
+        if (requestCode == 0) {
+            List<String> results = intent.getStringArrayListExtra(
+                    RecognizerIntent.EXTRA_RESULTS);
+            String spokenText = results.get(0);
+            Log.w(TAG, spokenText);
+            // Do something with spokenText.
+        }
+        super.startActivityForResult(intent, requestCode);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode,
+                                    Intent data) {
+        Log.w(TAG, "blaaaa");
+        if (requestCode == 0 && resultCode == RESULT_OK) {
+            List<String> results = data.getStringArrayListExtra(
+                    RecognizerIntent.EXTRA_RESULTS);
+            String spokenText = results.get(0);
+            Log.w(TAG, spokenText);
+            // Do something with spokenText.
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }
