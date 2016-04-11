@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.view.Window;
 
 
 public class AverageMeasures extends CommonClass {
@@ -18,8 +19,11 @@ public class AverageMeasures extends CommonClass {
     protected void showCalculationProgressOutput(){
         progress = new ProgressDialog(getActivity());
 
-        progress.setTitle("Durchschnittliche Signalstärke aller APs für verschiede Orte wird berechnet");
-        progress.setMessage("Bitte warten Sie einen Moment...");
+        progress.setTitle("Berechnung der durchschn. Signalstärken...");
+//        progress.setMessage("Durchschnittliche Signalstärke aller APs für verschiede Orte wird berechnet");
+
+
+        /*progress.setMessage("Bitte warten Sie einen Moment...");*/
         progress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         progress.show();
     };

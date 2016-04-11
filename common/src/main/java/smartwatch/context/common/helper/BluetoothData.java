@@ -1,5 +1,6 @@
 package smartwatch.context.common.helper;
 
+import android.app.IntentService;
 import android.app.Service;
 import android.content.Intent;
 import android.content.ServiceConnection;
@@ -25,10 +26,10 @@ import java.util.Queue;
 
 
 public class BluetoothData extends Service implements BeaconConsumer {
-
     private static final String TAG = "Bluetooth Data";
 
-    private final IBinder mBinder = new LocalBinder();
+    private IBinder mBinder = new LocalBinder();
+
     private final String[] bluePlaces = {"1", "2", "3"};
     private final String[] yellowPlaces = {"11", "12", "13"};
     private final String[] redPlaces = {"21", "22", "23"};
@@ -64,9 +65,10 @@ public class BluetoothData extends Service implements BeaconConsumer {
     private final double constPlus = 0.7610257596;*/
 
 
-    public BluetoothData() {
-        Log.i(TAG, "Im Konstruktor von BluetoothData");
-    }
+//    public BluetoothData() {
+//        super();
+//        Log.i(TAG, "Im Konstruktor von BluetoothData");
+//    }
 
     public int getRssiQueueBlue() {
         return rssiQueueBlue.size();
@@ -97,7 +99,7 @@ public class BluetoothData extends Service implements BeaconConsumer {
                     long tmp = tstamp;
                     tstamp = System.currentTimeMillis();
                     diff = tstamp - tmp;
-                    Log.i(TAG, "###new Timestamp: " + diff);
+                    Log.w(TAG, "BLUETOOTH Timestamp: " + diff);
 
                     /*Map of keys blue, yellow, red containing the avg rssi*/
                     avgRssi =
@@ -193,6 +195,13 @@ public class BluetoothData extends Service implements BeaconConsumer {
     public IBinder onBind(Intent intent) {
         Log.i(TAG, "onBind -- BluetoothData");
         return mBinder;
+    }
+
+    @Override
+    public boolean onUnbind(Intent intent) {
+        beaconManager.unbind(this);
+        return super.onUnbind(intent);
+
     }
 
     @Override

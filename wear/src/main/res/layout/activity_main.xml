@@ -8,7 +8,6 @@
         android:id="@+id/frame_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#434343"
         app:layout_box="left|bottom|right">
 
         <android.support.wearable.view.WearableListView
@@ -31,11 +30,6 @@
             android:gravity="bottom"
             android:text="@string/header_text"
             android:textSize="20sp" />
-
-        <android.support.wearable.view.DismissOverlayView
-            android:id="@+id/dismiss_overlay"
-            android:layout_height="match_parent"
-            android:layout_width="match_parent"/>
 
     </RelativeLayout>
 

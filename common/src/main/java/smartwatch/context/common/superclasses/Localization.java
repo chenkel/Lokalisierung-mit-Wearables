@@ -38,6 +38,8 @@ public abstract class Localization extends CommonClass {
     String[] yellowPlaces = {"3"};
     Boolean placesCleared = false;
 
+
+
     protected final BroadcastReceiver localizationScanResultReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -47,7 +49,7 @@ public abstract class Localization extends CommonClass {
             long tmp = tstamp;
             tstamp = System.currentTimeMillis();
             diff = tstamp - tmp;
-            Log.i(TAG, "###new Timestamp: " + diff);
+            Log.w(TAG, "WLAN Timestamp: " + diff);
 
             List<ScanResult> currentResults = wifiManager.getScanResults();
 
@@ -268,16 +270,22 @@ public abstract class Localization extends CommonClass {
                 sDescription = "Verlasse das Zimmer und gehe nach links";
                 break;
             case "2":
-                sDescription = "Gehe durch die Feuerschutztür und dann weiter den Gang runter";
+                sDescription = "Gehe durch die Glastür";
                 break;
             case "3":
-                sDescription = "Gehe gerade aus durch den Notausgang links neben dem Vortragsraum";
+                sDescription = "Gehe nach rechts";
                 break;
             case "4":
-                sDescription = "Gehe durch die Feuerschutztür und dann weiter den Gang runter";
+                sDescription = "Auf der rechten Seite findest du die Tür";
                 break;
             case "5":
-                sDescription = "Gehe gerade aus durch den Notausgang links neben dem Vortragsraum";
+                sDescription = "Folge dem Flur und gehe nach rechts";
+                break;
+            case "6":
+                sDescription = "Halte dich auf der rechten Seite";
+                break;
+            case "7":
+                sDescription = "Gehe durch die Notfalltür";
                 break;
         }
         return sDescription;

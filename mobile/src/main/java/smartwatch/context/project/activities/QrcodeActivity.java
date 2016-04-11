@@ -21,6 +21,7 @@ public class QrcodeActivity extends Activity {
 
     private TextView distanceOutput;
     private TextView calibrationOutput;
+
     private ServiceConnection mConnection;
     boolean mBound = false;
     private BluetoothData bldata;
@@ -57,8 +58,12 @@ public class QrcodeActivity extends Activity {
 
     @Override
     protected void onPause() {
-        unbindService(mConnection);
-        /*bldata.unbindManager();*/
+        if(mBound) {
+            unbindService(mConnection);
+            mBound = false;
+        }
+//        bldata.unbindManager();
+
         super.onPause();
     }
 
@@ -69,14 +74,7 @@ public class QrcodeActivity extends Activity {
 
         calibrationOutput = (TextView) findViewById(R.id.calibration_average);
         distanceOutput = (TextView) findViewById(R.id.ble_rssi);
-    }
-
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        /*bldata.unbindManager(this);*/
-
+        Log.e(TAG, "RSSI OUTPUT FROM SERVICE:" + bldata.getRssiOutput());
     }
 
     /*public void onClick(View view) {

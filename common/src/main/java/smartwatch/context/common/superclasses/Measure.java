@@ -12,6 +12,7 @@ import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.view.Window;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -32,8 +33,8 @@ public abstract class Measure extends CommonClass {
     }
 
     private int scanCount;
-    private List<WlanMeasurements> wlanMeasure = new ArrayList<>();
-    private int scanCountMax;
+    protected List<WlanMeasurements> wlanMeasure = new ArrayList<>();
+    public int scanCountMax;
 
     protected String placeIdString;
 
@@ -150,8 +151,11 @@ public abstract class Measure extends CommonClass {
     protected void showMeasureProgress() {
         progress = new ProgressDialog(getActivity());
 
-        progress.setTitle("Scan der WLAN-Umgebung läuft");
-        progress.setMessage("Bitte warten Sie einen Moment...");
+        progress.setTitle("Messung der Signalstärken der WiFi-APs...");
+//        progress.setMessage("Durchschnittliche Signalstärke aller APs für verschiede Orte wird berechnet");
+
+//        progress.setMessage("Bitte warten Sie einen Moment...");
+        progress.setMessage("");
         progress.setProgress(0);
         progress.setMax(scanCountMax);
         progress.setCancelable(false);
@@ -164,8 +168,9 @@ public abstract class Measure extends CommonClass {
     }
 
     protected void showMeasuresSaveProgress() {
-        progress.setTitle("Alle Scandaten werden gespeichert");
-        progress.setMessage("Bitte warten Sie einen Moment...");
+        progress.setTitle("Alle Messdaten werden gespeichert...");
+//        progress.setMessage("Bitte warten Sie einen Moment...");
+        progress.setMessage("");
         progress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         progress.setMax(wlanMeasure.size());
         progress.show();
@@ -235,8 +240,8 @@ public abstract class Measure extends CommonClass {
         }
 
         protected void onPostExecute(Integer result) {
-            hideProgressOutput();
             updateMeasurementsCount();
+            hideProgressOutput();
         }
     }
 }
