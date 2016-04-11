@@ -34,7 +34,7 @@ class WearableAdapter extends WearableListView.Adapter {
         TextView textView = itemViewHolder.mItemTextView;
         switch (position) {
             case 0:
-                textView.setText("Wo?");
+                textView.setText("Start");
                 break;
             case 1:
             case 2:
@@ -44,7 +44,7 @@ class WearableAdapter extends WearableListView.Adapter {
                 textView.setText("Ort " + position + " messen");
                 break;
             case 6:
-                textView.setText("Durchschnitt berechnen");
+                textView.setText("Berechne Durchschnitt");
                 break;
             case 7:
                 textView.setText("Bluetooth Test");

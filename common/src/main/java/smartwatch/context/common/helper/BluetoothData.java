@@ -16,24 +16,21 @@ import org.altbeacon.beacon.BeaconParser;
 import org.altbeacon.beacon.RangeNotifier;
 import org.altbeacon.beacon.Region;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 
 
-public class BluetoothData extends IntentService implements BeaconConsumer {
-
+public class BluetoothData extends Service implements BeaconConsumer {
     private static final String TAG = "Bluetooth Data";
 
-    private final IBinder mBinder = new LocalBinder();
-    private final String[] bluePlaces = {"1", "2", "3"};
+    private IBinder mBinder = new LocalBinder();
 
-    //*^+ Konstanten zur Berechnung der Distanz
-    /*private final double constMult = 0.0001060777;
-    private final double constPower = 17.4228892910;
-    private final double constPlus = 0.7610257596;*/
+    private final String[] bluePlaces = {"1", "2", "3"};
     private final String[] yellowPlaces = {"11", "12", "13"};
     private final String[] redPlaces = {"21", "22", "23"};
     /*Queue that holds the measured RSSI for each beacon*/
@@ -58,10 +55,20 @@ public class BluetoothData extends IntentService implements BeaconConsumer {
     private double avgYellow = 0;
     private double avgRed = 0;
 
+    /*timestamp*/
+    long tstamp = 0;
+    long diff;
 
-    public BluetoothData() {
-        Log.i(TAG, "Im Konstruktor von BluetoothData");
-    }
+    //*^+ Konstanten zur Berechnung der Distanz
+    /*private final double constMult = 0.0001060777;
+    private final double constPower = 17.4228892910;
+    private final double constPlus = 0.7610257596;*/
+
+
+//    public BluetoothData() {
+//        super();
+//        Log.i(TAG, "Im Konstruktor von BluetoothData");
+//    }
 
     public int getRssiQueueBlue() {
         return rssiQueueBlue.size();
@@ -94,14 +101,19 @@ public class BluetoothData extends IntentService implements BeaconConsumer {
                         "red",uuidRed,redPlaces);*/
 
                 if (beacons.size() > 0) {
-                    Log.w(TAG, "Beacon size: " + beacons);
                     /*Create queues containing the latest 20 values*/
                     /*while (beacons.iterator().hasNext()) {*/
+
+                    /*Timestamping*/
+                    long tmp = tstamp;
+                    tstamp = System.currentTimeMillis();
+                    diff = tstamp - tmp;
+                    Log.w(TAG, "BLUETOOTH Timestamp: " + diff);
 
                     avgRssi =
                             queueAssignment(beacons.iterator().next().getBluetoothAddress(),
                                     beacons.iterator().next().getRssi());
-                    Log.i(TAG, "Die Größe der Queue Blue ist" + getRssiQueueBlue());
+                    Log.i(TAG, "Die Größe der Blue Queue  ist: " + getRssiQueueBlue());
 
                     Log.i(TAG, avgRssi.toString());
                 }
@@ -119,6 +131,9 @@ public class BluetoothData extends IntentService implements BeaconConsumer {
     public Map<String, Number> queueAssignment(String uuid, int rssi) {
         switch (uuid) {
             case uuidBlue:
+                Log.i(TAG, "+++Blaues Beacon: " +
+                "RSSI: " + rssi +
+                "UUID: " + uuid);
                 if (rssiQueueBlue.size() < queueSize) {
                     rssiQueueBlue.add(rssi);
                 } else if (rssiQueueBlue.size() >= queueSize) {
@@ -128,6 +143,9 @@ public class BluetoothData extends IntentService implements BeaconConsumer {
                 break;
 
             case uuidYellow:
+                Log.i(TAG, "+++Gelbes Beacon: " +
+                        "RSSI: " + rssi +
+                        "UUID: " + uuid);
                 if (rssiQueueYellow.size() < queueSize) {
                     rssiQueueYellow.add(rssi);
                 } else if (rssiQueueYellow.size() >= queueSize) {
@@ -137,6 +155,9 @@ public class BluetoothData extends IntentService implements BeaconConsumer {
                 break;
 
             case uuidRed:
+                Log.i(TAG, "+++Rotes Beacon: " +
+                        "RSSI: " + rssi +
+                        "UUID: " + uuid);
                 if (rssiQueueRed.size() < queueSize) {
                     rssiQueueRed.add(rssi);
                 } else if (rssiQueueRed.size() >= queueSize) {
@@ -146,6 +167,7 @@ public class BluetoothData extends IntentService implements BeaconConsumer {
                 break;
         }
 
+        Log.i(TAG, "###List RSSI Blau als toString: " + rssiQueueBlue.toString());
         avgBlue = calculateAverage(rssiQueueBlue);
         avgYellow = calculateAverage(rssiQueueYellow);
         avgRed = calculateAverage(rssiQueueRed);
@@ -167,11 +189,10 @@ public class BluetoothData extends IntentService implements BeaconConsumer {
         return avgSum / queue.size();
     }
 
-//    public void unbindManager() {
-////        Log.w(TAG, "unbindManager - BluetoothData");
-////        beaconManager.unbind(this);
-//
-//    }
+/*    public void unbindManager() {
+        Log.w(TAG, "unbindManager - BluetoothData");
+        beaconManager.unbind(this);
+    }*/
 
 
     public String getRssiOutput() {
@@ -185,7 +206,9 @@ public class BluetoothData extends IntentService implements BeaconConsumer {
     }
 
     @Override
-    protected void onHandleIntent(Intent intent) {
+    public boolean onUnbind(Intent intent) {
+        beaconManager.unbind(this);
+        return super.onUnbind(intent);
 
     }
 

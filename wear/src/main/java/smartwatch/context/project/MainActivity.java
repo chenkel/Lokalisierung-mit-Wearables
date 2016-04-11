@@ -14,43 +14,23 @@ import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 
-import smartwatch.context.common.helper.BluetoothData;
+
 import smartwatch.context.common.superclasses.AverageMeasures;
-import smartwatch.context.common.superclasses.Localization;
 import smartwatch.context.common.superclasses.Measure;
 
 public class MainActivity extends Activity {
     private static final String TAG = MainActivity.class.getSimpleName();
 
-    private Localization mLocalization;
+
     private Measure mMeasure;
     private AverageMeasures mAverageMeasures;
-    private Vibrator v;
 
-    private ServiceConnection mConnection;
-    boolean mBound = false;
-    private BluetoothData bldata;
 
-    public MainActivity(){
-        Log.w(TAG, "Constructor");
-        mConnection = new ServiceConnection() {
 
-            public void onServiceConnected(ComponentName className,
-                                           IBinder service) {
-                BluetoothData.LocalBinder binder = (BluetoothData.LocalBinder) service;
-                bldata = binder.getService();
-                mBound = true;
-                Toast.makeText(MainActivity.this, "Connected", Toast.LENGTH_SHORT)
-                        .show();
-            }
-
-            public void onServiceDisconnected(ComponentName className) {
-                mBound = false;
-            }
-        };
-    }
 
     // Handle our Wearable List's click events
     private final WearableListView.ClickListener mClickListener =
@@ -60,25 +40,28 @@ public class MainActivity extends Activity {
                     int clickedMenu = viewHolder.getLayoutPosition();
                     switch (clickedMenu) {
                         case 0:
-                            /*startActivity(new Intent(MainActivity.this, Localization.class));*/
-                            mLocalization.startLocalization();
+                            startActivity(new Intent(MainActivity.this, LocalizationActivity.class));
                             break;
                         case 1:
                         case 2:
                         case 3:
                         case 4:
                         case 5:
-                            mMeasure.setPlaceIdString(String.valueOf(clickedMenu));
-                            mMeasure.measureWlan();
+                            Intent intent = new Intent(MainActivity.this, ProcessingActivity.class);
+                            intent.putExtra("mode", "measure");
+                            intent.putExtra("placeId", String.valueOf(clickedMenu));
+                            startActivity(intent);
                             break;
                         case 6:
-                            mAverageMeasures.calculateAverageMeasures();
+                            intent = new Intent(MainActivity.this, ProcessingActivity.class);
+                            intent.putExtra("mode", "average");
+                            startActivity(intent);
                             break;
                         case 7:
                             /* todo: call bluetooth scan! */
                             break;
                         case 8:
-                            mMeasure.deleteAllMeasurements();
+                            /*mMeasure.deleteAllMeasurements();*/
                             break;
                         default:
                             Toast.makeText(MainActivity.this,
@@ -112,7 +95,14 @@ public class MainActivity extends Activity {
 
                 @Override
                 public void onAbsoluteScrollChange(int i) {
-                    /* Deprecated */
+
+                    Log.d(TAG, "i: " + i);
+                    if (i >= 0) {
+                        mHeader.setY(mHeader.getY() - i);
+                    } else {
+                        mHeader.setY(0.0F);
+                        Log.w(TAG, String.valueOf(mHeader.getY()));
+                    }
                 }
 
                 @Override
@@ -156,39 +146,15 @@ public class MainActivity extends Activity {
         wearableListView.setClickListener(mClickListener);
         wearableListView.addOnScrollListener(mOnScrollListener);
 
-        mLocalization = new Localization(this) {
-
-            @Override
-            protected void notifyLocationChange(String priorPlaceId, String foundPlaceId) {
-                v = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
-                // Vibrate for 500 milliseconds
-                v.vibrate(500);
-            }
-        };
-
-        mMeasure = new Measure(this) {
-            @Override
-            public void updateMeasurementsCount() {
-            }
-        };
-
-        mAverageMeasures = new AverageMeasures(this);
 
 
+
+
+
+
+
+//        Log.e(TAG, "RSSI OUTPUT FROM SERVICE:" + bldata.getRssiOutput());
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Log.i(TAG, "startService");
 
-        this.bindService(new Intent(this, BluetoothData.class), mConnection, Context.BIND_AUTO_CREATE);
-    }
-
-    @Override
-    protected void onPause() {
-        unbindService(mConnection);
-//        bldata.unbindManager();
-        super.onPause();
-    }
 }

@@ -12,9 +12,9 @@
         android:layout_gravity="center_vertical"
         android:layout_marginEnd="32dp"
         android:layout_marginStart="16dp"
-        app:circle_border_color="#FFFFFFFF"
+        app:circle_border_color="#c1c1c1"
         app:circle_border_width="2dp"
-        app:circle_color="#c1c1c1" />
+        app:circle_color="#FFFFFFFF" />
 
     <TextView
         android:id="@+id/name"

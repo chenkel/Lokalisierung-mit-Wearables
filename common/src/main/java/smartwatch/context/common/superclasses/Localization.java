@@ -8,7 +8,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
-import android.media.AudioManager;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.util.Log;
@@ -27,10 +26,24 @@ public abstract class Localization extends CommonClass {
     private List<WlanMeasurements> wlanMeasure = new ArrayList<>();
     private String priorPlaceId = "";
 
+    /*timestamp*/
+    long tstamp = 0;
+    long diff;
+
+
+
+
     protected final BroadcastReceiver localizationScanResultReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             /*Log.i(TAG, "localizationScanResultReceiver onReceive");*/
+
+            /*Timestamping*/
+            long tmp = tstamp;
+            tstamp = System.currentTimeMillis();
+            diff = tstamp - tmp;
+            Log.w(TAG, "WLAN Timestamp: " + diff);
+
             List<ScanResult> currentResults = wifiManager.getScanResults();
 
             int measurementCount = currentResults.size();
@@ -220,7 +233,7 @@ public abstract class Localization extends CommonClass {
                 sDescription = "Gehe durch die Feuerschutztür und dann weiter den Gang runter";
                 break;
             case "5":
-                sDescription = "Gehe gerade aus durch den Notausgang links neben dem Vortragsraum";
+                sDescription = "Gehe gerade aus durch den Notausgang";
                 break;
         }
         return sDescription;

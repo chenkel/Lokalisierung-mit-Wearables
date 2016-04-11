@@ -58,7 +58,10 @@ public class QrcodeActivity extends Activity {
 
     @Override
     protected void onPause() {
-        unbindService(mConnection);
+        if(mBound) {
+            unbindService(mConnection);
+            mBound = false;
+        }
 //        bldata.unbindManager();
 
         super.onPause();
@@ -71,14 +74,7 @@ public class QrcodeActivity extends Activity {
 
         calibrationOutput = (TextView) findViewById(R.id.calibration_average);
         distanceOutput = (TextView) findViewById(R.id.ble_rssi);
-    }
-
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        /*bldata.unbindManager(this);*/
-
+        Log.e(TAG, "RSSI OUTPUT FROM SERVICE:" + bldata.getRssiOutput());
     }
 
     /*public void onClick(View view) {
