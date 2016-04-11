@@ -91,15 +91,6 @@ public class BluetoothData extends Service implements BeaconConsumer {
             @Override
             public void didRangeBeaconsInRegion(Collection<Beacon> beacons, Region region) {
 
-
-
-                /*BluetoothMeasurements blueBeacon = new BluetoothMeasurements(
-                        "blue",uuidBlue,bluePlaces);
-                BluetoothMeasurements yellowBeacon = new BluetoothMeasurements(
-                        "yellow",uuidYellow,yellowPlaces);
-                BluetoothMeasurements redBeacon = new BluetoothMeasurements(
-                        "red",uuidRed,redPlaces);*/
-
                 if (beacons.size() > 0) {
                     /*Create queues containing the latest 20 values*/
                     /*while (beacons.iterator().hasNext()) {*/
@@ -110,6 +101,7 @@ public class BluetoothData extends Service implements BeaconConsumer {
                     diff = tstamp - tmp;
                     Log.w(TAG, "BLUETOOTH Timestamp: " + diff);
 
+                    /*Map of keys blue, yellow, red containing the avg rssi*/
                     avgRssi =
                             queueAssignment(beacons.iterator().next().getBluetoothAddress(),
                                     beacons.iterator().next().getRssi());

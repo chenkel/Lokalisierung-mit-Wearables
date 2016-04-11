@@ -135,6 +135,12 @@ public abstract class Localization extends CommonClass {
         }
         placeCursor.close();
 
+        /*Anpassung der placeList abhängig von empfangenen Bluetooth Beacons*/
+        /*if(receivedBluetooth){placeList = {1,2,3,4,5}*/
+
+
+
+
                     /*Am Ende wird jedem Ort eine sse zugeordnet*/
         HashMap<String, Double> sseMap = new HashMap<>();
         List<WlanMeasurements> modellWerte = new ArrayList<>();

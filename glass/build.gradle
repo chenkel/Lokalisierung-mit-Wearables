@@ -9,12 +9,12 @@ repositories {
 
 android {
     compileSdkVersion "Google Inc.:Glass Development Kit Preview:19"
-    buildToolsVersion "20.0.0"
+    buildToolsVersion "23.0.3"
 
     defaultConfig {
         applicationId "smartwatch.context.project"
-        minSdkVersion 21
-        targetSdkVersion 19
+        minSdkVersion 19
+        targetSdkVersion 23
         versionCode 1
         versionName "1.0"
     }
@@ -33,5 +33,7 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'com.google.zxing:core:3.1.0'
     compile project(':common')
+
 }

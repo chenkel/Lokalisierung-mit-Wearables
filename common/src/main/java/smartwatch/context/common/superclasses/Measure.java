@@ -38,16 +38,39 @@ public abstract class Measure extends CommonClass {
 
     protected String placeIdString;
 
+    long tstamp = 0;
+    long diff;
+    List<Long> timeList = new ArrayList<Long>();
+    List<Integer> rssiListMeasure = new ArrayList<Integer>();
+    int rssiMeasure;
+    long inittime = 0;
+
     protected final BroadcastReceiver measureResultReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            /*Log.i(TAG, "measureResultReceiver onReceive");*/
+            if(inittime == 0){inittime = System.currentTimeMillis()/1000;}
             List<ScanResult> currentResults = wifiManager.getScanResults();
 
             int measurementCount = currentResults.size();
             /*Log.i(TAG, "measurementCount: " + measurementCount);*/
             if (measurementCount > 0) {
+
+
                 for (ScanResult result : currentResults) {
+
+                    /*WLAN Anaalysis*/
+                    /*if(result.BSSID.equals("4c:96:14:21:21:c4")){
+                        tstamp = System.currentTimeMillis()/1000 - inittime;
+                        rssiMeasure = Math.abs(result.level);
+                        timeList.add(tstamp);
+                        rssiListMeasure.add(rssiMeasure);
+                        Log.i(TAG, rssiMeasure+"a");
+                        Log.i(TAG, tstamp+"b");
+                    }*/
+
+/*                    Log.i(TAG, "###new Timestamp: " + tstamp);
+                    Log.i(TAG, "Rssi: " + result.level);*/
+
                     wlanMeasure.add(new WlanMeasurements(
                             result.BSSID,
                             result.level,
@@ -57,10 +80,30 @@ public abstract class Measure extends CommonClass {
                 }
                 /*Log.i(TAG, "wlanMeasure size: " + wlanMeasure.size());*/
 
+
+
                 scanCount++;
                 updateProgressOutput(scanCount);
                     /* All scans finished */
                 if (scanCount >= scanCountMax) {
+
+                    /*WLAN Logging*/
+                    /*StringBuilder sbRssi = new StringBuilder();
+                    StringBuilder sbTs = new StringBuilder();
+
+                    for(int i : rssiListMeasure){
+                        sbRssi.append(i+",");
+                    }
+
+                    for(long j : timeList){
+                        sbRssi.append(j+",");
+                    }
+
+                    Log.i(TAG, sbRssi.toString()+"\n");
+                    Log.i(TAG, sbTs.toString());*/
+                    /*WLAN Logging*/
+
+
                     outputDebugInfos(wlanMeasure);
                     stopScanningAndCloseProgressDialog();
                     new SaveMeasuresTask().execute();
@@ -80,7 +123,7 @@ public abstract class Measure extends CommonClass {
         super(activity);
         setResultReceiver(measureResultReceiver);
 
-        scanCountMax = 5;
+        scanCountMax = 100;
         scanCount = 0;
     }
 
