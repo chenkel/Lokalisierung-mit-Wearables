@@ -14,6 +14,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +31,12 @@ public abstract class Localization extends CommonClass {
     long tstamp = 0;
     long diff;
 
+    Integer[] bleRssi = {-200,-200,-200};
+
+    String[] bluePlaces = {"1"};
+    String[] redPlaces = {"2"};
+    String[] yellowPlaces = {"3"};
+    Boolean placesCleared = false;
 
     protected final BroadcastReceiver localizationScanResultReceiver = new BroadcastReceiver() {
         @Override
@@ -136,6 +143,37 @@ public abstract class Localization extends CommonClass {
         /*Anpassung der placeList abhängig von empfangenen Bluetooth Beacons*/
         /*if(receivedBluetooth){placeList = {1,2,3,4,5}*/
 
+            Log.i(TAG, "BLE Rssi Size: " + bleRssi.toString());
+            if (bleRssi[0] > -80) {
+                if (!placesCleared) {
+                    placeList.clear();
+                }
+                for (String place : bluePlaces) {
+                    placeList.add(place);
+                }
+                placesCleared = true;
+            }
+
+            if (bleRssi[1] > -80) {
+                if (!placesCleared) {
+                    placeList.clear();
+                }
+                for (String place : redPlaces) {
+                    placeList.add(place);
+                }
+                placesCleared = true;
+            }
+
+            if (bleRssi[2] > -80) {
+                if (!placesCleared) {
+                    placeList.clear();
+                }
+                for (String place : yellowPlaces) {
+                    placeList.add(place);
+                }
+                placesCleared = true;
+            }
+
 
 
 
@@ -169,13 +207,15 @@ public abstract class Localization extends CommonClass {
             /*Log.i(TAG, " " + sseValue);*/
             sseMap.put(place, sseValue);
         }
+
+        placesCleared = false;
+
+
         if (!sseMap.isEmpty()) {
             Map.Entry<String, Double> minEntry = CalculationHelper.minMapValue(sseMap);
             if (minEntry != null) {
                 String foundPlaceId = minEntry.getKey();
                 String outputTextview = "Der Ort ist: " + foundPlaceId + " mit Wert: " + minEntry.getValue() + "\n";
-
-
 
                 /*Toast.makeText(context, "Ort: " + foundPlaceId, Toast.LENGTH_SHORT).show();*/
                 if (!priorPlaceId.equals(foundPlaceId)) {
@@ -248,6 +288,12 @@ public abstract class Localization extends CommonClass {
 
     protected void outputDetailedPlaceInfoDebug(String output){
         Log.i(TAG, output);
+    }
+
+    public  void bleAccess(Integer[] rssi){
+        bleRssi[0] = rssi[0];
+        bleRssi[1] = rssi[1];
+        bleRssi[2] = rssi[2];
     }
 
 
