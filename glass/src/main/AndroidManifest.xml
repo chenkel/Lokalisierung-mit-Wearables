@@ -45,6 +45,14 @@
             android:exported="true"
             />
 
+        <service
+            android:name="smartwatch.context.common.helper.BluetoothData"
+            android:enabled="true">
+            <intent-filter>
+                <action android:name="com.project.BLUETOOTHSERVICE" />
+            </intent-filter>
+        </service>
+
     </application>
 
 </manifest>

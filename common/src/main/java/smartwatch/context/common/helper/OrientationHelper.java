@@ -21,7 +21,7 @@ class OrientationHelper implements SensorEventListener {
 
 
     public OrientationHelper(Context context) {
-        Log.i(TAG, "Im Konstruktor");
+//        Log.i(TAG, "Im Konstruktor");
 
         mSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);

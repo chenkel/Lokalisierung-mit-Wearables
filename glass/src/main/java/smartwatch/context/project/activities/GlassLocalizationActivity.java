@@ -1,13 +1,18 @@
 package smartwatch.context.project.activities;
 
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.media.AudioManager;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
+import android.widget.Toast;
 
 import com.google.android.glass.media.Sounds;
 import com.google.android.glass.widget.CardBuilder;
@@ -18,6 +23,7 @@ import com.google.android.glass.widget.Slider;
 import java.util.ArrayList;
 import java.util.List;
 
+import smartwatch.context.common.helper.BluetoothData;
 import smartwatch.context.common.superclasses.Localization;
 import smartwatch.context.project.card.CardAdapter;
 
@@ -35,6 +41,10 @@ public class GlassLocalizationActivity extends Activity {
     private Slider mSlider;
     private Slider.Indeterminate mIndeterminate;
     private Localization mLocalization;
+
+    private ServiceConnection mConnection;
+    boolean mBound = false;
+    private BluetoothData bldata;
 
     // Visible for testing.
     CardScrollView getScroller() {
@@ -90,14 +100,34 @@ public class GlassLocalizationActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
+
+
         mCardScroller.activate();
     }
 
     @Override
     protected void onPause() {
+
         mCardScroller.deactivate();
         mLocalization.stopScanningAndCloseProgressDialog();
         super.onPause();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.w(TAG, "onStart");
+        this.bindService(new Intent(this, BluetoothData.class), mConnection, Context.BIND_AUTO_CREATE);
+
+    }
+
+    @Override
+    protected void onStop() {
+        if(mBound) {
+            unbindService(mConnection);
+            mBound = false;
+        }
+        super.onStop();
     }
 
     private void setCardScrollerListener() {
@@ -114,5 +144,23 @@ public class GlassLocalizationActivity extends Activity {
         });
     }
 
+    public GlassLocalizationActivity(){
+        Log.w(TAG, "Constructor");
+        mConnection = new ServiceConnection() {
+
+            public void onServiceConnected(ComponentName className,
+                                           IBinder service) {
+                BluetoothData.LocalBinder binder = (BluetoothData.LocalBinder) service;
+                bldata = binder.getService();
+                mBound = true;
+                Toast.makeText(GlassLocalizationActivity.this, "Connected", Toast.LENGTH_SHORT)
+                        .show();
+            }
+
+            public void onServiceDisconnected(ComponentName className) {
+                mBound = false;
+            }
+        };
+    }
 
 }

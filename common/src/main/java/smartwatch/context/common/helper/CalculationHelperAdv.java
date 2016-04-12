@@ -26,8 +26,8 @@ class CalculationHelperAdv {
         /*modellwerte entsprechend dem jeweiligen Place der aufrufenden Methode*/
         boolean valueFound = false;
         int iteCounter = 0;
-        Log.i(TAG, "Nun in calculate SSE");
-        Log.i(TAG, "Größe Modellwerte: " + modellwerte.size());
+//        Log.i(TAG, "Nun in calculate SSE");
+//        Log.i(TAG, "Größe Modellwerte: " + modellwerte.size());
         double overallSum = 0;
         if (messwerte.size() == 0) {
             return 0;
@@ -39,28 +39,28 @@ class CalculationHelperAdv {
                     valueFound = true;
                     double diff = Math.abs(modellwert.getRssi() - messwert.level);
                     overallSum = overallSum + diff;
-                    Log.i(TAG, "#Modellwert gefunden. Die Daten sind: " +
-                            modellwert.toString() + "Und Diff ist " + diff);
-                    Log.i(TAG, "#Die Zwischensumme ist: " + overallSum +
-                            "\n-----------------------------------");
+//                    Log.i(TAG, "#Modellwert gefunden. Die Daten sind: " +
+//                            modellwert.toString() + "Und Diff ist " + diff);
+//                    Log.i(TAG, "#Die Zwischensumme ist: " + overallSum +
+//                            "\n-----------------------------------");
                 }
             }
 
             if (!valueFound && modellwerte.indexOf(modellwert) < modellwerte.size() / 5) {
-                Log.i(TAG, "!!!Modellwert nicht in Messwerten gefunden. Die Daten sind: " +
-                        modellwert.toString());
-                Log.i(TAG, "!!!Die Zwischensumme ist: " + overallSum +
-                        "\n-----------------------------------");
+//                Log.i(TAG, "!!!Modellwert nicht in Messwerten gefunden. Die Daten sind: " +
+//                        modellwert.toString());
+//                Log.i(TAG, "!!!Die Zwischensumme ist: " + overallSum +
+//                        "\n-----------------------------------");
                 overallSum += 20;
             } else if (!valueFound) {
-                Log.i(TAG, "***Modellwert nicht in Messwerten gefundenund nicht relevant: " +
-                        modellwert.toString());
+//                Log.i(TAG, "***Modellwert nicht in Messwerten gefundenund nicht relevant: " +
+//                        modellwert.toString());
             }
             valueFound = false;
             iteCounter++;
         }
-        Log.i(TAG, "<---------------Overall Sum ist " + overallSum + "---------------->");
-        Log.i(TAG, "<---------------Die Zahl der Iterationen ist " + iteCounter + "---------------->");
+//        Log.i(TAG, "<---------------Overall Sum ist " + overallSum + "---------------->");
+//        Log.i(TAG, "<---------------Die Zahl der Iterationen ist " + iteCounter + "---------------->");
         return overallSum / modellwerte.size();
     }
 

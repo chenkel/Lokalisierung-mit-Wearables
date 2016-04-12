@@ -47,20 +47,24 @@ public class MainActivity extends Activity {
                         case 3:
                         case 4:
                         case 5:
+                        case 6:
+                        case 7:
+                        case 8:
                             Intent intent = new Intent(MainActivity.this, ProcessingActivity.class);
                             intent.putExtra("mode", "measure");
                             intent.putExtra("placeId", String.valueOf(clickedMenu));
                             startActivity(intent);
                             break;
-                        case 6:
+
+                        case 9:
                             intent = new Intent(MainActivity.this, ProcessingActivity.class);
                             intent.putExtra("mode", "average");
                             startActivity(intent);
                             break;
-                        case 7:
+                        case 10:
                             /* todo: call bluetooth scan! */
                             break;
-                        case 8:
+                        case 11:
                             /*mMeasure.deleteAllMeasurements();*/
                             break;
                         default:
@@ -132,6 +136,9 @@ public class MainActivity extends Activity {
         mIcons.add(R.drawable.ic_action_share);
         mIcons.add(R.drawable.ic_action_share);
         mIcons.add(R.drawable.ic_action_share);
+        mIcons.add(R.drawable.ic_action_share);
+        mIcons.add(R.drawable.ic_action_share);
+        mIcons.add(R.drawable.ic_action_share);
         mIcons.add(R.drawable.ic_action_select_all);
         mIcons.add(R.drawable.ic_action_user);
         mIcons.add(R.drawable.ic_action_delete);
@@ -145,13 +152,6 @@ public class MainActivity extends Activity {
         wearableListView.setAdapter(new WearableAdapter(this, mIcons));
         wearableListView.setClickListener(mClickListener);
         wearableListView.addOnScrollListener(mOnScrollListener);
-
-
-
-
-
-
-
 
 //        Log.e(TAG, "RSSI OUTPUT FROM SERVICE:" + bldata.getRssiOutput());
     }

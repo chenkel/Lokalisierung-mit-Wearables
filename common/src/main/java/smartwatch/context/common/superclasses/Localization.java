@@ -26,6 +26,8 @@ public abstract class Localization extends CommonClass {
     private List<WlanMeasurements> wlanMeasure = new ArrayList<>();
     private String priorPlaceId = "";
 
+    private ArrayList<Long> longArray;
+
     /*timestamp*/
     long tstamp = 0;
     long diff;
@@ -39,10 +41,17 @@ public abstract class Localization extends CommonClass {
             /*Log.i(TAG, "localizationScanResultReceiver onReceive");*/
 
             /*Timestamping*/
-            long tmp = tstamp;
-            tstamp = System.currentTimeMillis();
-            diff = tstamp - tmp;
-            Log.w(TAG, "WLAN Timestamp: " + diff);
+//            long tmp = tstamp;
+//            tstamp = System.currentTimeMillis();
+//            if (tmp != 0L){
+//                diff = tstamp - tmp;
+//                Log.w(TAG, "WLAN Timestamp: " + diff);
+//                longArray.add(diff);
+//            }
+//            if (longArray.size()>100){
+//                Log.w(TAG, longArray.toString());
+//            }
+
 
             List<ScanResult> currentResults = wifiManager.getScanResults();
 
@@ -71,6 +80,7 @@ public abstract class Localization extends CommonClass {
     public Localization(Activity activity) {
         super(activity);
         setResultReceiver(localizationScanResultReceiver);
+        longArray = new ArrayList<Long>(100);
     }
 
     public void startLocalization() {

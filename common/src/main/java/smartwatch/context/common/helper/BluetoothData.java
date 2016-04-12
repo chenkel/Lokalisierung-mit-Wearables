@@ -58,6 +58,7 @@ public class BluetoothData extends Service implements BeaconConsumer {
     /*timestamp*/
     long tstamp = 0;
     long diff;
+    private ArrayList<Long> longArray;
 
     //*^+ Konstanten zur Berechnung der Distanz
     /*private final double constMult = 0.0001060777;
@@ -76,8 +77,11 @@ public class BluetoothData extends Service implements BeaconConsumer {
 
     @Override
     public void onCreate() {
-        Log.i(TAG, "onCreate -- BluetoothData");
+//        Log.i(TAG, "onCreate -- BluetoothData");
         super.onCreate();
+
+        longArray = new ArrayList<Long>(100);
+
         beaconManager = BeaconManager.getInstanceForApplication(this);
         beaconManager.getBeaconParsers().add(new BeaconParser().
                 setBeaconLayout("m:2-3=0215,i:4-19,i:20-21,i:22-23,p:24-24,d:25-25"));
@@ -96,18 +100,24 @@ public class BluetoothData extends Service implements BeaconConsumer {
                     /*while (beacons.iterator().hasNext()) {*/
 
                     /*Timestamping*/
-                    long tmp = tstamp;
+                    /*long tmp = tstamp;
                     tstamp = System.currentTimeMillis();
-                    diff = tstamp - tmp;
-                    Log.w(TAG, "BLUETOOTH Timestamp: " + diff);
+                    if (tmp != 0L){
+                        diff = tstamp - tmp;
+                        Log.w(TAG, "BLE Timestamp: " + diff);
+                        longArray.add(diff);
+                    }
+                    if (longArray.size()>100){
+                        Log.w(TAG, longArray.toString());
+                    }*/
 
                     /*Map of keys blue, yellow, red containing the avg rssi*/
                     avgRssi =
                             queueAssignment(beacons.iterator().next().getBluetoothAddress(),
                                     beacons.iterator().next().getRssi());
-                    Log.i(TAG, "Die Größe der Blue Queue  ist: " + getRssiQueueBlue());
+//                    Log.i(TAG, "Die Größe der Blue Queue  ist: " + getRssiQueueBlue());
 
-                    Log.i(TAG, avgRssi.toString());
+//                    Log.i(TAG, avgRssi.toString());
                 }
             }
 
@@ -123,9 +133,9 @@ public class BluetoothData extends Service implements BeaconConsumer {
     public Map<String, Number> queueAssignment(String uuid, int rssi) {
         switch (uuid) {
             case uuidBlue:
-                Log.i(TAG, "+++Blaues Beacon: " +
-                "RSSI: " + rssi +
-                "UUID: " + uuid);
+//                Log.i(TAG, "+++Blaues Beacon: " +
+//                "RSSI: " + rssi +
+//                "UUID: " + uuid);
                 if (rssiQueueBlue.size() < queueSize) {
                     rssiQueueBlue.add(rssi);
                 } else if (rssiQueueBlue.size() >= queueSize) {
@@ -135,9 +145,9 @@ public class BluetoothData extends Service implements BeaconConsumer {
                 break;
 
             case uuidYellow:
-                Log.i(TAG, "+++Gelbes Beacon: " +
-                        "RSSI: " + rssi +
-                        "UUID: " + uuid);
+//                Log.i(TAG, "+++Gelbes Beacon: " +
+//                        "RSSI: " + rssi +
+//                        "UUID: " + uuid);
                 if (rssiQueueYellow.size() < queueSize) {
                     rssiQueueYellow.add(rssi);
                 } else if (rssiQueueYellow.size() >= queueSize) {
@@ -147,9 +157,9 @@ public class BluetoothData extends Service implements BeaconConsumer {
                 break;
 
             case uuidRed:
-                Log.i(TAG, "+++Rotes Beacon: " +
-                        "RSSI: " + rssi +
-                        "UUID: " + uuid);
+//                Log.i(TAG, "+++Rotes Beacon: " +
+//                        "RSSI: " + rssi +
+//                        "UUID: " + uuid);
                 if (rssiQueueRed.size() < queueSize) {
                     rssiQueueRed.add(rssi);
                 } else if (rssiQueueRed.size() >= queueSize) {
@@ -159,7 +169,7 @@ public class BluetoothData extends Service implements BeaconConsumer {
                 break;
         }
 
-        Log.i(TAG, "###List RSSI Blau als toString: " + rssiQueueBlue.toString());
+//        Log.i(TAG, "###List RSSI Blau als toString: " + rssiQueueBlue.toString());
         avgBlue = calculateAverage(rssiQueueBlue);
         avgYellow = calculateAverage(rssiQueueYellow);
         avgRed = calculateAverage(rssiQueueRed);
@@ -193,7 +203,7 @@ public class BluetoothData extends Service implements BeaconConsumer {
 
     @Override
     public IBinder onBind(Intent intent) {
-        Log.i(TAG, "onBind -- BluetoothData");
+//        Log.i(TAG, "onBind -- BluetoothData");
         return mBinder;
     }
 
@@ -206,7 +216,7 @@ public class BluetoothData extends Service implements BeaconConsumer {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.i(TAG, "onStartCommand -- BluetoothData");
+//        Log.i(TAG, "onStartCommand -- BluetoothData");
         return super.onStartCommand(intent, flags, startId);
     }
 
