@@ -145,8 +145,9 @@ public abstract class Localization extends CommonClass {
         /*Anpassung der placeList abhängig von empfangenen Bluetooth Beacons*/
         /*if(receivedBluetooth){placeList = {1,2,3,4,5}*/
 
-            Log.i(TAG, "BLE Rssi Size: " + bleRssi.toString());
-            if (bleRssi[0] > -80) {
+
+            /*Log.i(TAG, "BLE Rssi Size: " + bleRssi.toString());*/
+            if (bleRssi[0] > -70) {
                 if (!placesCleared) {
                     placeList.clear();
                 }
@@ -156,7 +157,7 @@ public abstract class Localization extends CommonClass {
                 placesCleared = true;
             }
 
-            if (bleRssi[1] > -80) {
+            if (bleRssi[1] > -70) {
                 if (!placesCleared) {
                     placeList.clear();
                 }
@@ -166,7 +167,7 @@ public abstract class Localization extends CommonClass {
                 placesCleared = true;
             }
 
-            if (bleRssi[2] > -80) {
+            if (bleRssi[2] > -75) {
                 if (!placesCleared) {
                     placeList.clear();
                 }
@@ -175,8 +176,6 @@ public abstract class Localization extends CommonClass {
                 }
                 placesCleared = true;
             }
-
-
 
 
                     /*Am Ende wird jedem Ort eine sse zugeordnet*/

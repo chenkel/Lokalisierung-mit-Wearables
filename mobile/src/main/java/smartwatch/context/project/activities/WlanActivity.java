@@ -227,24 +227,22 @@ public class WlanActivity extends Activity implements View.OnClickListener, Beac
                     /*rssiArray[0] = beacons.iterator().next().getRssi();*/
                         /*measuredBeacon = beacons.iterator().next();*/
                          for(Beacon measuredBeacon : beacons) {
-                             switch (measuredBeacon.getBluetoothAddress()) {
-                                 case uuidBlue:
-                                     rssiArray[0] = measuredBeacon.getRssi();
-                                     Log.i(TAG, "+++Blaues Beacons" + rssiArray[0]);
-                                     break;
-                                 case uuidRed:
-                                     rssiArray[1] = measuredBeacon.getRssi();
-                                     Log.i(TAG, "+++Rotes Beacons" + rssiArray[1]);
-                                     break;
-                                 case uuidYellow:
-                                     rssiArray[2] = measuredBeacon.getRssi();
-                                     Log.i(TAG, "+++Gelbes Beacons" + rssiArray[1]);
-                                     break;
+                             if(measuredBeacon.getBluetoothAddress().equals(uuidBlue)) {
+                                 rssiArray[0] = measuredBeacon.getRssi();
+                                 Log.i(TAG, "+++Blaues Beacons" + rssiArray[0]);
+                             }
+                             if(measuredBeacon.getBluetoothAddress().equals(uuidRed)) {
+                                 rssiArray[1] = measuredBeacon.getRssi();
+                                 Log.i(TAG, "+++Rotes Beacons" + rssiArray[1]);
+                             }
+                             if(measuredBeacon.getBluetoothAddress().equals(uuidYellow)) {
+                                 rssiArray[2] = measuredBeacon.getRssi();
+                                 Log.i(TAG, "+++Gelbes Beacons" + rssiArray[2]);
                              }
                          }
-                    /*}*/
+                    mLocalization.bleAccess(rssiArray);
                 }
-                mLocalization.bleAccess(rssiArray);
+
 
             }
         });
