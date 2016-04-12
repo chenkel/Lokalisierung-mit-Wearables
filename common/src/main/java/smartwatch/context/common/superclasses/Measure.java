@@ -123,7 +123,7 @@ public abstract class Measure extends CommonClass {
         super(activity);
         setResultReceiver(measureResultReceiver);
 
-        scanCountMax = 100;
+        scanCountMax = 3;
         scanCount = 0;
     }
 
