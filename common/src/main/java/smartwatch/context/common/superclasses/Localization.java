@@ -231,9 +231,12 @@ public abstract class Localization extends CommonClass {
                 /*Toast.makeText(context, "Ort: " + foundPlaceId, Toast.LENGTH_SHORT).show();*/
                 if (!priorPlaceId.equals(foundPlaceId)) {
                     if ((priorPlaceId.equals("2") && foundPlaceId.equals("4")) ||
-                            (priorPlaceId.equals("4") && foundPlaceId.equals("2")) ||
-                            (priorPlaceId.equals("3") && foundPlaceId.equals("5")) ||
-                            (priorPlaceId.equals("5") && foundPlaceId.equals("4"))) {
+                            (priorPlaceId.equals("1") && foundPlaceId.equals("2")) ||
+                            (priorPlaceId.equals("2") && foundPlaceId.equals("1")) ||
+                            (priorPlaceId.equals("3") && foundPlaceId.equals("4")) ||
+                            (priorPlaceId.equals("4") && foundPlaceId.equals("3")) ||
+                            (priorPlaceId.equals("5") && foundPlaceId.equals("6")) ||
+                            (priorPlaceId.equals("6") && foundPlaceId.equals("5"))) {
                         Log.d(TAG, "PlaceId changed but description stays the same");
                     } else {
                         notifyLocationChange(priorPlaceId, foundPlaceId);
@@ -279,21 +282,24 @@ public abstract class Localization extends CommonClass {
                 sDescription = "Verlasse das Zimmer und gehe nach links";
                 break;
             case "2":
-                sDescription = "Gehe durch die Glastür";
+                sDescription = "Verlasse das Zimmer und gehe nach links";
                 break;
             case "3":
-                sDescription = "Gehe nach rechts";
+                sDescription = "Gehe durch die Glastür";
                 break;
             case "4":
-                sDescription = "Auf der rechten Seite findest du die Tür";
+                sDescription = "Gehe durch die Glastür";
                 break;
             case "5":
-                sDescription = "Folge dem Flur und gehe nach rechts";
+                sDescription = "Gehe nach rechts";
                 break;
             case "6":
-                sDescription = "Halte dich auf der rechten Seite";
+                sDescription = "Gehe nach rechts";
                 break;
             case "7":
+                sDescription = "Gehe durch die Notfalltür";
+                break;
+            case "8":
                 sDescription = "Gehe durch die Notfalltür";
                 break;
         }

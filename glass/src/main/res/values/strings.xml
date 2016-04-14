@@ -15,6 +15,7 @@
     <string name="wifi_ble_scan_place5">Messdaten für Ort 5 aufnehmen</string>
     <string name="wifi_ble_scan_place6">Messdaten für Ort 6 aufnehmen</string>
     <string name="wifi_ble_scan_place7">Messdaten für Ort 7 aufnehmen</string>
+    <string name="wifi_ble_scan_place8">Messdaten für Ort 8 aufnehmen</string>
     <string name="wifi_ble_scan_place_footnote">20 Messungen</string>
     <string name="wifi_ble_calculate">Durschnitt aller Messdaten berechnen</string>
     <string name="wifi_ble_delete_all">Alle Messdaten löschen</string>

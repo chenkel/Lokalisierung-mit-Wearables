@@ -54,8 +54,9 @@ public final class WiFiBleActivity extends Activity {
     static final int CARD_SCAN5 = 5;
     static final int CARD_SCAN6 = 6;
     static final int CARD_SCAN7 = 7;
-    static final int CARD_CALCULATE = 8;
-    static final int CARD_DELETE = 9;
+    static final int CARD_SCAN8 = 8;
+    static final int CARD_CALCULATE = 9;
+    static final int CARD_DELETE = 10;
 
     private CardScrollView mCardScroller;
     private Localization mLocalization;
@@ -128,6 +129,10 @@ public final class WiFiBleActivity extends Activity {
                 .setIcon(R.drawable.ic_station));
 
         cards.add(new CardBuilder(context, CardBuilder.Layout.COLUMNS)
+                .setText(getString(R.string.wifi_ble_scan_place7))
+                .setIcon(R.drawable.ic_station));
+
+        cards.add(new CardBuilder(context, CardBuilder.Layout.COLUMNS)
                 .setText(getString(R.string.wifi_ble_calculate))
                 .setIcon(R.drawable.ic_calculate));
 
@@ -173,6 +178,7 @@ public final class WiFiBleActivity extends Activity {
                     case CARD_SCAN5:
                     case CARD_SCAN6:
                     case CARD_SCAN7:
+                    case CARD_SCAN8:
                         mMeasure.setScanCountMax(5);
                         mMeasure.setPlaceIdString(String.valueOf(position));
                         mMeasure.measureWlan();
