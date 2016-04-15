@@ -16,6 +16,7 @@ import smartwatch.context.common.helper.DataHelper;
 import smartwatch.context.project.R;
 import smartwatch.context.project.custom.MyAdapter;
 
+// TODO: 15.04.16 Delete this class
 public class BleActivity extends Activity implements SensorEventListener {
 
     private SensorManager mSensorManager;

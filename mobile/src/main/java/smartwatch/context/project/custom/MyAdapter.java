@@ -14,7 +14,9 @@ import java.util.ArrayList;
 import smartwatch.context.common.helper.DataHelper;
 import smartwatch.context.project.R;
 
-
+/**
+ * Custom ArrayAdapter to display wifi scanning information in custom styled rows
+ */
 public class MyAdapter extends ArrayAdapter<DataHelper> {
     private static final String TAG = "MyAdapter";
     private static LayoutInflater inflater = null;

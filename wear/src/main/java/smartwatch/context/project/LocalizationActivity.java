@@ -28,6 +28,7 @@ public class LocalizationActivity extends Activity {
     private Localization mLocalization;
     private Vibrator v;
 
+
     public LocalizationActivity(){
         Log.w(TAG, "Constructor");
         mConnection = new ServiceConnection() {

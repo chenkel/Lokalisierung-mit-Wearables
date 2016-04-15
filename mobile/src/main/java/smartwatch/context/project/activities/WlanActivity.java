@@ -39,7 +39,7 @@ import smartwatch.context.common.superclasses.Localization;
 import smartwatch.context.common.superclasses.Measure;
 import smartwatch.context.project.R;
 
-
+// TODO: 15.04.16 Extract Bluetooth functionality and make it slimmer
 public class WlanActivity extends Activity implements View.OnClickListener, BeaconConsumer {
     private static final String TAG = "WlanActivity";
 

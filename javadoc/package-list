@@ -1,0 +1,16 @@
+google.zxing.client.android.camera
+google.zxing.client.android.camera.open
+smartwatch.context.common.db
+smartwatch.context.common.helper
+smartwatch.context.common.superclasses
+smartwatch.context.project
+smartwatch.context.project.activities
+smartwatch.context.project.card
+smartwatch.context.project.custom
+smartwatch.context.project.graphic
+smartwatch.context.project.helper
+smartwatch.context.project.qr.barcode
+smartwatch.context.project.qr.barcode.migrated
+smartwatch.context.project.qr.barcode.scan
+smartwatch.context.project.qr.barcode.scan.ui
+smartwatch.context.project.qr.qrlens

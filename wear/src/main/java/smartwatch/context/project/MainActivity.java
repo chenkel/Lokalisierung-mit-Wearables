@@ -38,6 +38,7 @@ public class MainActivity extends Activity {
                 @Override
                 public void onClick(WearableListView.ViewHolder viewHolder) {
                     int clickedMenu = viewHolder.getLayoutPosition();
+                    // TODO: 15.04.16 case 1, 2, 3 should be replaced by constants
                     switch (clickedMenu) {
                         case 0:
                             startActivity(new Intent(MainActivity.this, LocalizationActivity.class));

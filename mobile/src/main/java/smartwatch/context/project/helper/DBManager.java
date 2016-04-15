@@ -34,6 +34,9 @@ import java.util.LinkedList;
 
 import smartwatch.context.common.db.DatabaseHelper;
 
+/**
+ * Easy to use database manager found here: https://github.com/sanathp/DatabaseManager_For_Android
+ */
 public class DBManager extends Activity implements OnItemClickListener {
 
     //in the below line Change the text 'yourCustomSqlHelper' with your DataHelper sqlitehelper class name.

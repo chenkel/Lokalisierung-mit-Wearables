@@ -8,7 +8,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.ShapeDrawable;
 import android.view.View;
 
-
+// TODO: 15.04.16 Delete this class
 public class CustomDrawableView extends View {
 
     private ShapeDrawable mDrawable;

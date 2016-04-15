@@ -14,6 +14,7 @@ import android.widget.Toast;
 import smartwatch.context.common.helper.BluetoothData;
 import smartwatch.context.project.R;
 
+// TODO: 15.04.16 Delete this class
 public class QrcodeActivity extends Activity {
     private static final String TAG = "RangingActivity";
 

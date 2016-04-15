@@ -50,6 +50,7 @@ public class ProcessingActivity extends Activity {
 
                         @Override
                         protected void showMeasureProgress() {
+                            // TODO: 15.04.16 Strings to resources
                             descriptionTextView.setText("Messung der Signalstärken der WiFi-APs in der Umgebung läuft...");
                             processingTextView.setText("0/"+mMeasure.scanCountMax);
                             progressBar.setMax(mMeasure.scanCountMax);

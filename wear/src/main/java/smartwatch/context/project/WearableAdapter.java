@@ -41,15 +41,18 @@ class WearableAdapter extends WearableListView.Adapter {
             case 3:
             case 4:
             case 5:
+            case 6:
+            case 7:
+            case 8:
                 textView.setText("Ort " + position + " messen");
                 break;
-            case 6:
+            case 9:
                 textView.setText("Berechne Durchschnitt");
                 break;
-            case 7:
+            case 10:
                 textView.setText("Bluetooth Test");
                 break;
-            case 8:
+            case 11:
                 textView.setText("Alle Messungen löschen");
                 break;
         }

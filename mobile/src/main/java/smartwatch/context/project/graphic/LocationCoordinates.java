@@ -1,6 +1,6 @@
 package smartwatch.context.project.graphic;
 
-
+// TODO: 15.04.16 Delete this class
 class LocationCoordinates {
 
     private String name;
