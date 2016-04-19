@@ -1,4 +1,5 @@
-# Lokalisierung und Kontexterkennung von Wearables
-1. Installation
-
-git clone git@github.com:chenkel/Lokalisierung-mit-Wearables.git
+# Lokalisierung mit Wearables
+Lokalisierung mit Hilfe von WiFi-Fingerprinting, BLE Beacons und QR-Code auf Google Glass und Android Wear.
+## Installation
+1. Klone das Repository
+`git clone https://github.com/chenkel/Lokalisierung-mit-Wearables.git`
