@@ -4,7 +4,7 @@ Lokalisierung mit Hilfe von WiFi-Fingerprinting, BLE Beacons und QR-Code auf Goo
 
 ## Installation
 1. Klone das Repository.  
-	```sh 
+	``` sh 
 	git clone https://github.com/chenkel/Lokalisierung-mit-Wearables.git
 	```
 2. Öffne das heruntergeladene Projekt in Android Studio 2.0.
@@ -18,7 +18,8 @@ Wähle zunächst eine der drei Konfigurationen (*mobile*, *glass* oder *wear*) a
 
 Dabei sollte das betreffende Gerät bereits vorher angeschlossen oder gepaired sein.
 
-**Beachte für Google Glass** muss die *Run Configuration* angepasst werden. Dabei wählt man unter 
-	1. *Launch Options* --> **Specified Activity** und dann 
-	2. *Activity* --> **smartwatch.context.project.activities.MainActivity**
+**Beachte für Google Glass** muss die *Run Configuration* angepasst werden. Dabei wählt man unter
+
+*Launch Options* --> **Specified Activity** und dann 
+*Activity* --> **smartwatch.context.project.activities.MainActivity**
 	

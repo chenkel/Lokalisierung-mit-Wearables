@@ -52,7 +52,7 @@ public class ProcessingActivity extends Activity {
                         protected void showMeasureProgress() {
                             // TODO: 15.04.16 Strings to resources
                             descriptionTextView.setText("Messung der Signalstärken der WiFi-APs in der Umgebung läuft...");
-                            processingTextView.setText("0/"+mMeasure.scanCountMax);
+                            processingTextView.setText("0/" + mMeasure.scanCountMax);
                             progressBar.setMax(mMeasure.scanCountMax);
                         }
 
@@ -70,12 +70,12 @@ public class ProcessingActivity extends Activity {
                         @Override
                         protected void updateProgressOutput(int iProgress) {
                             progressBar.setProgress(iProgress);
-                            processingTextView.setText(iProgress+"/"+progressBar.getMax());
+                            processingTextView.setText(iProgress + "/" + progressBar.getMax());
                         }
 
                         @Override
                         protected void hideProgressOutput() {
-                            if (allowDestroy){
+                            if (allowDestroy) {
                                 onPause();
                             }
 
@@ -87,7 +87,7 @@ public class ProcessingActivity extends Activity {
 
                     break;
                 case "average":
-                    mAverageMeasures = new AverageMeasures(this){
+                    mAverageMeasures = new AverageMeasures(this) {
                         @Override
                         protected void showCalculationProgressOutput() {
                             descriptionTextView.setText("Durchschnittliche Signalstärken aller Router für die verschieden Messpunkte werden berechnet...");
@@ -102,7 +102,7 @@ public class ProcessingActivity extends Activity {
                         @Override
                         protected void updateProgressOutput(int iProgress) {
                             progressBar.setProgress(iProgress);
-                            processingTextView.setText(iProgress+"/"+progressBar.getMax());
+                            processingTextView.setText(iProgress + "/" + progressBar.getMax());
                         }
 
                         @Override
@@ -122,11 +122,9 @@ public class ProcessingActivity extends Activity {
     @Override
     protected void onPause() {
         super.onPause();
-
-        if (allowDestroy) {
-            this.setResult(RESULT_OK);
-            finish();
-        }
+        mMeasure.stopScanningAndCloseProgressDialog();
+        this.setResult(RESULT_OK);
+        finish();
     }
 
     @Override

@@ -10,9 +10,23 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+
+
 class WearableAdapter extends WearableListView.Adapter {
     private final ArrayList<Integer> mItems;
     private final LayoutInflater mInflater;
+
+    static final int ITEM_LOCALIZATION = 0;
+    static final int ITEM_SCAN1 = 1;
+    static final int ITEM_SCAN2 = 2;
+    static final int ITEM_SCAN3 = 3;
+    static final int ITEM_SCAN4 = 4;
+    static final int ITEM_SCAN5 = 5;
+    static final int ITEM_SCAN6 = 6;
+    static final int ITEM_SCAN7 = 7;
+    static final int ITEM_SCAN8 = 8;
+    static final int ITEM_CALCULATE = 9;
+    static final int ITEM_DELETE = 10;
 
     public WearableAdapter(Context context, ArrayList<Integer> items) {
         mInflater = LayoutInflater.from(context);
@@ -33,26 +47,23 @@ class WearableAdapter extends WearableListView.Adapter {
         circledView.setImageResource(mItems.get(position));
         TextView textView = itemViewHolder.mItemTextView;
         switch (position) {
-            case 0:
+            case ITEM_LOCALIZATION:
                 textView.setText("Start");
                 break;
-            case 1:
-            case 2:
-            case 3:
-            case 4:
-            case 5:
-            case 6:
-            case 7:
-            case 8:
+            case ITEM_SCAN1:
+            case ITEM_SCAN2:
+            case ITEM_SCAN3:
+            case ITEM_SCAN4:
+            case ITEM_SCAN5:
+            case ITEM_SCAN6:
+            case ITEM_SCAN7:
+            case ITEM_SCAN8:
                 textView.setText("Ort " + position + " messen");
                 break;
-            case 9:
+            case ITEM_CALCULATE:
                 textView.setText("Berechne Durchschnitt");
                 break;
-            case 10:
-                textView.setText("Bluetooth Test");
-                break;
-            case 11:
+            case ITEM_DELETE:
                 textView.setText("Alle Messungen löschen");
                 break;
         }
