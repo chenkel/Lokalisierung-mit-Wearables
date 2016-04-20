@@ -34,7 +34,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import smartwatch.context.common.superclasses.AverageMeasures;
-import smartwatch.context.common.superclasses.Localization;
 import smartwatch.context.common.superclasses.Measure;
 import smartwatch.context.project.R;
 import smartwatch.context.project.card.CardAdapter;
@@ -59,7 +58,6 @@ public final class WiFiBleActivity extends Activity {
     static final int CARD_DELETE = 10;
 
     private CardScrollView mCardScroller;
-    private Localization mLocalization;
     private Measure mMeasure;
     private AverageMeasures mAverageMeasures;
 
@@ -72,14 +70,6 @@ public final class WiFiBleActivity extends Activity {
         mCardScroller.setAdapter(new CardAdapter(createCards(this)));
         setContentView(mCardScroller);
         setCardScrollerListener();
-
-        mLocalization = new Localization(this) {
-            @Override
-            protected void notifyLocationChange(String priorPlaceId, String foundPlaceId) {
-                AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-                am.playSoundEffect(Sounds.SUCCESS);
-            }
-        };
 
         mMeasure = new Measure(this){
             @Override

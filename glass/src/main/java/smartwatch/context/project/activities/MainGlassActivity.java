@@ -41,13 +41,7 @@ public class MainGlassActivity extends Activity {
     static final int CARD_QR = 0;
     static final int CARD_WIFI_BLE = 1;
 
-    private CardScrollAdapter mAdapter;
     private CardScrollView mCardScroller;
-
-    // Visible for testing.
-    CardScrollView getScroller() {
-        return mCardScroller;
-    }
 
     @Override
     public void onCreate(Bundle bundle) {
@@ -55,7 +49,7 @@ public class MainGlassActivity extends Activity {
 
         super.onCreate(bundle);
 
-        mAdapter = new CardAdapter(createCards(this));
+        CardScrollAdapter mAdapter = new CardAdapter(createCards(this));
         mCardScroller = new CardScrollView(this);
         mCardScroller.setAdapter(mAdapter);
         setContentView(mCardScroller);
@@ -125,7 +119,6 @@ public class MainGlassActivity extends Activity {
 
     @Override
     public void startActivityForResult(Intent intent, int requestCode) {
-        Log.w(TAG, "blaaaa");
         if (requestCode == 0) {
             List<String> results = intent.getStringArrayListExtra(
                     RecognizerIntent.EXTRA_RESULTS);
@@ -139,7 +132,6 @@ public class MainGlassActivity extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode,
                                     Intent data) {
-        Log.w(TAG, "blaaaa");
         if (requestCode == 0 && resultCode == RESULT_OK) {
             List<String> results = data.getStringArrayListExtra(
                     RecognizerIntent.EXTRA_RESULTS);

@@ -24,11 +24,6 @@ public class LocalizationActivity extends Activity implements BeaconConsumer {
 
     private BeaconManager beaconManager;
 
-
-    private final String uuidBlue = "CE:BA:BE:97:DB:0C";
-    private final String uuidRed = "DD:3F:50:F2:76:74";
-    private final String uuidYellow = "FB:39:E6:2D:82:EF";
-
     private Localization mLocalization;
     private Vibrator v;
 

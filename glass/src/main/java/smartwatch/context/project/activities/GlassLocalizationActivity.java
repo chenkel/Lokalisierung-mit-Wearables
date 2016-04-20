@@ -1,34 +1,33 @@
 package smartwatch.context.project.activities;
 
 import android.app.Activity;
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
-import android.content.ServiceConnection;
 import android.media.AudioManager;
 import android.os.Bundle;
-import android.os.IBinder;
+import android.os.RemoteException;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
-import android.widget.Toast;
 
 import com.google.android.glass.media.Sounds;
 import com.google.android.glass.widget.CardBuilder;
 import com.google.android.glass.widget.CardScrollAdapter;
 import com.google.android.glass.widget.CardScrollView;
-import com.google.android.glass.widget.Slider;
+
+import org.altbeacon.beacon.BeaconConsumer;
+import org.altbeacon.beacon.BeaconManager;
+import org.altbeacon.beacon.BeaconParser;
+import org.altbeacon.beacon.Region;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import smartwatch.context.common.helper.BluetoothService;
 import smartwatch.context.common.superclasses.Localization;
 import smartwatch.context.project.card.CardAdapter;
 
 
-public class GlassLocalizationActivity extends Activity {
+public class GlassLocalizationActivity extends Activity implements BeaconConsumer {
     private static final String TAG = GlassLocalizationActivity.class.getSimpleName();
 
     // Index of api demo cards.
@@ -38,18 +37,10 @@ public class GlassLocalizationActivity extends Activity {
     private CardScrollAdapter mAdapter;
     private CardScrollView mCardScroller;
     private CardBuilder mScanCard;
-    private Slider mSlider;
-    private Slider.Indeterminate mIndeterminate;
+
     private Localization mLocalization;
 
-    private ServiceConnection mConnection;
-    boolean mBound = false;
-    private BluetoothService bldata;
-
-    // Visible for testing.
-    CardScrollView getScroller() {
-        return mCardScroller;
-    }
+    protected BeaconManager beaconManager;
 
     @Override
     public void onCreate(Bundle bundle) {
@@ -61,13 +52,14 @@ public class GlassLocalizationActivity extends Activity {
         mCardScroller.setAdapter(mAdapter);
         setContentView(mCardScroller);
         setCardScrollerListener();
-        mSlider = Slider.from(mCardScroller);
-        mIndeterminate = mSlider.startIndeterminate();
+
+        initializeBeaconManager();
+
         mLocalization = new Localization(this) {
             @Override
-            protected void updateLocalizationProgressUI(String foundPlaceId, String waypointDescription) {
+            protected void updateLocalizationProgressUI(String foundPlaceId, String placeDescription) {
                 Log.i(TAG, "foundPlaceId: " + foundPlaceId);
-                mScanCard.setText(waypointDescription);
+                mScanCard.setText(placeDescription);
                 mScanCard.setFootnote("Ort: " + foundPlaceId);
                 mAdapter.notifyDataSetChanged();
             }
@@ -97,37 +89,35 @@ public class GlassLocalizationActivity extends Activity {
         return cards;
     }
 
+    private void initializeBeaconManager() {
+        beaconManager = BeaconManager.getInstanceForApplication(this);
+        beaconManager.getBeaconParsers().add(new BeaconParser().
+                setBeaconLayout("m:2-3=0215,i:4-19,i:20-21,i:22-23,p:24-24,d:25-25"));
+        beaconManager.bind(this);
+    }
+
+    @Override
+    public void onBeaconServiceConnect() {
+        beaconManager.setRangeNotifier(mLocalization.rangeNotifier);
+        try {
+            beaconManager.startRangingBeaconsInRegion(new Region("myRangingWatchId", null, null, null));
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
-
-
         mCardScroller.activate();
     }
 
     @Override
     protected void onPause() {
-
+        beaconManager.unbind(this);
         mCardScroller.deactivate();
         mLocalization.stopLocalization();
         super.onPause();
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        Log.w(TAG, "onStart");
-        this.bindService(new Intent(this, BluetoothService.class), mConnection, Context.BIND_AUTO_CREATE);
-
-    }
-
-    @Override
-    protected void onStop() {
-        if(mBound) {
-            unbindService(mConnection);
-            mBound = false;
-        }
-        super.onStop();
     }
 
     private void setCardScrollerListener() {
@@ -143,24 +133,4 @@ public class GlassLocalizationActivity extends Activity {
             }
         });
     }
-
-    public GlassLocalizationActivity(){
-        Log.w(TAG, "Constructor");
-        mConnection = new ServiceConnection() {
-
-            public void onServiceConnected(ComponentName className,
-                                           IBinder service) {
-                BluetoothService.LocalBinder binder = (BluetoothService.LocalBinder) service;
-                bldata = binder.getService();
-                mBound = true;
-                Toast.makeText(GlassLocalizationActivity.this, "Connected", Toast.LENGTH_SHORT)
-                        .show();
-            }
-
-            public void onServiceDisconnected(ComponentName className) {
-                mBound = false;
-            }
-        };
-    }
-
 }
