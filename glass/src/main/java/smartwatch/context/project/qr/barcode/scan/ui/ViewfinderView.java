@@ -27,7 +27,6 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.zxing.ResultPoint;
@@ -87,7 +86,7 @@ public final class ViewfinderView extends View {
         laserColor = resources.getColor(R.color.viewfinder_laser);
         resultPointColor = resources.getColor(R.color.possible_result_points);
         scannerAlpha = 0;
-        possibleResultPoints = new ArrayList<ResultPoint>(5);
+        possibleResultPoints = new ArrayList<>(5);
         lastPossibleResultPoints = null;
 
         layout = new LinearLayout(context);

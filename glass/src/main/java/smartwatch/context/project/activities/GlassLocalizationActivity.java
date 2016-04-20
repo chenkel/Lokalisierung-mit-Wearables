@@ -23,7 +23,7 @@ import com.google.android.glass.widget.Slider;
 import java.util.ArrayList;
 import java.util.List;
 
-import smartwatch.context.common.helper.BluetoothData;
+import smartwatch.context.common.helper.BluetoothService;
 import smartwatch.context.common.superclasses.Localization;
 import smartwatch.context.project.card.CardAdapter;
 
@@ -44,7 +44,7 @@ public class GlassLocalizationActivity extends Activity {
 
     private ServiceConnection mConnection;
     boolean mBound = false;
-    private BluetoothData bldata;
+    private BluetoothService bldata;
 
     // Visible for testing.
     CardScrollView getScroller() {
@@ -109,7 +109,7 @@ public class GlassLocalizationActivity extends Activity {
     protected void onPause() {
 
         mCardScroller.deactivate();
-        mLocalization.stopScanningAndCloseProgressDialog();
+        mLocalization.stopLocalization();
         super.onPause();
     }
 
@@ -117,7 +117,7 @@ public class GlassLocalizationActivity extends Activity {
     protected void onStart() {
         super.onStart();
         Log.w(TAG, "onStart");
-        this.bindService(new Intent(this, BluetoothData.class), mConnection, Context.BIND_AUTO_CREATE);
+        this.bindService(new Intent(this, BluetoothService.class), mConnection, Context.BIND_AUTO_CREATE);
 
     }
 
@@ -150,7 +150,7 @@ public class GlassLocalizationActivity extends Activity {
 
             public void onServiceConnected(ComponentName className,
                                            IBinder service) {
-                BluetoothData.LocalBinder binder = (BluetoothData.LocalBinder) service;
+                BluetoothService.LocalBinder binder = (BluetoothService.LocalBinder) service;
                 bldata = binder.getService();
                 mBound = true;
                 Toast.makeText(GlassLocalizationActivity.this, "Connected", Toast.LENGTH_SHORT)

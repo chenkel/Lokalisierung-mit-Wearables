@@ -12,7 +12,6 @@ import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.view.Window;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -38,39 +37,21 @@ public abstract class Measure extends CommonClass {
 
     protected String placeIdString;
 
-    long tstamp = 0;
-    long diff;
-    List<Long> timeList = new ArrayList<Long>();
-    List<Integer> rssiListMeasure = new ArrayList<Integer>();
-    int rssiMeasure;
     long inittime = 0;
 
     protected final BroadcastReceiver measureResultReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if(inittime == 0){inittime = System.currentTimeMillis()/1000;}
+            if (inittime == 0) {
+                inittime = System.currentTimeMillis() / 1000;
+            }
             List<ScanResult> currentResults = wifiManager.getScanResults();
 
             int measurementCount = currentResults.size();
-            /*Log.i(TAG, "measurementCount: " + measurementCount);*/
             if (measurementCount > 0) {
 
 
                 for (ScanResult result : currentResults) {
-
-                    /*WLAN Anaalysis*/
-                    /*if(result.BSSID.equals("4c:96:14:21:21:c4")){
-                        tstamp = System.currentTimeMillis()/1000 - inittime;
-                        rssiMeasure = Math.abs(result.level);
-                        timeList.add(tstamp);
-                        rssiListMeasure.add(rssiMeasure);
-                        Log.i(TAG, rssiMeasure+"a");
-                        Log.i(TAG, tstamp+"b");
-                    }*/
-
-/*                    Log.i(TAG, "###new Timestamp: " + tstamp);
-                    Log.i(TAG, "Rssi: " + result.level);*/
-
                     wlanMeasure.add(new WlanMeasurements(
                             result.BSSID,
                             result.level,
@@ -78,41 +59,20 @@ public abstract class Measure extends CommonClass {
                             0
                     ));
                 }
-                /*Log.i(TAG, "wlanMeasure size: " + wlanMeasure.size());*/
-
-
 
                 scanCount++;
                 updateProgressOutput(scanCount);
                     /* All scans finished */
                 if (scanCount >= scanCountMax) {
-
-                    /*WLAN Logging*/
-                    /*StringBuilder sbRssi = new StringBuilder();
-                    StringBuilder sbTs = new StringBuilder();
-
-                    for(int i : rssiListMeasure){
-                        sbRssi.append(i+",");
-                    }
-
-                    for(long j : timeList){
-                        sbRssi.append(j+",");
-                    }
-
-                    Log.i(TAG, sbRssi.toString()+"\n");
-                    Log.i(TAG, sbTs.toString());*/
-                    /*WLAN Logging*/
-
-
                     outputDebugInfos(wlanMeasure);
-                    stopScanningAndCloseProgressDialog();
+                    stopMeasuring();
                     new SaveMeasuresTask().execute();
                 } else {
                     wifiManager.startScan();
                 }
 
             } else {
-                stopScanningAndCloseProgressDialog();
+                stopMeasuring();
                 Toast.makeText(context, "Keine APs in der Umgebung gefunden", Toast.LENGTH_SHORT).show();
             }
         }
@@ -127,9 +87,21 @@ public abstract class Measure extends CommonClass {
         scanCount = 0;
     }
 
+    public void stopMeasuring() {
+        try {
+            /* Stop the continous scan */
+            getActivity().unregisterReceiver(measureResultReceiver);
+        } catch (IllegalArgumentException e) {
+            Log.i(TAG, e.toString());
+        } finally {
+            /* Hide the loading spinner */
+            hideProgressOutput();
+        }
+    }
+
+
     public void measureWlan() {
         if (placeIdString == null || placeIdString.isEmpty()) {
-/*            Toast.makeText(Measure.this, "Bitte geben Sie eine ID für den aktuellen Ort an", Toast.LENGTH_SHORT).show();*/
             Log.e(TAG, "placeIdString empty");
             return;
         }
@@ -152,9 +124,6 @@ public abstract class Measure extends CommonClass {
         progress = new ProgressDialog(getActivity());
 
         progress.setTitle("Messung der Signalstärken der WiFi-APs...");
-//        progress.setMessage("Durchschnittliche Signalstärke aller APs für verschiede Orte wird berechnet");
-
-//        progress.setMessage("Bitte warten Sie einen Moment...");
         progress.setMessage("");
         progress.setProgress(0);
         progress.setMax(scanCountMax);
@@ -163,13 +132,12 @@ public abstract class Measure extends CommonClass {
         progress.show();
     }
 
-    protected void outputDebugInfos(List<WlanMeasurements> wlanMeasure){
+    protected void outputDebugInfos(List<WlanMeasurements> wlanMeasure) {
         Log.d(TAG, wlanMeasure.toString());
     }
 
     protected void showMeasuresSaveProgress() {
         progress.setTitle("Alle Messdaten werden gespeichert...");
-//        progress.setMessage("Bitte warten Sie einen Moment...");
         progress.setMessage("");
         progress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         progress.setMax(wlanMeasure.size());
@@ -227,10 +195,8 @@ public abstract class Measure extends CommonClass {
                     scansCount = scansCount + 1;
                     publishProgress(scansCount);
                 }
-                /*Toast.makeText(context, "Alle Messungen wurden mit der Orientierung gespeichert", Toast.LENGTH_SHORT).show();*/
             } catch (Exception e) {
                 Log.e(TAG, e.toString());
-                /*Toast.makeText(context, "Die Messung konnte nicht gespeichert werden", Toast.LENGTH_SHORT).show();*/
             }
             return scansCount;
         }
@@ -241,7 +207,7 @@ public abstract class Measure extends CommonClass {
 
         protected void onPostExecute(Integer result) {
             updateMeasurementsCount();
-            hideProgressOutput();
+            stopMeasuring();
         }
     }
 }

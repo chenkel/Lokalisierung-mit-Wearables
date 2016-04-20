@@ -25,10 +25,7 @@ public class BaseGlassActivity extends Activity {
      */
     @Override
     public boolean onGenericMotionEvent(MotionEvent event) {
-        if (mGestureDetector != null) {
-            return mGestureDetector.onMotionEvent(event);
-        }
-        return false;
+        return mGestureDetector != null && mGestureDetector.onMotionEvent(event);
     }
 
     private GestureDetector createGestureDetector(final Context context) {

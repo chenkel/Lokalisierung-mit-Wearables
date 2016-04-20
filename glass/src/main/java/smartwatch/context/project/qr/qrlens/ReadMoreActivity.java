@@ -24,9 +24,6 @@ import java.util.regex.Pattern;
 
 import smartwatch.context.project.R;
 
-/**
- * Created by jonathan on 10/24/14.
- */
 public class ReadMoreActivity extends Activity {
     private List<CardBuilder> mCards;
     private CardScrollView mCardScrollView;
@@ -132,7 +129,7 @@ public class ReadMoreActivity extends Activity {
     }
 
     private void createCardsPaginated() {
-        mCards = new ArrayList<CardBuilder>();
+        mCards = new ArrayList<>();
 
         String[] chunks = mCardData.split("\\b");
 

@@ -32,9 +32,9 @@ import smartwatch.context.project.qr.barcode.scan.CaptureActivity;
  *
  * @see <a href="https://developers.google.com/glass/develop/gdk/touch">GDK Developer Guide</a>
  */
-public class MainActivity extends Activity {
+public class MainGlassActivity extends Activity {
 
-    private static final String TAG = MainActivity.class.getSimpleName();
+    private static final String TAG = MainGlassActivity.class.getSimpleName();
 
     // Index of api demo cards.
     // Visible for testing.
@@ -66,7 +66,7 @@ public class MainActivity extends Activity {
      * Create list of API demo cards.
      */
     private List<CardBuilder> createCards(Context context) {
-        ArrayList<CardBuilder> cards = new ArrayList<CardBuilder>();
+        ArrayList<CardBuilder> cards = new ArrayList<>();
 
         cards.add(new CardBuilder(context, CardBuilder.Layout.COLUMNS)
                 .setText(getString(R.string.qr_code_localization))
@@ -105,10 +105,10 @@ public class MainActivity extends Activity {
                 int soundEffect = Sounds.TAP;
                 switch (position) {
                     case CARD_QR:
-                        startActivity(new Intent(MainActivity.this, CaptureActivity.class));
+                        startActivity(new Intent(MainGlassActivity.this, CaptureActivity.class));
                         break;
                     case CARD_WIFI_BLE:
-                        startActivity(new Intent(MainActivity.this, WiFiBleActivity.class));
+                        startActivity(new Intent(MainGlassActivity.this, WiFiBleActivity.class));
                         break;
 
                     default:

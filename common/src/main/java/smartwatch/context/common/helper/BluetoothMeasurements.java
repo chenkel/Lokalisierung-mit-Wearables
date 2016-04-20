@@ -1,8 +1,6 @@
 package smartwatch.context.common.helper;
 
-/**
- * Created by jan on 07.04.16.
- */
+
 public class BluetoothMeasurements {
     String name;
     int rssi;

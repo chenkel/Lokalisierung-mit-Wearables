@@ -13,8 +13,13 @@ import android.net.wifi.WifiManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import org.altbeacon.beacon.Beacon;
+import org.altbeacon.beacon.RangeNotifier;
+import org.altbeacon.beacon.Region;
+
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,45 +30,54 @@ import smartwatch.context.common.helper.WlanMeasurements;
 public abstract class Localization extends CommonClass {
     private static final String TAG = Localization.class.getSimpleName();
     private List<WlanMeasurements> wlanMeasure = new ArrayList<>();
+
     private String priorPlaceId = "";
 
-    private ArrayList<Long> longArray;
+    private final String uuidBlue = "CE:BA:BE:97:DB:0C";
+    private final String uuidRed = "DD:3F:50:F2:76:74";
+    private final String uuidYellow = "FB:39:E6:2D:82:EF";
 
-    /*timestamp*/
-    long tstamp = 0;
-    long diff;
+    private Integer blueRssi = -200;
+    private Integer redRssi = -200;
+    private Integer yellowRssi = -200;
 
-    Integer[] bleRssi = {-200,-200,-200};
+    private String[] bluePlaces = {"1"};
+    private String[] redPlaces = {"3"};
+    private String[] yellowPlaces = {"5"};
 
-    String[] bluePlaces = {"1"};
-    String[] redPlaces = {"2"};
-    String[] yellowPlaces = {"3"};
-    Boolean placesCleared = false;
-
+    public RangeNotifier rangeNotifier = new RangeNotifier() {
+        @Override
+        public void didRangeBeaconsInRegion(Collection<Beacon> beacons, Region region) {
+            Log.i(TAG, "didRangeBeaconsInRegion");
+            if (beacons.size() > 0) {
+                for (Beacon measuredBeacon : beacons) {
+                    switch (measuredBeacon.getBluetoothAddress()) {
+                        case uuidBlue:
+                            setBlueRssi(measuredBeacon.getRssi());
+                            Log.i(TAG, "+++Blaues Beacons");
+                            break;
+                        case uuidRed:
+                            setRedRssi(measuredBeacon.getRssi());
+                            Log.i(TAG, "+++Rotes Beacons");
+                            break;
+                        case uuidYellow:
+                            setYellowRssi(measuredBeacon.getRssi());
+                            Log.i(TAG, "+++Gelbes Beacons");
+                            break;
+                    }
+                    Log.i(TAG, "RSSI: " + measuredBeacon.getRssi());
+                }
+            }
+        }
+    };
 
 
     protected final BroadcastReceiver localizationScanResultReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            /*Log.i(TAG, "localizationScanResultReceiver onReceive");*/
-
-            /*Timestamping*/
-//            long tmp = tstamp;
-//            tstamp = System.currentTimeMillis();
-//            if (tmp != 0L){
-//                diff = tstamp - tmp;
-//                Log.w(TAG, "WLAN Timestamp: " + diff);
-//                longArray.add(diff);
-//            }
-//            if (longArray.size()>100){
-//                Log.w(TAG, longArray.toString());
-//            }
-
-
             List<ScanResult> currentResults = wifiManager.getScanResults();
 
             int measurementCount = currentResults.size();
-            /*Log.i(TAG, "measurementCount: " + measurementCount);*/
             if (measurementCount > 0) {
                 for (ScanResult result : currentResults) {
                     wlanMeasure.add(new WlanMeasurements(
@@ -78,7 +92,8 @@ public abstract class Localization extends CommonClass {
                 wifiManager.startScan();
 
             } else {
-                stopScanningAndCloseProgressDialog();
+                stopLocalization();
+
                 Toast.makeText(context, "Keine APs in der Umgebung gefunden", Toast.LENGTH_SHORT).show();
             }
         }
@@ -87,7 +102,6 @@ public abstract class Localization extends CommonClass {
     public Localization(Activity activity) {
         super(activity);
         setResultReceiver(localizationScanResultReceiver);
-        longArray = new ArrayList<Long>(100);
     }
 
     public void startLocalization() {
@@ -104,7 +118,19 @@ public abstract class Localization extends CommonClass {
         showLocalizationProgressOutput();
     }
 
-    protected void showLocalizationProgressOutput(){
+    public void stopLocalization() {
+        try {
+            /* Stop the continous scan */
+            getActivity().unregisterReceiver(localizationScanResultReceiver);
+        } catch (IllegalArgumentException e) {
+            Log.i(TAG, e.toString());
+        } finally {
+            /* Hide the loading spinner */
+            hideProgressOutput();
+        }
+    }
+
+    protected void showLocalizationProgressOutput() {
         progress = new ProgressDialog(getActivity());
 
         progress.setTitle("Lokalisierung läuft");
@@ -116,7 +142,7 @@ public abstract class Localization extends CommonClass {
             @Override
             public void onCancel(DialogInterface dialog) {
                 Log.w(TAG, "Dialog canceled");
-                stopScanningAndCloseProgressDialog();
+                stopLocalization();
             }
         });
         progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
@@ -124,84 +150,61 @@ public abstract class Localization extends CommonClass {
     }
 
     protected void locateUser() {
-
-        Log.i(TAG, "Now in locate user");
-
         if (wlanMeasure.size() == 0) {
             Toast.makeText(getActivity(), "Bitte führen sie eine Messung durch", Toast.LENGTH_SHORT).show();
-            stopScanningAndCloseProgressDialog();
+            stopLocalization();
+            return;
         }
 
-        //if(receivedBluetooth)
-        //Hashmap mit Key Bluetooth Cell und Value Array aus Places    ("BeaconBlau"| [1130, 1132, 1134, 1336])
-        //placeList = [1130, 1132, 1134, 1336]
-
-        //else
-        //placeList = measurementDB.getAllDistinctPlacesFromMeasurements();
-
-
-                    /*Saves all places to placeList*/
+        /*Saves all places to placeList*/
         Cursor placeCursor = db.getAllDistinctPlacesFromMeasurements();
         if (placeCursor.getCount() == 0) {
             Toast.makeText(getActivity(), "Keine Messdaten vorhanden", Toast.LENGTH_SHORT).show();
-            stopScanningAndCloseProgressDialog();
+            stopLocalization();
+            return;
         }
+
         ArrayList<String> placeList = new ArrayList<>();
-        for (placeCursor.moveToFirst(); !placeCursor.isAfterLast(); placeCursor.moveToNext()) {
-            placeList.add(placeCursor.getString(0));
+        boolean beaconsFound = false;
+        placeList.clear();
+
+        /* Anpassung der placeList abhängig von empfangenen Bluetooth Beacons */
+        if (blueRssi > -70) {
+            Collections.addAll(placeList, bluePlaces);
+            beaconsFound = true;
         }
-        placeCursor.close();
 
-        /*Anpassung der placeList abhängig von empfangenen Bluetooth Beacons*/
-        /*if(receivedBluetooth){placeList = {1,2,3,4,5}*/
+        if (redRssi > -70) {
+            Collections.addAll(placeList, redPlaces);
+            beaconsFound = true;
+        }
 
+        if (yellowRssi > -75) {
+            Collections.addAll(placeList, yellowPlaces);
+            beaconsFound = true;
+        }
 
-            /*Log.i(TAG, "BLE Rssi Size: " + bleRssi.toString());*/
-            if (bleRssi[0] > -70) {
-                if (!placesCleared) {
-                    placeList.clear();
-                }
-                for (String place : bluePlaces) {
-                    placeList.add(place);
-                }
-                placesCleared = true;
+        if (!beaconsFound) {
+            for (placeCursor.moveToFirst(); !placeCursor.isAfterLast(); placeCursor.moveToNext()) {
+                placeList.add(placeCursor.getString(0));
             }
-
-            if (bleRssi[1] > -70) {
-                if (!placesCleared) {
-                    placeList.clear();
-                }
-                for (String place : redPlaces) {
-                    placeList.add(place);
-                }
-                placesCleared = true;
-            }
-
-            if (bleRssi[2] > -75) {
-                if (!placesCleared) {
-                    placeList.clear();
-                }
-                for (String place : yellowPlaces) {
-                    placeList.add(place);
-                }
-                placesCleared = true;
-            }
+            placeCursor.close();
+        }
 
 
-                    /*Am Ende wird jedem Ort eine sse zugeordnet*/
+        /*Am Ende wird jedem Ort eine sse zugeordnet*/
         HashMap<String, Double> sseMap = new HashMap<>();
         List<WlanMeasurements> modellWerte = new ArrayList<>();
 
         for (String place : placeList) {
-                        /*Get all BSSI and corresponding RSSI for place*/
+            /*Get all BSSI and corresponding RSSI for place*/
             modellWerte.clear();
 
             /*Fills the cursor with all BSSIDs and their RSSIs at the place*/
             Cursor modelCursor = db.getAverageRssiByPlace(place);
-
-                        /*Fügt in Model Data List dem Key bssi den Value rssi aus Datenbank hinzu
-                        * bssi,rssi, ssid
-                        */
+            /* Fügt in Model Data List dem Key bssi den Value rssi aus Datenbank hinzu
+            bssi,rssi, ssid
+            */
             for (modelCursor.moveToFirst(); !modelCursor.isAfterLast(); modelCursor.moveToNext()) {
                 WlanMeasurements messWert = new WlanMeasurements(modelCursor.getString(0),
                         modelCursor.getInt(1), modelCursor.getString(2));
@@ -210,17 +213,8 @@ public abstract class Localization extends CommonClass {
             modelCursor.close();
 
             double sseValue = CalculationHelper.calculateSse(wlanMeasure, modellWerte);
-
-            /*If not in range of expected Bluetooth Beacon
-            AND Sicherheitswert<20 THEN sseValue+20/modellWerte.size()
-             */
-
-            /*Log.i(TAG, " " + sseValue);*/
             sseMap.put(place, sseValue);
         }
-
-        placesCleared = false;
-
 
         if (!sseMap.isEmpty()) {
             Map.Entry<String, Double> minEntry = CalculationHelper.minMapValue(sseMap);
@@ -230,8 +224,7 @@ public abstract class Localization extends CommonClass {
 
                 /*Toast.makeText(context, "Ort: " + foundPlaceId, Toast.LENGTH_SHORT).show();*/
                 if (!priorPlaceId.equals(foundPlaceId)) {
-                    if ((priorPlaceId.equals("2") && foundPlaceId.equals("4")) ||
-                            (priorPlaceId.equals("1") && foundPlaceId.equals("2")) ||
+                    if ((priorPlaceId.equals("1") && foundPlaceId.equals("2")) ||
                             (priorPlaceId.equals("2") && foundPlaceId.equals("1")) ||
                             (priorPlaceId.equals("3") && foundPlaceId.equals("4")) ||
                             (priorPlaceId.equals("4") && foundPlaceId.equals("3")) ||
@@ -270,7 +263,7 @@ public abstract class Localization extends CommonClass {
         wlanMeasure.clear();
     }
 
-    protected void updateLocalizationProgressUI(String foundPlaceId, String locationDescription){
+    protected void updateLocalizationProgressUI(String foundPlaceId, String locationDescription) {
         progress.setTitle("Ort: " + foundPlaceId);
         progress.setMessage(locationDescription);
     }
@@ -308,16 +301,19 @@ public abstract class Localization extends CommonClass {
 
     protected abstract void notifyLocationChange(String priorPlaceId, String foundPlaceId);
 
-
-    protected void outputDetailedPlaceInfoDebug(String output){
-        Log.i(TAG, output);
+    protected void outputDetailedPlaceInfoDebug(String output) {
+        /*Log.i(TAG, output);*/
     }
 
-    public  void bleAccess(Integer[] rssi){
-        bleRssi[0] = rssi[0];
-        bleRssi[1] = rssi[1];
-        bleRssi[2] = rssi[2];
+    public void setBlueRssi(Integer blueRssi) {
+        this.blueRssi = blueRssi;
     }
 
+    public void setRedRssi(Integer redRssi) {
+        this.redRssi = redRssi;
+    }
 
+    public void setYellowRssi(Integer yellowRssi) {
+        this.yellowRssi = yellowRssi;
+    }
 }

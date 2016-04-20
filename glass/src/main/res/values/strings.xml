@@ -1,7 +1,6 @@
 <resources>
     <string name="app_name">HILFE!</string>
     <string name="title_activity_main">HILFE!</string>
-    <string name="text_wifi_ble">Kombiniert</string>
     <string name="wifi_ble_localization">Kombinierte Lokalisierung</string>
     <string name="wifi_ble_footnote">Per WiFi und BLE Beacons</string>
     <string name="qr_code_localization">Einfache\u0020\u0020\u0020\u0020\u0020 QR-Code Lokalisierung</string>
@@ -15,13 +14,10 @@
     <string name="wifi_ble_scan_place5">Messdaten für Ort 5 aufnehmen</string>
     <string name="wifi_ble_scan_place6">Messdaten für Ort 6 aufnehmen</string>
     <string name="wifi_ble_scan_place7">Messdaten für Ort 7 aufnehmen</string>
-    <string name="wifi_ble_scan_place8">Messdaten für Ort 8 aufnehmen</string>
-    <string name="wifi_ble_scan_place_footnote">20 Messungen</string>
     <string name="wifi_ble_calculate">Durschnitt aller Messdaten berechnen</string>
     <string name="wifi_ble_delete_all">Alle Messdaten löschen</string>
     <string name="wifi_ble_scan_delete_all_footnote">Ohne Vorwarnung!</string>
     <string name="glass_voice_trigger">Guide me to the exit</string>
-    <string name="glass_voice_prompt">which method?</string>
     <string name="scan_another">Scan again</string>
     <string name="read_more">Read more</string>
     <string name="unable_to_read">Unable to read QR code</string>

@@ -1,7 +1,6 @@
 package smartwatch.context.common.helper;
 
 import android.net.wifi.ScanResult;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.HashMap;

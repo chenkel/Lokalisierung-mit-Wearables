@@ -13,32 +13,30 @@ import smartwatch.context.common.superclasses.Measure;
 public class ProcessingActivity extends Activity {
     private static final String TAG = ProcessingActivity.class.getSimpleName();
 
-    private Context context;
-    private boolean invalid = false;
-
     boolean allowDestroy = false;
     private Measure mMeasure;
-    private AverageMeasures mAverageMeasures;
-    private int maxProgress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_localization);
+        setContentView(R.layout.activity_processing);
 
         final TextView descriptionTextView = (TextView) findViewById(R.id.description);
         final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar);
         final TextView processingTextView = (TextView) findViewById(R.id.processing);
 
+        processingTextView.setText("0/10");
+
 
         this.setResult(RESULT_CANCELED);
 
-        context = this;
-        invalid = false;
+        Context context = this;
+        boolean invalid = false;
 
         Intent data = getIntent();
         Bundle res = data.getExtras();
+
 
         String mode = res.getString("mode");
 
@@ -46,8 +44,6 @@ public class ProcessingActivity extends Activity {
             switch (mode) {
                 case "measure":
                     mMeasure = new Measure(this) {
-
-
                         @Override
                         protected void showMeasureProgress() {
                             // TODO: 15.04.16 Strings to resources
@@ -60,11 +56,11 @@ public class ProcessingActivity extends Activity {
                         protected void showMeasuresSaveProgress() {
                             descriptionTextView.setText("Alle Messdaten werden gespeichert...");
                             progressBar.setMax(wlanMeasure.size());
+                            allowDestroy = true;
                         }
 
                         @Override
                         public void updateMeasurementsCount() {
-                            allowDestroy = true;
                         }
 
                         @Override
@@ -78,7 +74,6 @@ public class ProcessingActivity extends Activity {
                             if (allowDestroy) {
                                 onPause();
                             }
-
                         }
                     };
                     String placeId = res.getString("placeId");
@@ -87,7 +82,7 @@ public class ProcessingActivity extends Activity {
 
                     break;
                 case "average":
-                    mAverageMeasures = new AverageMeasures(this) {
+                    AverageMeasures mAverageMeasures = new AverageMeasures(this) {
                         @Override
                         protected void showCalculationProgressOutput() {
                             descriptionTextView.setText("Durchschnittliche Signalstärken aller Router für die verschieden Messpunkte werden berechnet...");
@@ -107,13 +102,11 @@ public class ProcessingActivity extends Activity {
 
                         @Override
                         protected void hideProgressOutput() {
-                            allowDestroy = true;
                             onPause();
                         }
                     };
 
                     mAverageMeasures.calculateAverageMeasures();
-
                     break;
             }
         }
@@ -122,8 +115,6 @@ public class ProcessingActivity extends Activity {
     @Override
     protected void onPause() {
         super.onPause();
-        mMeasure.stopScanningAndCloseProgressDialog();
-        this.setResult(RESULT_OK);
         finish();
     }
 
@@ -140,6 +131,4 @@ public class ProcessingActivity extends Activity {
             }
         }
     }
-
-
 }

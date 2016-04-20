@@ -15,7 +15,7 @@ import smartwatch.context.common.db.DatabaseHelper;
 
 public abstract class CommonClass {
     private static final String TAG = CommonClass.class.getSimpleName();
-    private Activity activity;
+    protected Activity activity;
 
     protected ProgressDialog progress;
     protected WifiManager wifiManager;
@@ -48,7 +48,8 @@ public abstract class CommonClass {
 
     protected void hideProgressOutput(){
         if (progress != null) {
-            progress.hide();
+            Log.w(TAG, "progress is not null");
+            progress.dismiss();
         }
     }
 
@@ -56,21 +57,6 @@ public abstract class CommonClass {
         if (progress != null) {
             progress.setMax(count);
         }
-    }
-
-
-    public void stopScanningAndCloseProgressDialog() {
-        try {
-            /* Stop the continous scan */
-            activity.unregisterReceiver(resultReceiver);
-        } catch (IllegalArgumentException e) {
-            Log.i(TAG, e.toString());
-        } finally {
-            /* Hide the loading spinner */
-            hideProgressOutput();
-        }
-
-
     }
 
     public Activity getActivity() {

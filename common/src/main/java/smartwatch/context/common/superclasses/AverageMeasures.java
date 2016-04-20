@@ -5,7 +5,6 @@ import android.app.ProgressDialog;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.view.Window;
 
 
 public class AverageMeasures extends CommonClass {
@@ -26,7 +25,7 @@ public class AverageMeasures extends CommonClass {
         /*progress.setMessage("Bitte warten Sie einen Moment...");*/
         progress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         progress.show();
-    };
+    }
 
     public void calculateAverageMeasures() {
         new AverageMeasures.DoCalculationTask().execute();

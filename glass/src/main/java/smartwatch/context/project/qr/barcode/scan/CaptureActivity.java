@@ -19,8 +19,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -30,7 +28,6 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.google.android.glass.widget.CardScrollAdapter;
 import com.google.android.glass.widget.CardScrollView;
@@ -51,7 +48,7 @@ import com.google.zxing.client.result.ResultParser;
 //import com.jaxbot.glass.barcode.migrated.BeepManager;
 //import com.jaxbot.glass.barcode.migrated.InactivityTimer;
 //import com.jaxbot.glass.barcode.scan.ui.ViewfinderView;
-//import com.jaxbot.glass.qrlens.MainActivity;
+//import com.jaxbot.glass.qrlens.MainGlassActivity;
 //import com.jaxbot.glass.qrlens.R;
 
 import java.io.IOException;
@@ -342,7 +339,7 @@ public final class CaptureActivity extends BaseGlassActivity implements
 
         this.onResume();
 
-        /*Intent intent = new Intent(this, MainActivity.class);
+        /*Intent intent = new Intent(this, MainGlassActivity.class);
         intent.putExtra("qr_type", parsedResult.getType().toString());
         intent.putExtra("qr_data", parsedResult.toString());
         startActivityForResult(intent, 2);*/
@@ -366,10 +363,7 @@ public final class CaptureActivity extends BaseGlassActivity implements
             }
 
             decodeOrStoreSavedBitmap(null, null);
-        } catch (IOException e) {
-            Log.w(TAG, e);
-            displayFrameworkBugMessageAndExit();
-        } catch (InterruptedException e) {
+        } catch (IOException | InterruptedException e) {
             Log.w(TAG, e);
             displayFrameworkBugMessageAndExit();
         }

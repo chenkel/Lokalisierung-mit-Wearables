@@ -1,20 +1,9 @@
 <resources>
-    <string name="app_name">Smartphonelocalization</string>
+    <string name="app_name">Notausgang</string>
 
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
-
-    <string name="wlan">WLAN</string>
-    <string name="ble">Bluetooth</string>
-    <string name="qrcode">QR-Code</string>
     <string name="db_manager">DB-Manager</string>
-    <string name="title_activity_wlan">WLAN RSSI</string>
-    <string name="ble_hallo">Hallo im BLE Screen</string>
-    <string name="qrcode_hallo">Hallo im QR-Code Screen</string>
-    <string name="title_activity_ble">Bluetooth Low Energy</string>
-    <string name="title_activity_qrcode">QR-Code</string>
+    <string name="title_activity_localization">Kombinierte Lokalisierung mit WiFi und BLE</string>
     <string name="wlan_scan_button">Scanne diesen Ort</string>
-    <string name="wlan_commit_button">Speichere Messwerte</string>
     <string name="wlan_model_button">Durchschnittswerte berechnen</string>
     <string name="place_id">Ort-ID</string>
     <string name="wlan_prev_scan_count_text">Scan Informationen diesem Ort: "</string>
@@ -23,14 +12,6 @@
     <string name="wlan_lokalisierung_button">Lokalisiere mich</string>
     <string name="averages_text">Debugging Ausgabe</string>
     <string name="google_app_id">790214873108</string>
-    <string name="graphic_test_text">Test Textfield</string>
-    <string name="ble_calculate_distance">Distance bestimmen</string>
-    <string name="ble_delete_list">Liste löschen</string>
-    <string name="ble_calibration_average">Output für die Kalibrierung</string>
-    <string name="ble_row_name">Name</string>
-    <string name="ble_row_number">Number</string>
-    <string name="ble_messwert">Messwert</string>
-    <string name="title_activity_graphic">Grafik</string>
 
 
 </resources>

@@ -1,9 +1,7 @@
 package smartwatch.context.common.helper;
 
-import android.app.IntentService;
 import android.app.Service;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.os.Binder;
 import android.os.IBinder;
 import android.os.RemoteException;
@@ -20,12 +18,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 
 
-public class BluetoothData extends Service implements BeaconConsumer {
+public class BluetoothService extends Service implements BeaconConsumer {
     private static final String TAG = "Bluetooth Data";
 
     private IBinder mBinder = new LocalBinder();
@@ -44,7 +41,7 @@ public class BluetoothData extends Service implements BeaconConsumer {
     private final String uuidBlue = "CE:BA:BE:97:DB:0C";
     private final String uuidRed = "DD:3F:50:F2:76:74";
     Map<String, Number> avgRssi;
-    BluetoothData bldata;
+    BluetoothService bldata;
     private BeaconManager beaconManager;
     /*Constant txPower transmitted by the beacons*/
     private int txPowerBlue;
@@ -66,9 +63,9 @@ public class BluetoothData extends Service implements BeaconConsumer {
     private final double constPlus = 0.7610257596;*/
 
 
-//    public BluetoothData() {
+//    public BluetoothService() {
 //        super();
-//        Log.i(TAG, "Im Konstruktor von BluetoothData");
+//        Log.i(TAG, "Im Konstruktor von BluetoothService");
 //    }
 
     public int getRssiQueueBlue() {
@@ -77,10 +74,10 @@ public class BluetoothData extends Service implements BeaconConsumer {
 
     @Override
     public void onCreate() {
-//        Log.i(TAG, "onCreate -- BluetoothData");
+//        Log.i(TAG, "onCreate -- BluetoothService");
         super.onCreate();
 
-        longArray = new ArrayList<Long>(100);
+        longArray = new ArrayList<>(100);
 
         beaconManager = BeaconManager.getInstanceForApplication(this);
         beaconManager.getBeaconParsers().add(new BeaconParser().
@@ -192,7 +189,7 @@ public class BluetoothData extends Service implements BeaconConsumer {
     }
 
 /*    public void unbindManager() {
-        Log.w(TAG, "unbindManager - BluetoothData");
+        Log.w(TAG, "unbindManager - BluetoothService");
         beaconManager.unbind(this);
     }*/
 
@@ -203,7 +200,7 @@ public class BluetoothData extends Service implements BeaconConsumer {
 
     @Override
     public IBinder onBind(Intent intent) {
-//        Log.i(TAG, "onBind -- BluetoothData");
+//        Log.i(TAG, "onBind -- BluetoothService");
         return mBinder;
     }
 
@@ -216,14 +213,14 @@ public class BluetoothData extends Service implements BeaconConsumer {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-//        Log.i(TAG, "onStartCommand -- BluetoothData");
+//        Log.i(TAG, "onStartCommand -- BluetoothService");
         return super.onStartCommand(intent, flags, startId);
     }
 
     public class LocalBinder extends Binder {
-        public BluetoothData getService() {
+        public BluetoothService getService() {
             // Return this instance of LocalService so clients can call public methods
-            return BluetoothData.this;
+            return BluetoothService.this;
         }
     }
 

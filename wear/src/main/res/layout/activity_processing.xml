@@ -27,7 +27,7 @@
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:textSize="12sp"
-            android:text="Lokalisierung läuft..."
+            android:text="0/10"
             android:padding="5dp"
             android:layout_gravity="bottom|start"
             android:textColor="@color/white" />

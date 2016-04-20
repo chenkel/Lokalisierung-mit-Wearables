@@ -97,7 +97,7 @@ public class MainActivity extends Activity {
     {
         allowDestroy = false;
         Intent intent = new Intent(this, ReadMoreActivity.class);
-        intent.putExtra("qr_data", mCardData.toString());
+        intent.putExtra("qr_data", mCardData);
         startActivityForResult(intent, 3);
     }
 
@@ -178,7 +178,7 @@ public class MainActivity extends Activity {
     }
 
     private void showError(String error) {
-        mCards = new ArrayList<CardBuilder>();
+        mCards = new ArrayList<>();
         mCards.add(new CardBuilder(this, CardBuilder.Layout.ALERT)
                         .setIcon(R.drawable.ic_alert)
                         .setText(error)
@@ -192,7 +192,7 @@ public class MainActivity extends Activity {
 
     private void createCards(String data) {
         mCardData = data;
-        mCards = new ArrayList<CardBuilder>();
+        mCards = new ArrayList<>();
 
         if (data.length() > 200 || data.split("\n").length > 7)
             mNeedsReadMore = true;

@@ -13,8 +13,8 @@ import java.util.ArrayList;
 
 import smartwatch.context.common.superclasses.Measure;
 
-public class MainActivity extends Activity {
-    private static final String TAG = MainActivity.class.getSimpleName();
+public class MainWatchActivity extends Activity {
+    private static final String TAG = MainWatchActivity.class.getSimpleName();
 
     private Measure mMeasure;
     private TextView mHeader;
@@ -28,7 +28,7 @@ public class MainActivity extends Activity {
                     // TODO: 15.04.16 case 1, 2, 3 should be replaced by constants
                     switch (clickedMenu) {
                         case WearableAdapter.ITEM_LOCALIZATION:
-                            startActivity(new Intent(MainActivity.this, LocalizationActivity.class));
+                            startActivity(new Intent(MainWatchActivity.this, LocalizationActivity.class));
                             break;
                         case WearableAdapter.ITEM_SCAN1:
                         case WearableAdapter.ITEM_SCAN2:
@@ -38,14 +38,14 @@ public class MainActivity extends Activity {
                         case WearableAdapter.ITEM_SCAN6:
                         case WearableAdapter.ITEM_SCAN7:
                         case WearableAdapter.ITEM_SCAN8:
-                            Intent intent = new Intent(MainActivity.this, ProcessingActivity.class);
+                            Intent intent = new Intent(MainWatchActivity.this, ProcessingActivity.class);
                             intent.putExtra("mode", "measure");
                             intent.putExtra("placeId", String.valueOf(clickedMenu));
                             startActivity(intent);
                             break;
 
                         case WearableAdapter.ITEM_CALCULATE:
-                            intent = new Intent(MainActivity.this, ProcessingActivity.class);
+                            intent = new Intent(MainWatchActivity.this, ProcessingActivity.class);
                             intent.putExtra("mode", "average");
                             startActivity(intent);
                             break;
@@ -53,7 +53,7 @@ public class MainActivity extends Activity {
                             mMeasure.deleteAllMeasurements();
                             break;
                         default:
-                            Toast.makeText(MainActivity.this,
+                            Toast.makeText(MainWatchActivity.this,
                                     String.format("You selected item #%s",
                                             viewHolder.getLayoutPosition() + 1),
                                     Toast.LENGTH_SHORT).show();
@@ -64,7 +64,7 @@ public class MainActivity extends Activity {
 
                 @Override
                 public void onTopEmptyRegionClick() {
-                    Toast.makeText(MainActivity.this,
+                    Toast.makeText(MainWatchActivity.this,
                             "Top empty area tapped", Toast.LENGTH_SHORT).show();
                 }
             };

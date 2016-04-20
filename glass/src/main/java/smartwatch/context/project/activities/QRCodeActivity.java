@@ -48,7 +48,7 @@ public final class QRCodeActivity extends Activity {
      * Creates list of cards that showcase different type of {@link CardBuilder} API.
      */
     private List<CardBuilder> createCards(Context context) {
-        ArrayList<CardBuilder> cards = new ArrayList<CardBuilder>();
+        ArrayList<CardBuilder> cards = new ArrayList<>();
 
         cards.add(new CardBuilder(context, CardBuilder.Layout.COLUMNS)
                 .setText(getString(R.string.wifi_ble_localization))
