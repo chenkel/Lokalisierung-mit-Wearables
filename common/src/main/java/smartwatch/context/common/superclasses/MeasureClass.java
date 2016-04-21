@@ -17,13 +17,13 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-import smartwatch.context.common.helper.WlanMeasurements;
+import smartwatch.context.common.helper.WlanMeasurement;
 
 
-public abstract class Measure extends CommonClass {
-    private static final String TAG = Measure.class.getSimpleName();
+public abstract class MeasureClass extends CommonClass {
+    private static final String TAG = MeasureClass.class.getSimpleName();
     public int scanCountMax;
-    protected final List<WlanMeasurements> wlanMeasure = new ArrayList<>();
+    protected final List<WlanMeasurement> wlanMeasure = new ArrayList<>();
     protected String placeIdString;
     private long initTime = 0;
     private int scanCount;
@@ -40,7 +40,7 @@ public abstract class Measure extends CommonClass {
 
 
                 for (ScanResult result : currentResults) {
-                    wlanMeasure.add(new WlanMeasurements(
+                    wlanMeasure.add(new WlanMeasurement(
                             result.BSSID,
                             result.level,
                             result.SSID
@@ -65,7 +65,7 @@ public abstract class Measure extends CommonClass {
         }
     };
 
-    public Measure(Activity activity) {
+    public MeasureClass(Activity activity) {
         super(activity);
 
         scanCountMax = 3;
@@ -98,7 +98,7 @@ public abstract class Measure extends CommonClass {
             Log.e(TAG, "placeIdString empty");
             return;
         }
-        outputList.clear();
+
         wlanMeasure.clear();
 
         scanCount = 0;
@@ -125,7 +125,7 @@ public abstract class Measure extends CommonClass {
         progress.show();
     }
 
-    protected void outputDebugInfos(List<WlanMeasurements> wlanMeasure) {
+    protected void outputDebugInfos(List<WlanMeasurement> wlanMeasure) {
         Log.d(TAG, wlanMeasure.toString());
     }
 
@@ -182,9 +182,9 @@ public abstract class Measure extends CommonClass {
         protected Integer doInBackground(Void... arg0) {
             int scansCount = 0;
             try {
-                for (WlanMeasurements ap : wlanMeasure) {
+                for (WlanMeasurement ap : wlanMeasure) {
                     /* create a new record in DB */
-                    long affectedRow = db.createMeasurementsRecords(ap.getBssi(), ap.getSsid(), ap.getRssi(), placeIdString);
+                    long affectedRow = db.addMeasurementsRecords(ap.getBssi(), ap.getSsid(), ap.getRssi(), placeIdString);
                     if (affectedRow == -1){
                         Log.e(TAG, "Error inserting average Records");
                     }

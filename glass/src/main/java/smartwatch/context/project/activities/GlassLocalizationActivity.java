@@ -23,7 +23,7 @@ import org.altbeacon.beacon.Region;
 import java.util.ArrayList;
 import java.util.List;
 
-import smartwatch.context.common.superclasses.Localization;
+import smartwatch.context.common.superclasses.LocalizationClass;
 import smartwatch.context.project.card.CardAdapter;
 
 
@@ -38,7 +38,7 @@ public class GlassLocalizationActivity extends Activity implements BeaconConsume
     private CardScrollView mCardScroller;
     private CardBuilder mScanCard;
 
-    private Localization mLocalization;
+    private LocalizationClass mLocalizationClass;
 
     private BeaconManager beaconManager;
 
@@ -55,7 +55,7 @@ public class GlassLocalizationActivity extends Activity implements BeaconConsume
 
         initializeBeaconManager();
 
-        mLocalization = new Localization(this) {
+        mLocalizationClass = new LocalizationClass(this) {
             @Override
             protected void updateLocalizationProgressUI(String foundPlaceId, String placeDescription) {
                 Log.i(TAG, "foundPlaceId: " + foundPlaceId);
@@ -74,7 +74,7 @@ public class GlassLocalizationActivity extends Activity implements BeaconConsume
             protected void showLocalizationProgressOutput() {
             }
         };
-        mLocalization.startLocalization();
+        mLocalizationClass.startLocalization();
     }
 
     /**
@@ -98,7 +98,7 @@ public class GlassLocalizationActivity extends Activity implements BeaconConsume
 
     @Override
     public void onBeaconServiceConnect() {
-        beaconManager.setRangeNotifier(mLocalization.rangeNotifier);
+        beaconManager.setRangeNotifier(mLocalizationClass.rangeNotifier);
         try {
             beaconManager.startRangingBeaconsInRegion(new Region("myRangingWatchId", null, null, null));
         } catch (RemoteException e) {
@@ -116,7 +116,7 @@ public class GlassLocalizationActivity extends Activity implements BeaconConsume
     protected void onPause() {
         beaconManager.unbind(this);
         mCardScroller.deactivate();
-        mLocalization.stopLocalization();
+        mLocalizationClass.stopLocalization();
         super.onPause();
     }
 

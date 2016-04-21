@@ -21,7 +21,10 @@ import org.altbeacon.beacon.BeaconManager;
 import org.altbeacon.beacon.BeaconParser;
 import org.altbeacon.beacon.Region;
 
-import smartwatch.context.common.superclasses.AverageMeasures;
+import java.util.ArrayList;
+import java.util.List;
+
+import smartwatch.context.common.superclasses.AverageMeasuresClass;
 import smartwatch.context.project.helper.DBManager;
 
 public class MainPhoneActivity extends Activity implements View.OnClickListener, BeaconConsumer {
@@ -32,9 +35,14 @@ public class MainPhoneActivity extends Activity implements View.OnClickListener,
     TextView textViewDebug;
     ArrayAdapter wifiArrayAdapter;
     private BeaconManager beaconManager;
-    private PhoneLocalization mLocalization;
-    private AverageMeasures mAverage;
-    private PhoneMeasure mMeasure;
+    private PhoneLocalizationClass mLocalization;
+    private AverageMeasuresClass mAverage;
+    private PhoneMeasureClass mMeasure;
+
+    /**
+     * The Output list.
+     */
+    protected List<String> outputList;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -43,11 +51,13 @@ public class MainPhoneActivity extends Activity implements View.OnClickListener,
 
         setupWiFiAndBLE();
 
-        mLocalization = new PhoneLocalization(this);
+        mLocalization = new PhoneLocalizationClass(this);
 
-        mMeasure = new PhoneMeasure(this);
+        mMeasure = new PhoneMeasureClass(this);
 
-        mAverage = new AverageMeasures(this);
+        mAverage = new AverageMeasuresClass(this);
+
+        outputList = new ArrayList<>();
 
         initUI();
     }
@@ -119,7 +129,7 @@ public class MainPhoneActivity extends Activity implements View.OnClickListener,
         /* Register components from activity */
         final ListView wifiListView = (ListView) findViewById(R.id.listViewWifi);
         /* Setup ArrayAdapter displaying scan results */
-        wifiArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, mMeasure.outputList);
+        wifiArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, outputList);
         wifiListView.setAdapter(wifiArrayAdapter);
     }
 
@@ -130,10 +140,12 @@ public class MainPhoneActivity extends Activity implements View.OnClickListener,
     private void reactToMenuClick(View view) {
         switch (view.getId()) {
             case R.id.wlan_localization:
+                outputList.clear();
                 mLocalization.startLocalization();
                 break;
 
             case R.id.wlan_scan:
+                outputList.clear();
                 mMeasure.measureWlan();
                 break;
 

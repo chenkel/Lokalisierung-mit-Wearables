@@ -23,7 +23,6 @@ android {
     dexOptions {
         preDexLibraries true
         javaMaxHeapSize "4g" // Use gig increments depending on needs
-        incremental true
     }
 }
 
@@ -32,7 +31,7 @@ repositories {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'org.altbeacon:android-beacon-library:2.7'
     compile project(':common')
 }

@@ -13,14 +13,14 @@ import org.altbeacon.beacon.BeaconManager;
 import org.altbeacon.beacon.BeaconParser;
 import org.altbeacon.beacon.Region;
 
-import smartwatch.context.common.superclasses.Localization;
+import smartwatch.context.common.superclasses.LocalizationClass;
 
 public class LocalizationActivity extends Activity implements BeaconConsumer {
     /* private static final String TAG = LocalizationActivity.class.getSimpleName(); */
 
     private BeaconManager beaconManager;
 
-    private Localization mLocalization;
+    private LocalizationClass mLocalizationClass;
     private Vibrator v;
 
     @Override
@@ -34,7 +34,7 @@ public class LocalizationActivity extends Activity implements BeaconConsumer {
         final TextView processingTextView = (TextView) findViewById(R.id.processing);
         processingTextView.setText(R.string.processing_localization_running);
 
-        mLocalization = new Localization(this) {
+        mLocalizationClass = new LocalizationClass(this) {
             @Override
             protected void notifyLocationChange(String priorPlaceId, String foundPlaceId) {
                 v = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
@@ -51,7 +51,7 @@ public class LocalizationActivity extends Activity implements BeaconConsumer {
                 descriptionTextView.setText(locationDescription);
             }
         };
-        mLocalization.startLocalization();
+        mLocalizationClass.startLocalization();
 
         initializeBeaconManager();
 
@@ -60,7 +60,7 @@ public class LocalizationActivity extends Activity implements BeaconConsumer {
     @Override
     protected void onPause() {
         super.onPause();
-        mLocalization.stopLocalization();
+        mLocalizationClass.stopLocalization();
         beaconManager.unbind(this);
     }
 
@@ -73,7 +73,7 @@ public class LocalizationActivity extends Activity implements BeaconConsumer {
 
     @Override
     public void onBeaconServiceConnect() {
-        beaconManager.setRangeNotifier(mLocalization.rangeNotifier);
+        beaconManager.setRangeNotifier(mLocalizationClass.rangeNotifier);
 
         try {
             beaconManager.startRangingBeaconsInRegion(new Region("myRangingWatchId", null, null, null));

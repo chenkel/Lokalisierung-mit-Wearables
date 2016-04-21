@@ -33,8 +33,8 @@ import com.google.android.glass.widget.CardScrollView;
 import java.util.ArrayList;
 import java.util.List;
 
-import smartwatch.context.common.superclasses.AverageMeasures;
-import smartwatch.context.common.superclasses.Measure;
+import smartwatch.context.common.superclasses.AverageMeasuresClass;
+import smartwatch.context.common.superclasses.MeasureClass;
 import smartwatch.context.project.R;
 import smartwatch.context.project.card.CardAdapter;
 
@@ -58,8 +58,8 @@ public final class WiFiBleActivity extends Activity {
     private static final int CARD_DELETE = 10;
 
     private CardScrollView mCardScroller;
-    private Measure mMeasure;
-    private AverageMeasures mAverageMeasures;
+    private MeasureClass mMeasureClass;
+    private AverageMeasuresClass mAverageMeasuresClass;
 
 
     @Override
@@ -71,12 +71,12 @@ public final class WiFiBleActivity extends Activity {
         setContentView(mCardScroller);
         setCardScrollerListener();
 
-        mMeasure = new Measure(this){
+        mMeasureClass = new MeasureClass(this){
             @Override
             public void updateMeasurementsCount() {}
         };
 
-        mAverageMeasures = new AverageMeasures(this);
+        mAverageMeasuresClass = new AverageMeasuresClass(this);
     }
 
     /**
@@ -169,17 +169,17 @@ public final class WiFiBleActivity extends Activity {
                     case CARD_SCAN6:
                     case CARD_SCAN7:
                     case CARD_SCAN8:
-                        mMeasure.setScanCountMax(5);
-                        mMeasure.setPlaceIdString(String.valueOf(position));
-                        mMeasure.measureWlan();
+                        mMeasureClass.setScanCountMax(5);
+                        mMeasureClass.setPlaceIdString(String.valueOf(position));
+                        mMeasureClass.measureWlan();
                         break;
 
                     case CARD_CALCULATE:
-                        mAverageMeasures.calculateAverageMeasures();
+                        mAverageMeasuresClass.calculateAverageMeasures();
                         break;
                     case CARD_DELETE:
                         soundEffect = Sounds.SUCCESS;
-                        mMeasure.deleteAllMeasurements();
+                        mMeasureClass.deleteAllMeasurements();
                         break;
                     default:
                         soundEffect = Sounds.ERROR;

@@ -25,22 +25,46 @@ import java.util.List;
 import java.util.Map;
 
 import smartwatch.context.common.helper.CalculationHelper;
-import smartwatch.context.common.helper.WlanMeasurements;
+import smartwatch.context.common.helper.WlanMeasurement;
 
-public abstract class Localization extends CommonClass {
-    private static final String TAG = Localization.class.getSimpleName();
-    private final List<WlanMeasurements> wlanMeasure = new ArrayList<>();
+/**
+ * The abstract class LocalizationClass offers methods and attributes to locate a user by
+ * two methods: WiFi-Fingerprinting and Bluetooth Beacons.
+ */
+public abstract class LocalizationClass extends CommonClass {
+    private static final String TAG = LocalizationClass.class.getSimpleName();
+    private final List<WlanMeasurement> wlanMeasure = new ArrayList<>();
     private String priorPlaceId = "";
-    private Integer blueRssi = -200;
+
+    private Integer blueRssi = -200; // initial value lower than any real value (here: rssi <= -100)
     private Integer redRssi = -200;
     private Integer yellowRssi = -200;
+
+    private final String[] bluePlaces = {"1"}; // placeIds in cell of blue beacon
+    private final String[] redPlaces = {"3"}; // placeIds in cell of red beacon
+    private final String[] yellowPlaces = {"5"}; // placeIds in cell of yellow beacon
+
+    /**
+     * The blue beacon's minor.
+     */
     final String blueMinor = "1";
+    /**
+     * The red beacon's minor.
+     */
     final String redMinor = "2";
+    /**
+     * The yellow beacon's minor.
+     */
     final String yellowMinor = "3";
+    /**
+     * The Range notifier gets called when beacon signals are found in the proximity of the device.
+     * The method basically stores the RSSI of the corresponding beacon.
+     * The RSSI information is later used in {@link #findClosestPlaceIdWithScanResults()} to restrict the place list to
+     * the known ones in the beacon cell.
+     */
     public final RangeNotifier rangeNotifier = new RangeNotifier() {
         @Override
         public void didRangeBeaconsInRegion(Collection<Beacon> beacons, Region region) {
-
             if (beacons.size() > 0) {
                 for (Beacon measuredBeacon : beacons) {
                     String beaconMajor = "10";
@@ -74,9 +98,12 @@ public abstract class Localization extends CommonClass {
             }
         }
     };
-    private final String[] bluePlaces = {"1"};
-    private final String[] redPlaces = {"3"};
-    private final String[] yellowPlaces = {"5"};
+
+    /**
+     * The BroadcastReceiver gets the results of the WiFi Scan and
+     * adds all the results to wlanMeasure.
+     * After that find out the closest place in the db to the current one.
+     */
     private final BroadcastReceiver localizationScanResultReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -85,14 +112,14 @@ public abstract class Localization extends CommonClass {
             int measurementCount = currentResults.size();
             if (measurementCount > 0) {
                 for (ScanResult result : currentResults) {
-                    wlanMeasure.add(new WlanMeasurements(
+                    wlanMeasure.add(new WlanMeasurement(
                             result.BSSID,
                             result.level,
                             result.SSID
                     ));
                 }
 
-                locateUser();
+                findClosestPlaceIdWithScanResults();
                 wifiManager.startScan();
 
             } else {
@@ -103,12 +130,21 @@ public abstract class Localization extends CommonClass {
         }
     };
 
-    public Localization(Activity activity) {
+    /**
+     * Instantiates the LocalizationClass.
+     *
+     * @param activity the activity reference of the instantiating activity
+     */
+    public LocalizationClass(Activity activity) {
         super(activity);
     }
 
+    /**
+     * Triggers the continous localization of the user by scanning the WiFi and BLE Beacons.
+     * A Progress output is shown to the user to display the start of the localization process.
+     */
     public void startLocalization() {
-        outputList.clear();
+
         wlanMeasure.clear();
 
         /* Register Listener to collect results */
@@ -121,6 +157,10 @@ public abstract class Localization extends CommonClass {
         showLocalizationProgressOutput();
     }
 
+    /**
+     * Stop the continous localization by unregistering the scanResultReceiver
+     * and hide the progress output.
+     */
     public void stopLocalization() {
         try {
             /* Stop the continous scan */
@@ -133,6 +173,9 @@ public abstract class Localization extends CommonClass {
         }
     }
 
+    /**
+     * Show the progress output for the initial localization process.
+     */
     protected void showLocalizationProgressOutput() {
         progress = new ProgressDialog(getActivity());
 
@@ -152,80 +195,35 @@ public abstract class Localization extends CommonClass {
         progress.show();
     }
 
-    private void locateUser() {
+    /**
+     * TODO: fill out this JavaDoc here!
+     */
+    private void findClosestPlaceIdWithScanResults() {
+        /* Sanity checks */
         if (wlanMeasure.size() == 0) {
             Toast.makeText(getActivity(), "Bitte führen sie eine Messung durch", Toast.LENGTH_SHORT).show();
             stopLocalization();
             return;
         }
+        ArrayList<String> placeList = getPlacesList();
+        if (placeList == null) return;
+        HashMap<String, Double> placeDistanceMap = calculateTotalDistanceForEveryPlace(placeList);
 
-        /*Saves all places to placeList*/
-        Cursor placeCursor = db.getAllDistinctPlacesFromMeasurements();
-        if (placeCursor.getCount() == 0) {
-            Toast.makeText(getActivity(), "Keine Messdaten vorhanden", Toast.LENGTH_SHORT).show();
-            stopLocalization();
-            return;
-        }
+        findMinimalDistance(placeDistanceMap);
 
-        ArrayList<String> placeList = new ArrayList<>();
-        boolean beaconsFound = false;
-        placeList.clear();
+        wlanMeasure.clear();
+    }
 
-        /* Erweiterung der placeList je nach empfangenen Bluetooth Beacon */
-        if (blueRssi > -70) {
-            Collections.addAll(placeList, bluePlaces);
-            beaconsFound = true;
-        }
-
-        if (redRssi > -70) {
-            Collections.addAll(placeList, redPlaces);
-            beaconsFound = true;
-        }
-
-        if (yellowRssi > -75) {
-            Collections.addAll(placeList, yellowPlaces);
-            beaconsFound = true;
-        }
-
-        if (!beaconsFound) {
-            for (placeCursor.moveToFirst(); !placeCursor.isAfterLast(); placeCursor.moveToNext()) {
-                placeList.add(placeCursor.getString(0));
-            }
-            placeCursor.close();
-        }
-
-
-        /*Am Ende wird jedem Ort eine sse zugeordnet*/
-        HashMap<String, Double> sseMap = new HashMap<>();
-        List<WlanMeasurements> modellWerte = new ArrayList<>();
-
-        for (String place : placeList) {
-            /*Get all BSSI and corresponding RSSI for place*/
-            modellWerte.clear();
-
-            /*Fills the cursor with all BSSIDs and their RSSIs at the place*/
-            Cursor modelCursor = db.getAverageRssiByPlace(place);
-            /* Fügt in Model Data List dem Key bssi den Value rssi aus Datenbank hinzu
-            bssi,rssi, ssid
-            */
-            for (modelCursor.moveToFirst(); !modelCursor.isAfterLast(); modelCursor.moveToNext()) {
-                WlanMeasurements messWert = new WlanMeasurements(modelCursor.getString(0),
-                        modelCursor.getInt(1), modelCursor.getString(2));
-                modellWerte.add(messWert);
-            }
-            modelCursor.close();
-
-            double sseValue = CalculationHelper.calculateSse(wlanMeasure, modellWerte);
-            sseMap.put(place, sseValue);
-        }
-
-        if (!sseMap.isEmpty()) {
-            Map.Entry<String, Double> minEntry = CalculationHelper.minMapValue(sseMap);
+    /**
+     * TODO: fill out this JavaDoc here!
+     * @param placeDistanceMap
+     */
+    private void findMinimalDistance(HashMap<String, Double> placeDistanceMap) {
+        if (!placeDistanceMap.isEmpty()) {
+            Map.Entry<String, Double> minEntry = CalculationHelper.minMapValue(placeDistanceMap);
             if (minEntry != null) {
                 String foundPlaceId = minEntry.getKey();
                 String outputTextview = "Der Ort ist: " + foundPlaceId + " mit Wert: " + minEntry.getValue() + "\n";
-
-                /*Toast.makeText(context, "Ort: " + foundPlaceId, Toast.LENGTH_SHORT).show();*/
                 if (!priorPlaceId.equals(foundPlaceId)) {
                     if ((priorPlaceId.equals("1") && foundPlaceId.equals("2")) ||
                             (priorPlaceId.equals("2") && foundPlaceId.equals("1")) ||
@@ -244,13 +242,13 @@ public abstract class Localization extends CommonClass {
                 /*Mit steigendem Sicherheitswert ist der sse klein für die Lokation und groß für
                 die anderen Orte
                  */
-                double sicherheitSse = CalculationHelper.sicherheitsWert(minEntry.getValue(), sseMap);
+                double sicherheitSse = CalculationHelper.sicherheitsWert(minEntry.getValue(), placeDistanceMap);
                 String sicherheitString = "Der Sicherheitswert ist: " + sicherheitSse + "\n";
 
                 StringBuilder sbSse = new StringBuilder();
-                for (String key : sseMap.keySet()) {
+                for (String key : placeDistanceMap.keySet()) {
                     sbSse.append(key).append(": ");
-                    double sseValue = Math.round(sseMap.get(key) * 1000);
+                    double sseValue = Math.round(placeDistanceMap.get(key) * 1000);
                     sseValue = sseValue / 1000;
                     sbSse.append(sseValue).append("\n");
                 }
@@ -260,17 +258,102 @@ public abstract class Localization extends CommonClass {
                 Toast.makeText(getActivity(), "Durchschnittswerte fehlen", Toast.LENGTH_SHORT).show();
             }
         } else {
-            Log.e(TAG, "sseMap empty");
+            Log.e(TAG, "placeDistanceMap empty");
         }
-
-        wlanMeasure.clear();
     }
 
+    /**
+     *
+     * TODO: fill out this JavaDoc here!
+     * @param placeList
+     * @return
+     */
+    private HashMap<String, Double> calculateTotalDistanceForEveryPlace(ArrayList<String> placeList) {
+    /*Am Ende wird jedem Ort eine sse zugeordnet*/
+        HashMap<String, Double> distanceMap = new HashMap<>();
+        List<WlanMeasurement> wlanMeasurementsList = new ArrayList<>();
+
+        for (String place : placeList) {
+            /*Get all BSSI and corresponding RSSI for place*/
+            wlanMeasurementsList.clear();
+
+            /*Fills the cursor with all BSSIDs and their RSSIs at the place*/
+            Cursor avgRssiCursor = db.getAverageRssiByPlace(place);
+            /* Fügt in Model Data List dem Key bssi den Value rssi aus Datenbank hinzu
+            bssi,rssi, ssid
+            */
+            for (avgRssiCursor.moveToFirst(); !avgRssiCursor.isAfterLast(); avgRssiCursor.moveToNext()) {
+                WlanMeasurement wlanMeasurement = new WlanMeasurement(avgRssiCursor.getString(0),
+                        avgRssiCursor.getInt(1), avgRssiCursor.getString(2));
+                wlanMeasurementsList.add(wlanMeasurement);
+            }
+            avgRssiCursor.close();
+
+            double totalDistance = CalculationHelper.calculateSse(wlanMeasure, wlanMeasurementsList);
+            distanceMap.put(place, totalDistance);
+        }
+        return distanceMap;
+    }
+
+    /**
+     * TODO: fill out this JavaDoc here!
+     * @return
+     */
+    private ArrayList<String> getPlacesList() {
+
+        Cursor placeCursor = db.getAllDistinctPlacesFromMeasurements();
+        if (placeCursor.getCount() == 0) {
+            Toast.makeText(getActivity(), "Keine Messdaten vorhanden", Toast.LENGTH_SHORT).show();
+            stopLocalization();
+            return null;
+        }
+
+        ArrayList<String> placeList = new ArrayList<>();
+        boolean beaconsFound = false;
+        placeList.clear();
+
+        /* Extend placeList by predefined list of placeIds for individual beacons */
+        if (blueRssi > -70) {
+            Collections.addAll(placeList, bluePlaces);
+            beaconsFound = true;
+        }
+
+        if (redRssi > -70) {
+            Collections.addAll(placeList, redPlaces);
+            beaconsFound = true;
+        }
+
+        if (yellowRssi > -75) {
+            Collections.addAll(placeList, yellowPlaces);
+            beaconsFound = true;
+        }
+
+        if (!beaconsFound) {
+            /* Saves all places to placeList */
+            for (placeCursor.moveToFirst(); !placeCursor.isAfterLast(); placeCursor.moveToNext()) {
+                placeList.add(placeCursor.getString(0));
+            }
+            placeCursor.close();
+        }
+        return placeList;
+    }
+
+    /**
+     * Update localization progress ui.
+     *
+     * @param foundPlaceId        the found place id
+     * @param locationDescription the location description
+     */
     protected void updateLocalizationProgressUI(String foundPlaceId, String locationDescription) {
         progress.setTitle("Ort: " + foundPlaceId);
         progress.setMessage(locationDescription);
     }
 
+    /**
+     * Returns the information to display the user at the current found place.
+     * @param foundPlaceId current found placeId String
+     * @return String to give a user a hint where to go next
+     */
     private String getLocationDescription(String foundPlaceId) {
         String sDescription = "";
         switch (foundPlaceId) {
@@ -302,8 +385,19 @@ public abstract class Localization extends CommonClass {
         return sDescription;
     }
 
+    /**
+     * Notify location change.
+     *
+     * @param priorPlaceId the prior place id
+     * @param foundPlaceId the found place id
+     */
     protected abstract void notifyLocationChange(String priorPlaceId, String foundPlaceId);
 
+    /**
+     * Output detailed debugging information debug.
+     *
+     * @param output the output showing the found place,               its deviations of other APs and               an confidence value for the found place
+     */
     protected void outputDetailedPlaceInfoDebug(String output) {
         /*Log.i(TAG, output);*/
     }

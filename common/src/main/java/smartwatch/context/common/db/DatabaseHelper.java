@@ -11,7 +11,11 @@ import android.util.Log;
 
 import java.util.ArrayList;
 
-
+/**
+ * The DatabaseHelper provides a management class for the SQLite Database
+ * to store measurement information (bssi, ssid, rssi) and averages for
+ * WiFi access points at a specific place id.
+ */
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TAG = DatabaseHelper.class.getSimpleName();
     private static final String DATABASE_NAME = "LocalizationDB";
@@ -46,14 +50,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private SQLiteDatabase database = null;
 
     /**
-     * Constructor should be private to prevent direct instantiation.
-     * make call to static method "getInstance()" instead.
+     * Constructor is private to prevent direct instantiation.
+     * Make call to static method "getInstance()" instead.
      */
     private DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         database = getWritableDatabase();
     }
 
+    /**
+     * Gets DB instance.
+     *
+     * @param context the application context
+     * @return the DB instance
+     */
     public static synchronized DatabaseHelper getInstance(Context context) {
 
         // Use the application context, which will ensure that you
@@ -65,7 +75,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return sInstance;
     }
 
-    public long createAverageRecords(String placeId, String bssi, String ssid, double rssi) {
+    /**
+     * Inserts new records in average DB.
+     *
+     * @param placeId the place id
+     * @param bssi    the AP's bssi
+     * @param ssid    the AP's ssid
+     * @param rssi    the average rssi of the AP
+     * @return long of affected row id, returns -1 when failed.
+     */
+    public long addAverageRecords(String placeId, String bssi, String ssid, double rssi) {
         ContentValues values = new ContentValues();
 
         values.put(A_PLACE, placeId);
@@ -76,6 +95,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return database.insert(A_TABLE, null, values);
     }
 
+    /**
+     * Gets average rssi by place.
+     *
+     * @param placeId the place id to filter the averages DB
+     * @return Cursor linking to the average rssi for the queried place
+     */
     public Cursor getAverageRssiByPlace(String placeId) {
         String queryString =
                 "SELECT DISTINCT " + A_BSSI + "," + A_RSSI + "," + A_SSID + " " +
@@ -88,11 +113,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return database.rawQuery(queryString, whereArgs); // iterate to get each value.
     }
 
+    /**
+     * Delete all averages entries in DB.
+     */
     public void deleteAverages() {
         database.delete(A_TABLE, null, null);
     }
 
-    public long createMeasurementsRecords(String bssi, String ssid, Integer rssi, String placeId) {
+    /**
+     * Insert new measurements record.
+     *
+     * @param bssi    the new AP's bssi
+     * @param ssid    the new AP's ssid
+     * @param rssi    the new AP's scanned rssi
+     * @param placeId the new AP's place id
+     * @return long of affected row id, returns -1 when failed.
+     */
+    public long addMeasurementsRecords(String bssi, String ssid, Integer rssi, String placeId) {
         ContentValues values = new ContentValues();
 
         values.put(M_BSSI, bssi);
@@ -103,6 +140,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return database.insert(M_TABLE, null, values);
     }
 
+    /**
+     * Gets all distinct places from measurements.
+     *
+     * @return Cursor holding all distinct places from measurements
+     */
     public Cursor getAllDistinctPlacesFromMeasurements() {
         String queryString =
                 "SELECT DISTINCT " + M_PLACE + " FROM " + M_TABLE;
@@ -110,7 +152,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 
-    public Cursor getMeasurementsRssiAvgByBssi() {
+    /**
+     * Gets measurements rssi average grouped by bssi and place Id.
+     *
+     * @return Cursor holding all measurements' placeId, BSSI, SSID and the average RSSI
+     */
+    public Cursor getMeasurementsRssiAvgByBssiAndPlace() {
         String queryString =
                 "SELECT " + M_PLACE + ", " + M_BSSI + "," + M_SSID + ", AVG(" + M_RSSI + ") AS avgrssi " +
                         "FROM " + M_TABLE + " " +
@@ -119,21 +166,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return database.rawQuery(queryString, null); // iterate to get each value.
     }
 
-
-    /*public Cursor getEntries(String placeId, String bssi) {
-        String queryString =
-                "SELECT rssi FROM Measurements " +
-                        "WHERE placeId = ? and bssi = ? ORDER BY rssi";
-        String[] whereArgs = new String[] {
-                placeId, bssi
-
-        };
-        Cursor mCursor = database.rawQuery(queryString, whereArgs);
-        return mCursor; // iterate to get each value.
-    }*/
-
-
-    public String getMeasurementsNumberOfBssisForPlace(String place) {
+    /**
+     * Gets number of measurements with distinct bssis and total number of measurements for place.
+     *
+     * @param place the place id to filter the measurements table.
+     * @return String with the number of distinct measurements of bssis and total measurements for place
+     */
+    public String getMeasurementsNumberOfDistinctBssisForPlace(String place) {
         if (place == null || place.isEmpty()) {
             Log.w(TAG, "Place is empty.");
             return "0";
@@ -164,14 +203,27 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return sFoundCount;
     }
 
+    /**
+     * Delete all measurements at a specific place id.
+     *
+     * @param placeIdString the place id
+     */
     public void deleteMeasurementForPlaceId(String placeIdString) {
         database.delete(M_TABLE, M_PLACE + " = ?", new String[]{placeIdString});
     }
 
+    /**
+     * Delete all measurements.
+     */
     public void deleteAllMeasurements() {
         database.delete(M_TABLE, null, null);
     }
 
+    /**
+     * Creates the Measurement and Average DB.
+     *
+     * @param db the sqlite db
+     */
     @Override
     public void onCreate(SQLiteDatabase db) {
         Log.v(TAG, "Creating DB");
@@ -187,6 +239,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+    /**
+     * Drops the old DB and creates a new one.
+     * @param db the db to be deleted and created again
+     * @param oldVersion number of old db revision
+     * @param newVersion number of new db revision
+     */
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         Log.v(TAG, "Upgrading DB");
@@ -197,6 +255,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    /**
+     * This method is needed for the DBManager in the Mobile module.
+     * Also see <a href="https://github.com/sanathp/DatabaseManager_For_Android">
+     * Database Manager for Android on GitHub</a>.
+     *
+     * @param Query interfacing argument for queries to be executed by DBManager.
+     * @return an array list of cursor to save two cursors one has results from the query.
+     */
     public ArrayList<Cursor> getData(String Query) {
         //get writable database
         SQLiteDatabase sqlDB = this.getWritableDatabase();

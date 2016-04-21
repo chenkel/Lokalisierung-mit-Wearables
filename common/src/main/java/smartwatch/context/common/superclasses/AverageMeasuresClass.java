@@ -7,11 +7,11 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 
-public class AverageMeasures extends CommonClass {
+public class AverageMeasuresClass extends CommonClass {
 
-    private static final String TAG = AverageMeasures.class.getSimpleName();
+    private static final String TAG = AverageMeasuresClass.class.getSimpleName();
 
-    public AverageMeasures(Activity activity) {
+    public AverageMeasuresClass(Activity activity) {
         super(activity);
     }
 
@@ -28,7 +28,7 @@ public class AverageMeasures extends CommonClass {
     }
 
     public void calculateAverageMeasures() {
-        new AverageMeasures.DoCalculationTask().execute();
+        new AverageMeasuresClass.DoCalculationTask().execute();
     }
 
     private class DoCalculationTask extends AsyncTask<Void, Integer, Integer> {
@@ -46,7 +46,7 @@ public class AverageMeasures extends CommonClass {
                 db.deleteAverages();
 
                 /* Create list that contains average of all BSSIs for all places */
-                Cursor bssiCursor = db.getMeasurementsRssiAvgByBssi();
+                Cursor bssiCursor = db.getMeasurementsRssiAvgByBssiAndPlace();
                 setMaxProgressOutput(bssiCursor.getCount());
 
 
@@ -55,7 +55,7 @@ public class AverageMeasures extends CommonClass {
 
                     /* Escape early if cancel() is called */
                     if (isCancelled()) break;
-                    long affectedRow = db.createAverageRecords(bssiCursor.getString(0), bssiCursor.getString(1),
+                    long affectedRow = db.addAverageRecords(bssiCursor.getString(0), bssiCursor.getString(1),
                             bssiCursor.getString(2), bssiCursor.getDouble(3));
                     if (affectedRow == -1){
                         Log.e(TAG, "Error inserting average Records");

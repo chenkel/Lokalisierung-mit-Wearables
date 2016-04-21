@@ -1,14 +1,14 @@
 package smartwatch.context.common.helper;
 
 
-public class WlanMeasurements {
+public class WlanMeasurement {
 
     private final String bssi;
     private final int rssi;
     private final String ssid;
 
 
-    public WlanMeasurements(String bssi, int rssi, String ssid) {
+    public WlanMeasurement(String bssi, int rssi, String ssid) {
         this.bssi = bssi;
         this.rssi = rssi;
         this.ssid = ssid;
@@ -28,7 +28,7 @@ public class WlanMeasurements {
 
     @Override
     public String toString() {
-        return "WlanMeasurements{" +
+        return "WlanMeasurement{" +
                 "bssi='" + bssi + '\'' +
                 ", rssi=" + rssi +
                 ", ssid='" + ssid + '\'' +
@@ -37,8 +37,8 @@ public class WlanMeasurements {
 
     /*public int compare(Object o1, Object o2)
     {
-        WlanMeasurements p1 = (WlanMeasurements)o1;
-        WlanMeasurements p2 = (WlanMeasurements)o2;
+        WlanMeasurement p1 = (WlanMeasurement)o1;
+        WlanMeasurement p2 = (WlanMeasurement)o2;
         // if last names are the same compare first names
         if(p1.getBssi().equals(p2.getBssi()))
         {

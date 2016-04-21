@@ -9,14 +9,14 @@ import android.widget.TextView;
 
 import java.util.Locale;
 
-import smartwatch.context.common.superclasses.AverageMeasures;
-import smartwatch.context.common.superclasses.Measure;
+import smartwatch.context.common.superclasses.AverageMeasuresClass;
+import smartwatch.context.common.superclasses.MeasureClass;
 
 public class ProcessingActivity extends Activity {
     /*private static final String TAG = ProcessingActivity.class.getSimpleName();*/
 
     private boolean allowDestroy = false;
-    private Measure mMeasure;
+    private MeasureClass mMeasureClass;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,13 +42,13 @@ public class ProcessingActivity extends Activity {
         if (mode != null) {
             switch (mode) {
                 case "measure":
-                    mMeasure = new Measure(this) {
+                    mMeasureClass = new MeasureClass(this) {
                         @Override
                         protected void showMeasureProgress() {
                             descriptionTextView.setText(R.string.processing_measuring_description);
                             String processingString = String.format(Locale.getDefault(), getResources().getString(R.string.processing_progress), 0, progressBar.getMax());
                             processingTextView.setText(processingString);
-                            progressBar.setMax(mMeasure.scanCountMax);
+                            progressBar.setMax(mMeasureClass.scanCountMax);
                         }
 
                         @Override
@@ -77,12 +77,12 @@ public class ProcessingActivity extends Activity {
                         }
                     };
                     String placeId = res.getString("placeId");
-                    mMeasure.setPlaceIdString(placeId);
-                    mMeasure.measureWlan();
+                    mMeasureClass.setPlaceIdString(placeId);
+                    mMeasureClass.measureWlan();
 
                     break;
                 case "average":
-                    AverageMeasures mAverageMeasures = new AverageMeasures(this) {
+                    AverageMeasuresClass mAverageMeasuresClass = new AverageMeasuresClass(this) {
                         @Override
                         protected void showCalculationProgressOutput() {
                             descriptionTextView.setText(R.string.processing_average_description);
@@ -90,8 +90,8 @@ public class ProcessingActivity extends Activity {
                         }
 
                         @Override
-                        protected void setMaxProgressOutput(int count) {
-                            progressBar.setMax(count);
+                        protected void setMaxProgressOutput(int maxProgress) {
+                            progressBar.setMax(maxProgress);
                         }
 
                         @Override
@@ -107,7 +107,7 @@ public class ProcessingActivity extends Activity {
                         }
                     };
 
-                    mAverageMeasures.calculateAverageMeasures();
+                    mAverageMeasuresClass.calculateAverageMeasures();
                     break;
             }
         }

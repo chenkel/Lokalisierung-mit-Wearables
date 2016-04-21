@@ -8,7 +8,7 @@ import java.util.Map;
 public class CalculationHelper {
     /*private static final String TAG = "CalculationHelper";*/
 
-    public static double calculateSse(List<WlanMeasurements> messwerte, List<WlanMeasurements> modellwerte) {
+    public static double calculateSse(List<WlanMeasurement> messwerte, List<WlanMeasurement> modellwerte) {
         /*modellwerte entsprechend dem jeweiligen Place der aufrufenden Methode*/
         boolean valueFound = false;
         double overallSum = 0;
@@ -16,8 +16,8 @@ public class CalculationHelper {
             return 0;
         }
 
-        for (WlanMeasurements modellwert : modellwerte) {
-            for (WlanMeasurements messwert : messwerte) {
+        for (WlanMeasurement modellwert : modellwerte) {
+            for (WlanMeasurement messwert : messwerte) {
                 if (messwert.getBssi().equals(modellwert.getBssi())) {
                     valueFound = true;
                     double diff = Math.abs(modellwert.getRssi() - messwert.getRssi());

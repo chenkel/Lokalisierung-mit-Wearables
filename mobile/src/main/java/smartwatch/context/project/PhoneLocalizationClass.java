@@ -4,12 +4,12 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Vibrator;
 
-import smartwatch.context.common.superclasses.Localization;
+import smartwatch.context.common.superclasses.LocalizationClass;
 
-public class PhoneLocalization extends Localization {
+public class PhoneLocalizationClass extends LocalizationClass {
     private final Vibrator v;
 
-    public PhoneLocalization(Activity activity) {
+    public PhoneLocalizationClass(Activity activity) {
         super(activity);
         v = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
     }

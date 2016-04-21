@@ -11,12 +11,12 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-import smartwatch.context.common.superclasses.Measure;
+import smartwatch.context.common.superclasses.MeasureClass;
 
 public class MainWatchActivity extends Activity {
     private static final String TAG = MainWatchActivity.class.getSimpleName();
 
-    private Measure mMeasure;
+    private MeasureClass mMeasureClass;
     // Handle our Wearable List's click events
     private final WearableListView.ClickListener mClickListener =
             new WearableListView.ClickListener() {
@@ -47,7 +47,7 @@ public class MainWatchActivity extends Activity {
                             startActivity(intent);
                             break;
                         case WearableAdapter.ITEM_DELETE:
-                            mMeasure.deleteAllMeasurements();
+                            mMeasureClass.deleteAllMeasurements();
                             break;
                         default:
                             Toast.makeText(MainWatchActivity.this,
@@ -115,7 +115,7 @@ public class MainWatchActivity extends Activity {
         // This is our list header
         mHeader = (TextView) findViewById(R.id.header);
 
-        mMeasure = new Measure(this) {
+        mMeasureClass = new MeasureClass(this) {
             @Override
             public void updateMeasurementsCount() {}
         };
