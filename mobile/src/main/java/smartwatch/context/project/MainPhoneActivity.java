@@ -25,19 +25,17 @@ import smartwatch.context.common.superclasses.AverageMeasures;
 import smartwatch.context.project.helper.DBManager;
 
 public class MainPhoneActivity extends Activity implements View.OnClickListener, BeaconConsumer {
-    private static final String TAG = MainPhoneActivity.class.getSimpleName();
-
-    private PhoneLocalization mLocalization;
-    private AverageMeasures mAverage;
-    private PhoneMeasure mMeasure;
+    /*private static final String TAG = MainPhoneActivity.class.getSimpleName();*/
 
     protected EditText editPlaceId;
     protected TextView textViewMeasuresCount;
     protected TextView textViewDebug;
-
     protected ArrayAdapter wifiArrayAdapter;
     protected WifiManager wifiManager;
     protected BeaconManager beaconManager;
+    private PhoneLocalization mLocalization;
+    private AverageMeasures mAverage;
+    private PhoneMeasure mMeasure;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

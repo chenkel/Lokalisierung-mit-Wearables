@@ -16,12 +16,6 @@ public class WlanMeasurements {
         this.orientation = orientation;
     }
 
-    public WlanMeasurements(String bssi, int rssi, double orientation) {
-        this.bssi = bssi;
-        this.rssi = rssi;
-        this.orientation = orientation;
-    }
-
     public WlanMeasurements(String bssi, int rssi, String ssid) {
         this.bssi = bssi;
         this.rssi = rssi;
@@ -32,32 +26,16 @@ public class WlanMeasurements {
         return bssi;
     }
 
-    public void setBssi(String bssi) {
-        this.bssi = bssi;
-    }
-
     public int getRssi() {
         return rssi;
-    }
-
-    public void setRssi(int rssi) {
-        this.rssi = rssi;
     }
 
     public String getSsid() {
         return ssid;
     }
 
-    public void setSsid(String ssid) {
-        this.ssid = ssid;
-    }
-
     public double getOrientation() {
         return orientation;
-    }
-
-    public void setOrientation(double orientation) {
-        this.orientation = orientation;
     }
 
     @Override

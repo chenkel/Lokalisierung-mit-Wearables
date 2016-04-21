@@ -14,31 +14,21 @@ import java.util.ArrayList;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TAG = DatabaseHelper.class.getSimpleName();
-
-    private static DatabaseHelper sInstance;
-
-    private SQLiteDatabase database = null;
-
     private static final String DATABASE_NAME = "LocalizationDB";
-
     // DB version
     private static final int DATABASE_VERSION = 10;
-
     /* Measurements Table */
     private final static String M_TABLE = "Measurements"; // name of table
     private final static String M_BSSI = "bssi";  // MAC address of Access point
     private final static String M_SSID = "ssid";  // SSID of Access point
     private final static String M_RSSI = "rssi";  // Signal Strength of AP
     private final static String M_PLACE = "placeId";  // id to locate place
-
     /* Averages Table */
     private static final String A_TABLE = "WlanAverages"; // name of table
     private static final String A_BSSI = "bssi";  // MAC address of Access point
     private static final String A_SSID = "ssid";  // SSID of Access point
     private static final String A_RSSI = "rssi";  // Signal Strength of AP
     private static final String A_PLACE = "placeId";  // id to locate place
-
-
     // Database creation sql statement
     private static final String M_DATABASE_CREATE = "CREATE TABLE IF NOT EXISTS " + M_TABLE +
             "(_id INTEGER PRIMARY KEY , " +
@@ -46,13 +36,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             M_SSID + " TEXT , " +
             M_RSSI + " REAL NOT NULL , " +
             M_PLACE + " TEXT NOT NULL );";
-
     private static final String A_DATABASE_CREATE = "CREATE TABLE IF NOT EXISTS " + A_TABLE +
             "( " + M_BSSI + " TEXT NOT NULL, " +
             A_SSID + " TEXT, " +
             A_RSSI + " REAL NOT NULL, " +
             A_PLACE + " TEXT NOT NULL, " +
             "PRIMARY KEY (" + A_BSSI + "," + A_PLACE + ") );";
+    private static DatabaseHelper sInstance;
+    private SQLiteDatabase database = null;
+
+    /**
+     * Constructor should be private to prevent direct instantiation.
+     * make call to static method "getInstance()" instead.
+     */
+    private DatabaseHelper(Context context) {
+        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        database = getWritableDatabase();
+    }
 
     public static synchronized DatabaseHelper getInstance(Context context) {
 
@@ -64,16 +64,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
         return sInstance;
     }
-
-    /**
-     * Constructor should be private to prevent direct instantiation.
-     * make call to static method "getInstance()" instead.
-     */
-    private DatabaseHelper(Context context) {
-        super(context, DATABASE_NAME, null, DATABASE_VERSION);
-        database = getWritableDatabase();
-    }
-
 
     public long createAverageRecords(String placeId, String bssi, String ssid, double rssi) {
         ContentValues values = new ContentValues();
@@ -207,8 +197,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-
-    /* TODO: Only needed for DBManager, delete in the end */
     public ArrayList<Cursor> getData(String Query) {
         //get writable database
         SQLiteDatabase sqlDB = this.getWritableDatabase();

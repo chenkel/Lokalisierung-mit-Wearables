@@ -12,6 +12,17 @@
     <string name="wlan_lokalisierung_button">Lokalisiere mich</string>
     <string name="averages_text">Debugging Ausgabe</string>
     <string name="google_app_id">790214873108</string>
+    <string name="dbm_select_table">Select Table</string>
+    <string name="dbm_num_records">"No. Of Records : "</string>
+    <string name="dbm_submit_query">Submit Query</string>
+    <string name="dbm_help_click_below">Click on the row below to update values or delete the tuple</string>
+    <string name="dbm_previous">Previous</string>
+    <string name="dbm_next">Next</string>
+    <string name="dbm_error_placeholder">Error Messages will be displayed here</string>
+    <string name="dbm_custom_query">Custom Query</string>
+    <string name="dbm_query_executed">Query Executed successfully.Number of rows returned :</string>
+    <string name="dbm_query_exec_success">Query Executed successfully</string>
+    <string name="dbm_table_empty">   Table   Is   Empty   </string>
 
 
 </resources>

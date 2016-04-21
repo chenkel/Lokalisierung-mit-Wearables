@@ -22,28 +22,16 @@ import smartwatch.context.common.helper.WlanMeasurements;
 
 public abstract class Measure extends CommonClass {
     private static final String TAG = Measure.class.getSimpleName();
-
-    public void setScanCountMax(int scanCountMax) {
-        this.scanCountMax = scanCountMax;
-    }
-
-    public void setPlaceIdString(String placeIdString) {
-        this.placeIdString = placeIdString;
-    }
-
-    private int scanCount;
-    protected List<WlanMeasurements> wlanMeasure = new ArrayList<>();
     public int scanCountMax;
-
+    protected List<WlanMeasurements> wlanMeasure = new ArrayList<>();
     protected String placeIdString;
-
-    long inittime = 0;
-
+    long initTime = 0;
+    private int scanCount;
     protected final BroadcastReceiver measureResultReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (inittime == 0) {
-                inittime = System.currentTimeMillis() / 1000;
+            if (initTime == 0) {
+                initTime = System.currentTimeMillis() / 1000;
             }
             List<ScanResult> currentResults = wifiManager.getScanResults();
 
@@ -78,13 +66,20 @@ public abstract class Measure extends CommonClass {
         }
     };
 
-
     public Measure(Activity activity) {
         super(activity);
         setResultReceiver(measureResultReceiver);
 
         scanCountMax = 3;
         scanCount = 0;
+    }
+
+    public void setScanCountMax(int scanCountMax) {
+        this.scanCountMax = scanCountMax;
+    }
+
+    public void setPlaceIdString(String placeIdString) {
+        this.placeIdString = placeIdString;
     }
 
     public void stopMeasuring() {
@@ -123,7 +118,7 @@ public abstract class Measure extends CommonClass {
     protected void showMeasureProgress() {
         progress = new ProgressDialog(getActivity());
 
-        progress.setTitle("Messung der Signalstärken der WiFi-APs...");
+        progress.setTitle("Messung der Signalstärke der WiFi-APs...");
         progress.setMessage("");
         progress.setProgress(0);
         progress.setMax(scanCountMax);

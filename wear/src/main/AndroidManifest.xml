@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="smartwatch.context.project">
 
     <uses-feature android:name="android.hardware.type.watch" />
@@ -18,7 +19,8 @@
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@android:style/Theme.DeviceDefault">
+        android:theme="@android:style/Theme.DeviceDefault"
+        tools:ignore="GoogleAppIndexingWarning">
         <uses-library
             android:name="com.google.android.wearable"
             android:required="false" />
@@ -33,14 +35,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <service
-            android:name="smartwatch.context.common.helper.BluetoothService"
-            android:enabled="true">
-            <intent-filter>
-                <action android:name="com.project.BLUETOOTHSERVICE" />
-            </intent-filter>
-        </service>
 
         <activity
             android:name=".LocalizationActivity"

@@ -31,8 +31,10 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.Locale;
 
 import smartwatch.context.common.db.DatabaseHelper;
+import smartwatch.context.project.R;
 
 /**
  * Easy to use database manager found here: https://github.com/sanathp/DatabaseManager_For_Android
@@ -81,7 +83,7 @@ public class DBManager extends Activity implements OnItemClickListener {
         firstrowlp.weight = 1;
 
         TextView maintext = new TextView(DBManager.this);
-        maintext.setText("Select Table");
+        maintext.setText(R.string.dbm_select_table);
         maintext.setTextSize(22);
         maintext.setLayoutParams(firstrowlp);
         select_table = new Spinner(DBManager.this);
@@ -107,7 +109,7 @@ public class DBManager extends Activity implements OnItemClickListener {
         LinearLayout.LayoutParams secondrowlp = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
         secondrowlp.weight = 1;
         TextView secondrowtext = new TextView(DBManager.this);
-        secondrowtext.setText("No. Of Records : ");
+        secondrowtext.setText(R.string.dbm_num_records);
         secondrowtext.setTextSize(20);
         secondrowtext.setLayoutParams(secondrowlp);
         tv = new TextView(DBManager.this);
@@ -124,13 +126,13 @@ public class DBManager extends Activity implements OnItemClickListener {
 
         final Button submitQuery = new Button(DBManager.this);
         submitQuery.setVisibility(View.GONE);
-        submitQuery.setText("Submit Query");
+        submitQuery.setText(R.string.dbm_submit_query);
 
         submitQuery.setBackgroundColor(Color.parseColor("#BAE7F6"));
         mainLayout.addView(submitQuery);
 
         final TextView help = new TextView(DBManager.this);
-        help.setText("Click on the row below to update values or delete the tuple");
+        help.setText(R.string.dbm_help_click_below);
         help.setPadding(0, 5, 0, 5);
 
         // the spinner which gives user a option to add new row , drop or delete table
@@ -144,12 +146,12 @@ public class DBManager extends Activity implements OnItemClickListener {
         //the third layout which has buttons for the pagination of content from database
         final LinearLayout thirdrow = new LinearLayout(DBManager.this);
         previous = new Button(DBManager.this);
-        previous.setText("Previous");
+        previous.setText(R.string.dbm_previous);
 
         previous.setBackgroundColor(Color.parseColor("#BAE7F6"));
         previous.setLayoutParams(secondrowlp);
         next = new Button(DBManager.this);
-        next.setText("Next");
+        next.setText(R.string.dbm_next);
         next.setBackgroundColor(Color.parseColor("#BAE7F6"));
         next.setLayoutParams(secondrowlp);
         TextView tvblank = new TextView(this);
@@ -163,13 +165,13 @@ public class DBManager extends Activity implements OnItemClickListener {
         //the text view at the bottom of the screen which displays error or success messages after a query is executed
         tvmessage = new TextView(DBManager.this);
 
-        tvmessage.setText("Error Messages will be displayed here");
+        tvmessage.setText(R.string.dbm_error_placeholder);
         String Query = "SELECT name _id FROM sqlite_master WHERE type ='table'";
         tvmessage.setTextSize(18);
         mainLayout.addView(tvmessage);
 
         final Button customQuery = new Button(DBManager.this);
-        customQuery.setText("Custom Query");
+        customQuery.setText(R.string.dbm_custom_query);
         customQuery.setBackgroundColor(Color.parseColor("#BAE7F6"));
         mainLayout.addView(customQuery);
         customQuery.setOnClickListener(new OnClickListener() {
@@ -213,20 +215,20 @@ public class DBManager extends Activity implements OnItemClickListener {
 
                     tvmessage.setBackgroundColor(Color.parseColor("#2ecc71"));
                     if (c4 != null) {
-                        tvmessage.setText("Queru Executed successfully.Number of rows returned :" + c4.getCount());
+                        tvmessage.setText(String.format(Locale.getDefault(), "%s%d", getString(R.string.dbm_query_executed), c4.getCount()));
                         if (c4.getCount() > 0) {
                             indexInfo.maincursor = c4;
                             refreshTable(1);
                         }
                     } else {
-                        tvmessage.setText("Queru Executed successfully");
+                        tvmessage.setText(R.string.dbm_query_exec_success);
                         refreshTable(1);
                     }
 
                 } else {
                     //if there is any error we displayed the error message at the bottom of the screen
                     tvmessage.setBackgroundColor(Color.parseColor("#e74c3c"));
-                    tvmessage.setText("Error:" + Message2.getString(0));
+                    tvmessage.setText(String.format("Error:%s", Message2.getString(0)));
 
                 }
             }
@@ -328,7 +330,7 @@ public class DBManager extends Activity implements OnItemClickListener {
                     if (c != null) {
                         indexInfo.table_name = c.getString(0);
                     }
-                    tvmessage.setText("Error Messages will be displayed here");
+                    tvmessage.setText(R.string.dbm_error_placeholder);
                     tvmessage.setBackgroundColor(Color.WHITE);
 
                     //removes any data if present in the table layout
@@ -380,7 +382,7 @@ public class DBManager extends Activity implements OnItemClickListener {
                         int counts = c2.getCount();
                         indexInfo.isEmpty = false;
                         Log.d("counts", "" + counts);
-                        tv.setText("" + counts);
+                        tv.setText(String.format(Locale.getDefault(), " %d", counts));
 
 
                         //the spinnertable has the 3 items to drop , delete , add row to the table selected by the user
@@ -414,12 +416,12 @@ public class DBManager extends Activity implements OnItemClickListener {
                                                                         Log.d("Drop table Mesage", tempc.getString(0));
                                                                         if (tempc.getString(0).equalsIgnoreCase("Success")) {
                                                                             tvmessage.setBackgroundColor(Color.parseColor("#2ecc71"));
-                                                                            tvmessage.setText(indexInfo.table_name + "Dropped successfully");
+                                                                            tvmessage.setText(String.format("%sDropped successfully", indexInfo.table_name));
                                                                             refreshactivity();
                                                                         } else {
                                                                             //if there is any error we displayd the error message at the bottom of the screen
                                                                             tvmessage.setBackgroundColor(Color.parseColor("#e74c3c"));
-                                                                            tvmessage.setText("Error:" + tempc.getString(0));
+                                                                            tvmessage.setText(String.format("Error:%s", tempc.getString(0)));
                                                                             spinnertable.setSelection(0);
                                                                         }
                                                                     }
@@ -459,12 +461,12 @@ public class DBManager extends Activity implements OnItemClickListener {
                                                                         Log.d("Delete table Mesage", tempc.getString(0));
                                                                         if (tempc.getString(0).equalsIgnoreCase("Success")) {
                                                                             tvmessage.setBackgroundColor(Color.parseColor("#2ecc71"));
-                                                                            tvmessage.setText(indexInfo.table_name + " table content deleted successfully");
+                                                                            tvmessage.setText(String.format("%s table content deleted successfully", indexInfo.table_name));
                                                                             indexInfo.isEmpty = true;
                                                                             refreshTable(0);
                                                                         } else {
                                                                             tvmessage.setBackgroundColor(Color.parseColor("#e74c3c"));
-                                                                            tvmessage.setText("Error:" + tempc.getString(0));
+                                                                            tvmessage.setText(String.format("Error:%s", tempc.getString(0)));
                                                                             spinnertable.setSelection(0);
                                                                         }
                                                                     }
@@ -604,11 +606,11 @@ public class DBManager extends Activity implements OnItemClickListener {
                                                                         Log.d("Add New Row", tempc.getString(0));
                                                                         if (tempc.getString(0).equalsIgnoreCase("Success")) {
                                                                             tvmessage.setBackgroundColor(Color.parseColor("#2ecc71"));
-                                                                            tvmessage.setText("New Row added succesfully to " + indexInfo.table_name);
+                                                                            tvmessage.setText(String.format("New Row added succesfully to %s", indexInfo.table_name));
                                                                             refreshTable(0);
                                                                         } else {
                                                                             tvmessage.setBackgroundColor(Color.parseColor("#e74c3c"));
-                                                                            tvmessage.setText("Error:" + tempc.getString(0));
+                                                                            tvmessage.setText(String.format("Error:%s", tempc.getString(0)));
                                                                             spinnertable.setSelection(0);
                                                                         }
 
@@ -643,7 +645,7 @@ public class DBManager extends Activity implements OnItemClickListener {
                             final TextView tableheadercolums = new TextView(getApplicationContext());
                             // tableheadercolums.setBackgroundDrawable(gd);
                             tableheadercolums.setPadding(0, 0, 4, 3);
-                            tableheadercolums.setText("" + c2.getColumnName(k));
+                            tableheadercolums.setText(String.format("%s", c2.getColumnName(k)));
                             tableheadercolums.setTextColor(Color.parseColor("#000000"));
 
                             //columsView.setLayoutParams(tableRowParams);
@@ -674,7 +676,7 @@ public class DBManager extends Activity implements OnItemClickListener {
                         final TextView tableheadercolums = new TextView(getApplicationContext());
 
                         tableheadercolums.setPadding(0, 0, 4, 3);
-                        tableheadercolums.setText("   Table   Is   Empty   ");
+                        tableheadercolums.setText(R.string.dbm_table_empty);
                         tableheadercolums.setTextSize(30);
                         tableheadercolums.setTextColor(Color.RED);
 
@@ -684,7 +686,7 @@ public class DBManager extends Activity implements OnItemClickListener {
 
                         tableLayout.addView(tableheader2);
 
-                        tv.setText("" + 0);
+                        tv.setText(String.format(Locale.getDefault(), "%d", 0));
                     }
                 }
             }
@@ -901,11 +903,11 @@ public class DBManager extends Activity implements OnItemClickListener {
 
                                                 if (tempc.getString(0).equalsIgnoreCase("Success")) {
                                                     tvmessage.setBackgroundColor(Color.parseColor("#2ecc71"));
-                                                    tvmessage.setText(indexInfo.table_name + " table Updated Successfully");
+                                                    tvmessage.setText(String.format("%s table Updated Successfully", indexInfo.table_name));
                                                     refreshTable(0);
                                                 } else {
                                                     tvmessage.setBackgroundColor(Color.parseColor("#e74c3c"));
-                                                    tvmessage.setText("Error:" + tempc.getString(0));
+                                                    tvmessage.setText(String.format("Error:%s", tempc.getString(0)));
                                                 }
                                             }
                                             //it he spinner value is delete this row get the values from
@@ -943,11 +945,11 @@ public class DBManager extends Activity implements OnItemClickListener {
 
                                                 if (tempc.getString(0).equalsIgnoreCase("Success")) {
                                                     tvmessage.setBackgroundColor(Color.parseColor("#2ecc71"));
-                                                    tvmessage.setText("Row deleted from " + indexInfo.table_name + " table");
+                                                    tvmessage.setText(String.format("Row deleted from %s table", indexInfo.table_name));
                                                     refreshTable(0);
                                                 } else {
                                                     tvmessage.setBackgroundColor(Color.parseColor("#e74c3c"));
-                                                    tvmessage.setText("Error:" + tempc.getString(0));
+                                                    tvmessage.setText(String.format("Error:%s", tempc.getString(0)));
                                                 }
                                             }
                                         }
@@ -989,7 +991,7 @@ public class DBManager extends Activity implements OnItemClickListener {
             int counts = c3.getCount();
 
             Log.d("counts", "" + counts);
-            tv.setText("" + counts);
+            tv.setText(String.format(Locale.getDefault(), "%d", counts));
             TableRow tableheader = new TableRow(getApplicationContext());
 
             tableheader.setBackgroundColor(Color.BLACK);
@@ -1000,7 +1002,7 @@ public class DBManager extends Activity implements OnItemClickListener {
                 cell.setLayoutParams(tableRowParams);
                 final TextView tableheadercolums = new TextView(getApplicationContext());
                 tableheadercolums.setPadding(0, 0, 4, 3);
-                tableheadercolums.setText("" + c3.getColumnName(k));
+                tableheadercolums.setText(String.format("%s", c3.getColumnName(k)));
                 tableheadercolums.setTextColor(Color.parseColor("#000000"));
                 cell.addView(tableheadercolums);
                 tableheader.addView(cell);
@@ -1025,7 +1027,7 @@ public class DBManager extends Activity implements OnItemClickListener {
 
             final TextView tableheadercolums = new TextView(getApplicationContext());
             tableheadercolums.setPadding(0, 0, 4, 3);
-            tableheadercolums.setText("   Table   Is   Empty   ");
+            tableheadercolums.setText(R.string.dbm_table_empty);
             tableheadercolums.setTextSize(30);
             tableheadercolums.setTextColor(Color.RED);
 
@@ -1035,7 +1037,7 @@ public class DBManager extends Activity implements OnItemClickListener {
 
             tableLayout.addView(tableheader2);
 
-            tv.setText("" + 0);
+            tv.setText(String.format(Locale.getDefault(), "%d", 0));
         }
 
     }
@@ -1129,7 +1131,7 @@ public class DBManager extends Activity implements OnItemClickListener {
                                 LinearLayout llcolumn = (LinearLayout) tableRow.getChildAt(j);
                                 TextView columsView = (TextView) llcolumn.getChildAt(0);
 
-                                columsView.setText("" + c3.getString(j));
+                                columsView.setText(String.format("%s", c3.getString(j)));
 
                             }
                             decider = !c3.isLast();
@@ -1172,7 +1174,7 @@ public class DBManager extends Activity implements OnItemClickListener {
                                 LinearLayout llcolumn = (LinearLayout) tableRow.getChildAt(j);
                                 TextView columsView = (TextView) llcolumn.getChildAt(0);
 
-                                columsView.setText("" + c3.getString(j));
+                                columsView.setText(String.format("%s", c3.getString(j)));
 
                             }
                             decider = !c3.isLast();
@@ -1191,8 +1193,6 @@ public class DBManager extends Activity implements OnItemClickListener {
 
     @Override
     public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-        // TODO Auto-generated method stub
-
     }
 
     //a static class to save cursor,table values etc which is used by functions to share data in the program.

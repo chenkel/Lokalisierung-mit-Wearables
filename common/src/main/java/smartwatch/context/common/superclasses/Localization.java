@@ -29,49 +29,50 @@ import smartwatch.context.common.helper.WlanMeasurements;
 
 public abstract class Localization extends CommonClass {
     private static final String TAG = Localization.class.getSimpleName();
+    final String beaconMajor = "10";
+    final String blueMinor = "1";
+    final String redMinor = "2";
+    final String yellowMinor = "3";
     private List<WlanMeasurements> wlanMeasure = new ArrayList<>();
-
     private String priorPlaceId = "";
-
-    private final String uuidBlue = "CE:BA:BE:97:DB:0C";
-    private final String uuidRed = "DD:3F:50:F2:76:74";
-    private final String uuidYellow = "FB:39:E6:2D:82:EF";
-
     private Integer blueRssi = -200;
     private Integer redRssi = -200;
     private Integer yellowRssi = -200;
-
-    private String[] bluePlaces = {"1"};
-    private String[] redPlaces = {"3"};
-    private String[] yellowPlaces = {"5"};
-
     public RangeNotifier rangeNotifier = new RangeNotifier() {
         @Override
         public void didRangeBeaconsInRegion(Collection<Beacon> beacons, Region region) {
-            Log.i(TAG, "didRangeBeaconsInRegion");
             if (beacons.size() > 0) {
                 for (Beacon measuredBeacon : beacons) {
-                    switch (measuredBeacon.getBluetoothAddress()) {
-                        case uuidBlue:
-                            setBlueRssi(measuredBeacon.getRssi());
-                            Log.i(TAG, "+++Blaues Beacons");
-                            break;
-                        case uuidRed:
-                            setRedRssi(measuredBeacon.getRssi());
-                            Log.i(TAG, "+++Rotes Beacons");
-                            break;
-                        case uuidYellow:
-                            setYellowRssi(measuredBeacon.getRssi());
-                            Log.i(TAG, "+++Gelbes Beacons");
-                            break;
+                    if (beaconMajor.equals(measuredBeacon.getIdentifier(1).toString())) {
+
+                        switch (measuredBeacon.getIdentifier(2).toString()) {
+                            case blueMinor:
+                                setBlueRssi(measuredBeacon.getRssi());
+                                Log.i(TAG, "0++++ Blaues Beacons");
+                                break;
+                            case redMinor:
+                                setRedRssi(measuredBeacon.getRssi());
+                                Log.i(TAG, "++0++ Rotes Beacons");
+                                break;
+                            case yellowMinor:
+                                setYellowRssi(measuredBeacon.getRssi());
+                                Log.i(TAG, "++++0 Gelbes Beacons");
+                                break;
+                            default:
+                                Log.d(TAG, "Beacon Minor ist unbekannt");
+                                break;
+                        }
+                        Log.i(TAG, "RSSI: " + measuredBeacon.getRssi());
+                    } else {
+                        Log.d(TAG, "Beacon Major ist unbekannt");
                     }
-                    Log.i(TAG, "RSSI: " + measuredBeacon.getRssi());
                 }
             }
         }
     };
-
-
+    private String[] bluePlaces = {"1"};
+    private String[] redPlaces = {"3"};
+    private String[] yellowPlaces = {"5"};
     protected final BroadcastReceiver localizationScanResultReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -168,7 +169,7 @@ public abstract class Localization extends CommonClass {
         boolean beaconsFound = false;
         placeList.clear();
 
-        /* Anpassung der placeList abhängig von empfangenen Bluetooth Beacons */
+        /* Erweiterung der placeList je nach empfangenen Bluetooth Beacon */
         if (blueRssi > -70) {
             Collections.addAll(placeList, bluePlaces);
             beaconsFound = true;

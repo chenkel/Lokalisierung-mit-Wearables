@@ -34,7 +34,7 @@ Dabei sollte das betreffende Gerät bereits vorher angeschlossen oder gepaired s
 adb forward tcp:4444 localabstract:/adb-hub    
 ``` 	
 ``` sh 
-adb connect 127.0.0.1:4444    
+adb connect 127.0.0.1:4444
 ```
 Beachte den **Dialog** *Debugging zulasse...* auf der Uhr mit **OK** oder besser noch mit **Von diesem Computer immer zulassen** zu bestätigen.
 6. Überprüfe abschließend unter den Einstellungen der Android Wear App, dass der Status in dem Abschnitt *Debugging über Bluetooth* wie folgt erscheint:

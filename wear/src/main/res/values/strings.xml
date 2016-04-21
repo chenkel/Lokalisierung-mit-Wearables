@@ -1,4 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Notausgang</string>
     <string name="header_text">Notausgang</string>
+    <string name="menu_measure_place">Ort %1$d messen</string>
+    <string name="menu_calculate_average">Berechne Durchschnitt</string>
+    <string name="menu_delete_all_measurements">Alle Messungen löschen</string>
+    <string name="menu_start_localization">Start</string>
+    <string name="processing_localization_running">Lokalisierung läuft</string>
+    <string name="processing_measuring_default">0/10</string>
+    <string name="processing_measuring_description">Messung der Signalstärke der WiFi-APs in der Umgebung läuft…</string>
+    <string name="processing_measuring_initial">0/%1$d</string>
+    <string name="processing_progress">%1$d/%2$d</string>
+    <string name="processing_measurements_save">Alle Messdaten werden gespeichert…</string>
+    <string name="processing_average_description">Durchschnittliche Signalstärke aller Router für die verschieden Messpunkte werden berechnet…</string>
 </resources>

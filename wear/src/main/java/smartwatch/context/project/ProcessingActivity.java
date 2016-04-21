@@ -1,17 +1,19 @@
 package smartwatch.context.project;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.WindowManager;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import java.util.Locale;
 
 import smartwatch.context.common.superclasses.AverageMeasures;
 import smartwatch.context.common.superclasses.Measure;
 
 public class ProcessingActivity extends Activity {
-    private static final String TAG = ProcessingActivity.class.getSimpleName();
+    /*private static final String TAG = ProcessingActivity.class.getSimpleName();*/
 
     boolean allowDestroy = false;
     private Measure mMeasure;
@@ -22,17 +24,13 @@ public class ProcessingActivity extends Activity {
 
         setContentView(R.layout.activity_processing);
 
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
         final TextView descriptionTextView = (TextView) findViewById(R.id.description);
         final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar);
         final TextView processingTextView = (TextView) findViewById(R.id.processing);
 
-        processingTextView.setText("0/10");
-
-
-        this.setResult(RESULT_CANCELED);
-
-        Context context = this;
-        boolean invalid = false;
+        processingTextView.setText(R.string.processing_measuring_default);
 
         Intent data = getIntent();
         Bundle res = data.getExtras();
@@ -40,21 +38,22 @@ public class ProcessingActivity extends Activity {
 
         String mode = res.getString("mode");
 
+
         if (mode != null) {
             switch (mode) {
                 case "measure":
                     mMeasure = new Measure(this) {
                         @Override
                         protected void showMeasureProgress() {
-                            // TODO: 15.04.16 Strings to resources
-                            descriptionTextView.setText("Messung der Signalstärken der WiFi-APs in der Umgebung läuft...");
-                            processingTextView.setText("0/" + mMeasure.scanCountMax);
+                            descriptionTextView.setText(R.string.processing_measuring_description);
+                            String processingString = String.format(Locale.getDefault(), getResources().getString(R.string.menu_measure_place), mMeasure.scanCountMax);
+                            processingTextView.setText(processingString);
                             progressBar.setMax(mMeasure.scanCountMax);
                         }
 
                         @Override
                         protected void showMeasuresSaveProgress() {
-                            descriptionTextView.setText("Alle Messdaten werden gespeichert...");
+                            descriptionTextView.setText(R.string.processing_measurements_save);
                             progressBar.setMax(wlanMeasure.size());
                             allowDestroy = true;
                         }
@@ -66,7 +65,8 @@ public class ProcessingActivity extends Activity {
                         @Override
                         protected void updateProgressOutput(int iProgress) {
                             progressBar.setProgress(iProgress);
-                            processingTextView.setText(iProgress + "/" + progressBar.getMax());
+                            String processingString = String.format(Locale.getDefault(), getResources().getString(R.string.processing_progress), iProgress, progressBar.getMax());
+                            processingTextView.setText(processingString);
                         }
 
                         @Override
@@ -85,7 +85,7 @@ public class ProcessingActivity extends Activity {
                     AverageMeasures mAverageMeasures = new AverageMeasures(this) {
                         @Override
                         protected void showCalculationProgressOutput() {
-                            descriptionTextView.setText("Durchschnittliche Signalstärken aller Router für die verschieden Messpunkte werden berechnet...");
+                            descriptionTextView.setText(R.string.processing_average_description);
 
                         }
 
@@ -97,7 +97,8 @@ public class ProcessingActivity extends Activity {
                         @Override
                         protected void updateProgressOutput(int iProgress) {
                             progressBar.setProgress(iProgress);
-                            processingTextView.setText(iProgress + "/" + progressBar.getMax());
+                            String processingString = String.format(Locale.getDefault(), getResources().getString(R.string.processing_progress), iProgress, progressBar.getMax());
+                            processingTextView.setText(processingString);
                         }
 
                         @Override

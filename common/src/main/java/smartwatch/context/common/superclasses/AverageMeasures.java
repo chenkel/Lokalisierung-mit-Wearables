@@ -18,7 +18,7 @@ public class AverageMeasures extends CommonClass {
     protected void showCalculationProgressOutput(){
         progress = new ProgressDialog(getActivity());
 
-        progress.setTitle("Berechnung der durchschn. Signalstärken...");
+        progress.setTitle("Berechnung der durchschn. Signalstärke...");
 //        progress.setMessage("Durchschnittliche Signalstärke aller APs für verschiede Orte wird berechnet");
 
 

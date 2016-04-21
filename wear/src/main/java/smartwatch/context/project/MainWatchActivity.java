@@ -17,15 +17,12 @@ public class MainWatchActivity extends Activity {
     private static final String TAG = MainWatchActivity.class.getSimpleName();
 
     private Measure mMeasure;
-    private TextView mHeader;
-
     // Handle our Wearable List's click events
     protected final WearableListView.ClickListener mClickListener =
             new WearableListView.ClickListener() {
                 @Override
                 public void onClick(WearableListView.ViewHolder viewHolder) {
                     int clickedMenu = viewHolder.getLayoutPosition();
-                    // TODO: 15.04.16 case 1, 2, 3 should be replaced by constants
                     switch (clickedMenu) {
                         case WearableAdapter.ITEM_LOCALIZATION:
                             startActivity(new Intent(MainWatchActivity.this, LocalizationActivity.class));
@@ -68,8 +65,7 @@ public class MainWatchActivity extends Activity {
                             "Top empty area tapped", Toast.LENGTH_SHORT).show();
                 }
             };
-
-
+    private TextView mHeader;
     // The following code ensures that the title scrolls as the user scrolls up
     // or down the list
     private final WearableListView.OnScrollListener mOnScrollListener =
