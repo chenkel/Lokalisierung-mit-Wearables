@@ -45,17 +45,17 @@ public final class WiFiBleActivity extends Activity {
 
     private static final String TAG = WiFiBleActivity.class.getSimpleName();
 
-    static final int CARD_LOCALIZATION = 0;
-    static final int CARD_SCAN1 = 1;
-    static final int CARD_SCAN2 = 2;
-    static final int CARD_SCAN3 = 3;
-    static final int CARD_SCAN4 = 4;
-    static final int CARD_SCAN5 = 5;
-    static final int CARD_SCAN6 = 6;
-    static final int CARD_SCAN7 = 7;
-    static final int CARD_SCAN8 = 8;
-    static final int CARD_CALCULATE = 9;
-    static final int CARD_DELETE = 10;
+    private static final int CARD_LOCALIZATION = 0;
+    private static final int CARD_SCAN1 = 1;
+    private static final int CARD_SCAN2 = 2;
+    private static final int CARD_SCAN3 = 3;
+    private static final int CARD_SCAN4 = 4;
+    private static final int CARD_SCAN5 = 5;
+    private static final int CARD_SCAN6 = 6;
+    private static final int CARD_SCAN7 = 7;
+    private static final int CARD_SCAN8 = 8;
+    private static final int CARD_CALCULATE = 9;
+    private static final int CARD_DELETE = 10;
 
     private CardScrollView mCardScroller;
     private Measure mMeasure;

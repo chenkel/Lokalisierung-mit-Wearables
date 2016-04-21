@@ -2,7 +2,6 @@ package smartwatch.context.common.superclasses;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.net.wifi.WifiManager;
 import android.util.Log;
@@ -17,16 +16,13 @@ public abstract class CommonClass {
     private static final String TAG = CommonClass.class.getSimpleName();
     protected Activity activity;
 
-    protected ProgressDialog progress;
-    protected WifiManager wifiManager;
+    ProgressDialog progress;
+    final WifiManager wifiManager;
 
-    /* handler for received Intents for the "SCAN_RESULTS_AVAILABLE_ACTION" event */
-    protected BroadcastReceiver resultReceiver;
+    protected final DatabaseHelper db;
+    public final List<String> outputList;
 
-    public DatabaseHelper db;
-    public List<String> outputList;
-
-    public CommonClass(Activity activity) {
+    CommonClass(Activity activity) {
         this.activity = activity;
         db = DatabaseHelper.getInstance(activity);
         wifiManager = (WifiManager) activity.getSystemService(Context.WIFI_SERVICE);
@@ -65,9 +61,5 @@ public abstract class CommonClass {
 
     public void setActivity(Activity activity) {
         this.activity = activity;
-    }
-
-    public void setResultReceiver(BroadcastReceiver resultReceiver) {
-        this.resultReceiver = resultReceiver;
     }
 }

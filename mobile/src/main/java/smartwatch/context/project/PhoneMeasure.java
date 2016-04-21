@@ -30,8 +30,7 @@ public class PhoneMeasure extends Measure {
         for (WlanMeasurements ap : wlanMeasure) {
             String helperString = "SSID: " + ap.getSsid()
                     + "\nRSSI: " + ap.getRssi()
-                    + "\nBSSI: " + ap.getBssi()
-                    + "\nOrientation: " + ap.getOrientation();
+                    + "\nBSSI: " + ap.getBssi();
             outputList.add(helperString);
         }
                 /* Update the table */

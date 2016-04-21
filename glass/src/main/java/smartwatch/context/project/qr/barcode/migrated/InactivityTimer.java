@@ -44,7 +44,7 @@ public final class InactivityTimer {
         onActivity();
     }
 
-    public synchronized void onActivity() {
+    private synchronized void onActivity() {
         cancel();
         inactivityTask = new InactivityAsyncTask();
         inactivityTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);

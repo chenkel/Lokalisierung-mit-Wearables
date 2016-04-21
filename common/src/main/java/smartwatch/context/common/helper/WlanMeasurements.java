@@ -3,18 +3,10 @@ package smartwatch.context.common.helper;
 
 public class WlanMeasurements {
 
-    private String bssi;
-    private int rssi;
-    private String ssid;
-    private double orientation;
+    private final String bssi;
+    private final int rssi;
+    private final String ssid;
 
-
-    public WlanMeasurements(String bssi, int rssi, String ssid, double orientation) {
-        this.bssi = bssi;
-        this.rssi = rssi;
-        this.ssid = ssid;
-        this.orientation = orientation;
-    }
 
     public WlanMeasurements(String bssi, int rssi, String ssid) {
         this.bssi = bssi;
@@ -34,17 +26,12 @@ public class WlanMeasurements {
         return ssid;
     }
 
-    public double getOrientation() {
-        return orientation;
-    }
-
     @Override
     public String toString() {
         return "WlanMeasurements{" +
                 "bssi='" + bssi + '\'' +
                 ", rssi=" + rssi +
                 ", ssid='" + ssid + '\'' +
-                ", orientation=" + orientation +
                 '}';
     }
 

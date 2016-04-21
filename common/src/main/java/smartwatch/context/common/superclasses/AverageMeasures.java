@@ -55,8 +55,11 @@ public class AverageMeasures extends CommonClass {
 
                     /* Escape early if cancel() is called */
                     if (isCancelled()) break;
-                    db.createAverageRecords(bssiCursor.getString(0), bssiCursor.getString(1),
+                    long affectedRow = db.createAverageRecords(bssiCursor.getString(0), bssiCursor.getString(1),
                             bssiCursor.getString(2), bssiCursor.getDouble(3));
+                    if (affectedRow == -1){
+                        Log.e(TAG, "Error inserting average Records");
+                    }
                     calculationsCount = calculationsCount + 1;
                     publishProgress(calculationsCount);
                 }

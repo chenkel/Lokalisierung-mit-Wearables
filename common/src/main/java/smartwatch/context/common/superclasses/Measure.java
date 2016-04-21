@@ -23,11 +23,11 @@ import smartwatch.context.common.helper.WlanMeasurements;
 public abstract class Measure extends CommonClass {
     private static final String TAG = Measure.class.getSimpleName();
     public int scanCountMax;
-    protected List<WlanMeasurements> wlanMeasure = new ArrayList<>();
+    protected final List<WlanMeasurements> wlanMeasure = new ArrayList<>();
     protected String placeIdString;
-    long initTime = 0;
+    private long initTime = 0;
     private int scanCount;
-    protected final BroadcastReceiver measureResultReceiver = new BroadcastReceiver() {
+    private final BroadcastReceiver measureResultReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (initTime == 0) {
@@ -43,8 +43,7 @@ public abstract class Measure extends CommonClass {
                     wlanMeasure.add(new WlanMeasurements(
                             result.BSSID,
                             result.level,
-                            result.SSID,
-                            0
+                            result.SSID
                     ));
                 }
 
@@ -68,14 +67,13 @@ public abstract class Measure extends CommonClass {
 
     public Measure(Activity activity) {
         super(activity);
-        setResultReceiver(measureResultReceiver);
 
         scanCountMax = 3;
         scanCount = 0;
     }
 
-    public void setScanCountMax(int scanCountMax) {
-        this.scanCountMax = scanCountMax;
+    public void setScanCountMax(int sMax) {
+        this.scanCountMax = sMax;
     }
 
     public void setPlaceIdString(String placeIdString) {
@@ -174,7 +172,7 @@ public abstract class Measure extends CommonClass {
 
     public abstract void updateMeasurementsCount();
 
-    protected class SaveMeasuresTask extends AsyncTask<Void, Integer, Integer> {
+    private class SaveMeasuresTask extends AsyncTask<Void, Integer, Integer> {
         @Override
         protected void onPreExecute() {
             showMeasuresSaveProgress();
@@ -186,7 +184,11 @@ public abstract class Measure extends CommonClass {
             try {
                 for (WlanMeasurements ap : wlanMeasure) {
                     /* create a new record in DB */
-                    db.createMeasurementsRecords(ap.getBssi(), ap.getSsid(), ap.getRssi(), placeIdString);
+                    long affectedRow = db.createMeasurementsRecords(ap.getBssi(), ap.getSsid(), ap.getRssi(), placeIdString);
+                    if (affectedRow == -1){
+                        Log.e(TAG, "Error inserting average Records");
+                    }
+
                     scansCount = scansCount + 1;
                     publishProgress(scansCount);
                 }

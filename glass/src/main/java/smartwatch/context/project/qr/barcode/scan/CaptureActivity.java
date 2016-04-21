@@ -380,7 +380,7 @@ public final class CaptureActivity extends BaseGlassActivity implements
         mViewfinderView.drawViewfinder();
     }
 
-    protected String getLocationDescription(String foundPlaceId) {
+    private String getLocationDescription(String foundPlaceId) {
         String sDescription = "";
         switch (foundPlaceId) {
             case "1":

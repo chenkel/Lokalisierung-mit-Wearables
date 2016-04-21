@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:textSize="14sp"
-            android:text="Bitte warten Sie einen Moment"
+            android:text="@string/bitte_warten_sie_einen_moment"
             android:textColor="@color/white" />
 
         <TextView
@@ -27,7 +27,7 @@
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:textSize="12sp"
-            android:text="0/10"
+            android:text="@string/_0_10"
             android:padding="5dp"
             android:layout_gravity="bottom|start"
             android:textColor="@color/white" />

@@ -20,6 +20,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@android:style/Theme.DeviceDefault"
+        android:supportsRtl="false"
         tools:ignore="GoogleAppIndexingWarning">
         <uses-library
             android:name="com.google.android.wearable"

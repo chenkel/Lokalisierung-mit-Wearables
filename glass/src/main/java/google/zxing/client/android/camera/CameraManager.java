@@ -296,7 +296,7 @@ public final class CameraManager {
      * @param height
      *            The height in pixels to scan.
      */
-    public synchronized void setManualFramingRect(int width, int height) {
+    private synchronized void setManualFramingRect(int width, int height) {
         if (initialized) {
             Point screenResolution = configManager.getScreenResolution();
             if (width > screenResolution.x) {

@@ -29,14 +29,14 @@ public class ReadMoreActivity extends Activity {
     private CardScrollView mCardScrollView;
     private MyCardScrollAdapter mAdapter;
 
-    boolean mNeedsReadMore;
-    boolean invalid = false;
+    private boolean mNeedsReadMore;
+    private boolean invalid = false;
 
-    String mCardData;
+    private String mCardData;
 
-    Context context;
+    private Context context;
 
-    boolean allowDestroy = false;
+    private boolean allowDestroy = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,11 +71,7 @@ public class ReadMoreActivity extends Activity {
         }
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-    void createView() {
+    private void createView() {
         mAdapter = new MyCardScrollAdapter();
         mCardScrollView.setAdapter(mAdapter);
         mCardScrollView.activate();
@@ -89,11 +85,6 @@ public class ReadMoreActivity extends Activity {
             }
         });
         setContentView(mCardScrollView);
-    }
-
-    @Override
-    public void onAttachedToWindow() {
-        super.onAttachedToWindow();
     }
 
     @Override
@@ -117,7 +108,7 @@ public class ReadMoreActivity extends Activity {
         }
     }
 
-    int numNewlines(String str)
+    private int numNewlines(String str)
     {
         Matcher m = Pattern.compile("(\n)|(\r)|(\r\n)").matcher(str);
         int lines = 0;

@@ -30,7 +30,7 @@ import java.util.List;
  */
 public class CardAdapter extends CardScrollAdapter {
 
-    final List<CardBuilder> mCards;
+    private final List<CardBuilder> mCards;
 
     public CardAdapter(List<CardBuilder> cards) {
         mCards = cards;

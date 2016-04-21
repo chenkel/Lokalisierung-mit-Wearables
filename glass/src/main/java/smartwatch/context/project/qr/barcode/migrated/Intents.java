@@ -20,7 +20,7 @@ package smartwatch.context.project.qr.barcode.migrated;
  *
  * @author dswitkin@google.com (Daniel Switkin)
  */
-public final class Intents {
+final class Intents {
     private Intents() {
     }
 
@@ -119,14 +119,14 @@ public final class Intents {
 
         /**
          * Call {@link android.content.Intent#getStringExtra(String)} with
-         * {@link #RESULT_FORMAT} to determine which barcode format was found.
+         * RESULT_FORMAT to determine which barcode format was found.
          * See {@link com.google.zxing.BarcodeFormat} for possible values.
          */
         public static final String RESULT_FORMAT = "SCAN_RESULT_FORMAT";
 
         /**
          * Call {@link android.content.Intent#getStringExtra(String)} with
-         * {@link #RESULT_UPC_EAN_EXTENSION} to return the content of any UPC
+         * RESULT_UPC_EAN_EXTENSION to return the content of any UPC
          * extension barcode that was also found. Only applicable
          * to {@link com.google.zxing.BarcodeFormat#UPC_A} and
          * {@link com.google.zxing.BarcodeFormat#EAN_13} formats.
@@ -135,7 +135,7 @@ public final class Intents {
 
         /**
          * Call {@link android.content.Intent#getByteArrayExtra(String)} with
-         * {@link #RESULT_BYTES} to get a {@code byte[]} of raw bytes in the
+         * RESULT_BYTES to get a {@code byte[]} of raw bytes in the
          * barcode, if available.
          */
         public static final String RESULT_BYTES = "SCAN_RESULT_BYTES";
@@ -145,7 +145,7 @@ public final class Intents {
          * {@link com.google.zxing.ResultMetadataType#ORIENTATION}, if
          * available.
          * Call {@link android.content.Intent#getIntArrayExtra(String)} with
-         * {@link #RESULT_ORIENTATION}.
+         * RESULT_ORIENTATION.
          */
         public static final String RESULT_ORIENTATION = "SCAN_RESULT_ORIENTATION";
 
@@ -154,7 +154,7 @@ public final class Intents {
          * {@link com.google.zxing.ResultMetadataType#ERROR_CORRECTION_LEVEL},
          * if available.
          * Call {@link android.content.Intent#getStringExtra(String)} with
-         * {@link #RESULT_ERROR_CORRECTION_LEVEL}.
+         * RESULT_ERROR_CORRECTION_LEVEL.
          */
         public static final String RESULT_ERROR_CORRECTION_LEVEL = "SCAN_RESULT_ERROR_CORRECTION_LEVEL";
 

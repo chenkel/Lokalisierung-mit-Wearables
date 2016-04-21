@@ -7,7 +7,7 @@ import android.os.Vibrator;
 import smartwatch.context.common.superclasses.Localization;
 
 public class PhoneLocalization extends Localization {
-    private Vibrator v;
+    private final Vibrator v;
 
     public PhoneLocalization(Activity activity) {
         super(activity);

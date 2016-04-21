@@ -18,7 +18,7 @@ public class MainWatchActivity extends Activity {
 
     private Measure mMeasure;
     // Handle our Wearable List's click events
-    protected final WearableListView.ClickListener mClickListener =
+    private final WearableListView.ClickListener mClickListener =
             new WearableListView.ClickListener() {
                 @Override
                 public void onClick(WearableListView.ViewHolder viewHolder) {

@@ -65,14 +65,14 @@ public final class ViewfinderView extends View {
     private final int resultColor;
     private final int laserColor;
     private final int resultPointColor;
-    private int scannerAlpha;
-    private List<ResultPoint> possibleResultPoints;
-    private List<ResultPoint> lastPossibleResultPoints;
+    private final int scannerAlpha;
+    private final List<ResultPoint> possibleResultPoints;
+    private final List<ResultPoint> lastPossibleResultPoints;
     public String resultText;
 
-    LinearLayout layout;
-    TextView textView;
-    DisplayMetrics mDisplayMetrics;
+    private final LinearLayout layout;
+    private final TextView textView;
+    private final DisplayMetrics mDisplayMetrics;
 
     // This constructor is used when the class is built from an XML resource.
     public ViewfinderView(Context context, AttributeSet attrs) {
@@ -190,7 +190,7 @@ public final class ViewfinderView extends View {
         invalidate();
     }
 
-    public void addPossibleResultPoint(ResultPoint point) {
+    private void addPossibleResultPoint(ResultPoint point) {
         List<ResultPoint> points = possibleResultPoints;
         synchronized (points) {
             points.add(point);

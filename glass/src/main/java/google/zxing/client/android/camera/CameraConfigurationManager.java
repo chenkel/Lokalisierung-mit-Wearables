@@ -128,7 +128,7 @@ final class CameraConfigurationManager {
      *
      * @param camera: object for camera access.
      */
-    public static void googleGlassXE10WorkAround(Camera camera) {
+    private static void googleGlassXE10WorkAround(Camera camera) {
         Camera.Parameters params = camera.getParameters();
         params.setPreviewFpsRange(30000, 30000);
         params.setPreviewSize(640, 360);

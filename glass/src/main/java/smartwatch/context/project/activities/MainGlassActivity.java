@@ -38,8 +38,8 @@ public class MainGlassActivity extends Activity {
 
     // Index of api demo cards.
     // Visible for testing.
-    static final int CARD_QR = 0;
-    static final int CARD_WIFI_BLE = 1;
+    private static final int CARD_QR = 0;
+    private static final int CARD_WIFI_BLE = 1;
 
     private CardScrollView mCardScroller;
 

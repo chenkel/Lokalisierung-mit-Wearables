@@ -15,7 +15,7 @@ import smartwatch.context.common.superclasses.Measure;
 public class ProcessingActivity extends Activity {
     /*private static final String TAG = ProcessingActivity.class.getSimpleName();*/
 
-    boolean allowDestroy = false;
+    private boolean allowDestroy = false;
     private Measure mMeasure;
 
     @Override
@@ -46,7 +46,7 @@ public class ProcessingActivity extends Activity {
                         @Override
                         protected void showMeasureProgress() {
                             descriptionTextView.setText(R.string.processing_measuring_description);
-                            String processingString = String.format(Locale.getDefault(), getResources().getString(R.string.menu_measure_place), mMeasure.scanCountMax);
+                            String processingString = String.format(Locale.getDefault(), getResources().getString(R.string.processing_progress), 0, progressBar.getMax());
                             processingTextView.setText(processingString);
                             progressBar.setMax(mMeasure.scanCountMax);
                         }
@@ -117,11 +117,6 @@ public class ProcessingActivity extends Activity {
     protected void onPause() {
         super.onPause();
         finish();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
     }
 
     @Override

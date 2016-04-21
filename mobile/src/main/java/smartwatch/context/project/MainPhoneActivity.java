@@ -27,12 +27,11 @@ import smartwatch.context.project.helper.DBManager;
 public class MainPhoneActivity extends Activity implements View.OnClickListener, BeaconConsumer {
     /*private static final String TAG = MainPhoneActivity.class.getSimpleName();*/
 
-    protected EditText editPlaceId;
-    protected TextView textViewMeasuresCount;
-    protected TextView textViewDebug;
-    protected ArrayAdapter wifiArrayAdapter;
-    protected WifiManager wifiManager;
-    protected BeaconManager beaconManager;
+    EditText editPlaceId;
+    TextView textViewMeasuresCount;
+    TextView textViewDebug;
+    ArrayAdapter wifiArrayAdapter;
+    private BeaconManager beaconManager;
     private PhoneLocalization mLocalization;
     private AverageMeasures mAverage;
     private PhoneMeasure mMeasure;
@@ -158,7 +157,7 @@ public class MainPhoneActivity extends Activity implements View.OnClickListener,
 
     private void checkIfWiFiIsEnabled() {
         /* Enable Wi-Fi, if necessary */
-        wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+        WifiManager wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
         if (!wifiManager.isWifiEnabled()) {
             Toast.makeText(getApplicationContext(), "WLAN wird eingeschaltet...", Toast.LENGTH_SHORT).show();
             wifiManager.setWifiEnabled(true);

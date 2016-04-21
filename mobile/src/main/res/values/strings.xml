@@ -2,7 +2,6 @@
     <string name="app_name">Notausgang</string>
 
     <string name="db_manager">DB-Manager</string>
-    <string name="title_activity_localization">Kombinierte Lokalisierung mit WiFi und BLE</string>
     <string name="wlan_scan_button">Scanne diesen Ort</string>
     <string name="wlan_model_button">Durchschnittswerte berechnen</string>
     <string name="place_id">Ort-ID</string>

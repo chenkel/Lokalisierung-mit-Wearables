@@ -32,92 +32,97 @@ import com.google.zxing.PlanarYUVLuminanceSource;
 import com.google.zxing.ReaderException;
 import com.google.zxing.Result;
 import com.google.zxing.common.HybridBinarizer;
-//import com.jaxbot.glass.qrlens.R;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Map;
 
 import smartwatch.context.project.R;
 
-public final class DecodeHandler extends Handler {
+//import com.jaxbot.glass.qrlens.R;
 
-  private static final String TAG = DecodeHandler.class.getSimpleName();
+final class DecodeHandler extends Handler {
 
-  private final CaptureActivity activity;
-  private final MultiFormatReader multiFormatReader;
-  private boolean running = true;
+    private static final String TAG = DecodeHandler.class.getSimpleName();
 
-  DecodeHandler(CaptureActivity activity, Map<DecodeHintType,Object> hints) {
-    multiFormatReader = new MultiFormatReader();
-    multiFormatReader.setHints(hints);
-    this.activity = activity;
-  }
+    private final CaptureActivity activity;
+    private final MultiFormatReader multiFormatReader;
+    private boolean running = true;
 
-  @Override
-  public void handleMessage(Message message) {
-    if (!running) {
-      return;
-    }
-    if (message.what == 0) {
-        decode((byte[]) message.obj, message.arg1, message.arg2);
-    } else if (message.what == R.id.quit) {
-        running = false;
-        Looper.myLooper().quit();
-    }
-  }
-
-  /**
-   * Decode the data within the viewfinder rectangle, and time how long it took. For efficiency,
-   * reuse the same reader objects from one decode to the next.
-   *
-   * @param data   The YUV preview frame.
-   * @param width  The width of the preview frame.
-   * @param height The height of the preview frame.
-   */
-  private void decode(byte[] data, int width, int height) {
-    long start = System.currentTimeMillis();
-    Result rawResult = null;
-    PlanarYUVLuminanceSource source = activity.getCameraManager().buildLuminanceSource(data, width, height);
-    if (source != null) {
-      BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
-      try {
-        rawResult = multiFormatReader.decodeWithState(bitmap);
-      } catch (ReaderException re) {
-        // continue
-      } finally {
-        multiFormatReader.reset();
-      }
+    DecodeHandler(CaptureActivity activity, Map<DecodeHintType, Object> hints) {
+        multiFormatReader = new MultiFormatReader();
+        multiFormatReader.setHints(hints);
+        this.activity = activity;
     }
 
-    Handler handler = activity.getHandler();
-    if (rawResult != null) {
-      // Don't log the barcode contents for security.
-      long end = System.currentTimeMillis();
-      Log.d(TAG, "Found barcode in " + (end - start) + " ms");
-      if (handler != null) {
-        Message message = Message.obtain(handler, 1, rawResult);
-        Bundle bundle = new Bundle();
-        bundleThumbnail(source, bundle);
-        message.setData(bundle);
-        message.sendToTarget();
-      }
-    } else {
-      if (handler != null) {
-        Message message = Message.obtain(handler, 2);
-        message.sendToTarget();
-      }
+    @Override
+    public void handleMessage(Message message) {
+        if (!running) {
+            return;
+        }
+        if (message.what == 0) {
+            decode((byte[]) message.obj, message.arg1, message.arg2);
+        } else if (message.what == R.id.quit) {
+            running = false;
+            try {
+                Looper.myLooper().quit();
+            } catch (NullPointerException e){
+                Log.e(TAG, e.toString());
+            }
+        }
     }
-  }
 
-  private static void bundleThumbnail(PlanarYUVLuminanceSource source, Bundle bundle) {
-    int[] pixels = source.renderThumbnail();
-    int width = source.getThumbnailWidth();
-    int height = source.getThumbnailHeight();
-    Bitmap bitmap = Bitmap.createBitmap(pixels, 0, width, width, height, Bitmap.Config.ARGB_8888);
-    ByteArrayOutputStream out = new ByteArrayOutputStream();
-    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
-    bundle.putByteArray(DecodeThread.BARCODE_BITMAP, out.toByteArray());
-    bundle.putFloat(DecodeThread.BARCODE_SCALED_FACTOR, (float) width / source.getWidth());
-  }
+    /**
+     * Decode the data within the viewfinder rectangle, and time how long it took. For efficiency,
+     * reuse the same reader objects from one decode to the next.
+     *
+     * @param data   The YUV preview frame.
+     * @param width  The width of the preview frame.
+     * @param height The height of the preview frame.
+     */
+    private void decode(byte[] data, int width, int height) {
+        long start = System.currentTimeMillis();
+        Result rawResult = null;
+        PlanarYUVLuminanceSource source = activity.getCameraManager().buildLuminanceSource(data, width, height);
+        if (source != null) {
+            BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
+            try {
+                rawResult = multiFormatReader.decodeWithState(bitmap);
+            } catch (ReaderException re) {
+                // continue
+            } finally {
+                multiFormatReader.reset();
+            }
+        }
+
+        Handler handler = activity.getHandler();
+        if (rawResult != null) {
+            // Don't log the barcode contents for security.
+            long end = System.currentTimeMillis();
+            Log.d(TAG, "Found barcode in " + (end - start) + " ms");
+            if (handler != null) {
+                Message message = Message.obtain(handler, 1, rawResult);
+                Bundle bundle = new Bundle();
+                bundleThumbnail(source, bundle);
+                message.setData(bundle);
+                message.sendToTarget();
+            }
+        } else {
+            if (handler != null) {
+                Message message = Message.obtain(handler, 2);
+                message.sendToTarget();
+            }
+        }
+    }
+
+    private static void bundleThumbnail(PlanarYUVLuminanceSource source, Bundle bundle) {
+        int[] pixels = source.renderThumbnail();
+        int width = source.getThumbnailWidth();
+        int height = source.getThumbnailHeight();
+        Bitmap bitmap = Bitmap.createBitmap(pixels, 0, width, width, height, Bitmap.Config.ARGB_8888);
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+        bundle.putByteArray(DecodeThread.BARCODE_BITMAP, out.toByteArray());
+        bundle.putFloat(DecodeThread.BARCODE_SCALED_FACTOR, (float) width / source.getWidth());
+    }
 
 }

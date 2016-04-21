@@ -31,10 +31,10 @@ public final class DecodeFormatManager {
 
   private static final Pattern COMMA_PATTERN = Pattern.compile(",");
 
-  public static final Collection<BarcodeFormat> PRODUCT_FORMATS;
-  public static final Collection<BarcodeFormat> ONE_D_FORMATS;
+  private static final Collection<BarcodeFormat> PRODUCT_FORMATS;
+  private static final Collection<BarcodeFormat> ONE_D_FORMATS;
   public static final Collection<BarcodeFormat> QR_CODE_FORMATS = EnumSet.of(BarcodeFormat.QR_CODE);
-  public static final Collection<BarcodeFormat> DATA_MATRIX_FORMATS = EnumSet.of(BarcodeFormat.DATA_MATRIX);
+  private static final Collection<BarcodeFormat> DATA_MATRIX_FORMATS = EnumSet.of(BarcodeFormat.DATA_MATRIX);
   static {
     PRODUCT_FORMATS = EnumSet.of(BarcodeFormat.UPC_A,
                                  BarcodeFormat.UPC_E,

@@ -29,20 +29,21 @@ import smartwatch.context.common.helper.WlanMeasurements;
 
 public abstract class Localization extends CommonClass {
     private static final String TAG = Localization.class.getSimpleName();
-    final String beaconMajor = "10";
-    final String blueMinor = "1";
-    final String redMinor = "2";
-    final String yellowMinor = "3";
-    private List<WlanMeasurements> wlanMeasure = new ArrayList<>();
+    private final List<WlanMeasurements> wlanMeasure = new ArrayList<>();
     private String priorPlaceId = "";
     private Integer blueRssi = -200;
     private Integer redRssi = -200;
     private Integer yellowRssi = -200;
-    public RangeNotifier rangeNotifier = new RangeNotifier() {
+    final String blueMinor = "1";
+    final String redMinor = "2";
+    final String yellowMinor = "3";
+    public final RangeNotifier rangeNotifier = new RangeNotifier() {
         @Override
         public void didRangeBeaconsInRegion(Collection<Beacon> beacons, Region region) {
+
             if (beacons.size() > 0) {
                 for (Beacon measuredBeacon : beacons) {
+                    String beaconMajor = "10";
                     if (beaconMajor.equals(measuredBeacon.getIdentifier(1).toString())) {
 
                         switch (measuredBeacon.getIdentifier(2).toString()) {
@@ -50,14 +51,17 @@ public abstract class Localization extends CommonClass {
                                 setBlueRssi(measuredBeacon.getRssi());
                                 Log.i(TAG, "0++++ Blaues Beacons");
                                 break;
+
                             case redMinor:
                                 setRedRssi(measuredBeacon.getRssi());
                                 Log.i(TAG, "++0++ Rotes Beacons");
                                 break;
+
                             case yellowMinor:
                                 setYellowRssi(measuredBeacon.getRssi());
                                 Log.i(TAG, "++++0 Gelbes Beacons");
                                 break;
+
                             default:
                                 Log.d(TAG, "Beacon Minor ist unbekannt");
                                 break;
@@ -70,10 +74,10 @@ public abstract class Localization extends CommonClass {
             }
         }
     };
-    private String[] bluePlaces = {"1"};
-    private String[] redPlaces = {"3"};
-    private String[] yellowPlaces = {"5"};
-    protected final BroadcastReceiver localizationScanResultReceiver = new BroadcastReceiver() {
+    private final String[] bluePlaces = {"1"};
+    private final String[] redPlaces = {"3"};
+    private final String[] yellowPlaces = {"5"};
+    private final BroadcastReceiver localizationScanResultReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             List<ScanResult> currentResults = wifiManager.getScanResults();
@@ -84,8 +88,7 @@ public abstract class Localization extends CommonClass {
                     wlanMeasure.add(new WlanMeasurements(
                             result.BSSID,
                             result.level,
-                            result.SSID,
-                            0
+                            result.SSID
                     ));
                 }
 
@@ -102,7 +105,6 @@ public abstract class Localization extends CommonClass {
 
     public Localization(Activity activity) {
         super(activity);
-        setResultReceiver(localizationScanResultReceiver);
     }
 
     public void startLocalization() {
@@ -150,7 +152,7 @@ public abstract class Localization extends CommonClass {
         progress.show();
     }
 
-    protected void locateUser() {
+    private void locateUser() {
         if (wlanMeasure.size() == 0) {
             Toast.makeText(getActivity(), "Bitte führen sie eine Messung durch", Toast.LENGTH_SHORT).show();
             stopLocalization();
@@ -269,7 +271,7 @@ public abstract class Localization extends CommonClass {
         progress.setMessage(locationDescription);
     }
 
-    protected String getLocationDescription(String foundPlaceId) {
+    private String getLocationDescription(String foundPlaceId) {
         String sDescription = "";
         switch (foundPlaceId) {
             case "1":
@@ -306,15 +308,15 @@ public abstract class Localization extends CommonClass {
         /*Log.i(TAG, output);*/
     }
 
-    public void setBlueRssi(Integer blueRssi) {
+    private void setBlueRssi(Integer blueRssi) {
         this.blueRssi = blueRssi;
     }
 
-    public void setRedRssi(Integer redRssi) {
+    private void setRedRssi(Integer redRssi) {
         this.redRssi = redRssi;
     }
 
-    public void setYellowRssi(Integer yellowRssi) {
+    private void setYellowRssi(Integer yellowRssi) {
         this.yellowRssi = yellowRssi;
     }
 }

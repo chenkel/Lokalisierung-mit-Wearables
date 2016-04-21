@@ -26,22 +26,20 @@ import smartwatch.context.project.R;
 
 public class MainActivity extends Activity {
 	final int SCAN_QR = 4;
-    final String TAG = "app";
+    private final String TAG = "app";
 
-    final String FOOTER = "QR text content";
+    private final String FOOTER = "QR text content";
 
     private List<CardBuilder> mCards;
-    private CardScrollView mCardScrollView;
-    private MyCardScrollAdapter mAdapter;
 
-    boolean mNeedsReadMore;
-    boolean invalid = false;
+    private boolean mNeedsReadMore;
+    private boolean invalid = false;
 
-    String mCardData;
+    private String mCardData;
 
-    Context context;
+    private Context context;
 
-    boolean allowDestroy = false;
+    private boolean allowDestroy = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -93,7 +91,7 @@ public class MainActivity extends Activity {
         }
 	}
 
-    void showPagination()
+    private void showPagination()
     {
         allowDestroy = false;
         Intent intent = new Intent(this, ReadMoreActivity.class);
@@ -113,11 +111,6 @@ public class MainActivity extends Activity {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == 3) {
 			if (resultCode == RESULT_OK) {
@@ -126,9 +119,9 @@ public class MainActivity extends Activity {
 		}
 	}
 
-    void createView() {
-        mCardScrollView = new CardScrollView(this);
-        mAdapter = new MyCardScrollAdapter();
+    private void createView() {
+        CardScrollView mCardScrollView = new CardScrollView(this);
+        MyCardScrollAdapter mAdapter = new MyCardScrollAdapter();
         mCardScrollView.setAdapter(mAdapter);
         mCardScrollView.activate();
 
@@ -144,11 +137,6 @@ public class MainActivity extends Activity {
             }
         });
         setContentView(mCardScrollView);
-    }
-
-    @Override
-    public void onAttachedToWindow() {
-        super.onAttachedToWindow();
     }
 
     @Override

@@ -32,7 +32,7 @@ public class GlassLocalizationActivity extends Activity implements BeaconConsume
 
     // Index of api demo cards.
     // Visible for testing.
-    static final int CARD_STATUS = 0;
+    private static final int CARD_STATUS = 0;
 
     private CardScrollAdapter mAdapter;
     private CardScrollView mCardScroller;
@@ -40,7 +40,7 @@ public class GlassLocalizationActivity extends Activity implements BeaconConsume
 
     private Localization mLocalization;
 
-    protected BeaconManager beaconManager;
+    private BeaconManager beaconManager;
 
     @Override
     public void onCreate(Bundle bundle) {
