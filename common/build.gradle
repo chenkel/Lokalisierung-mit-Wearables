@@ -17,6 +17,7 @@ android {
         }
     }
     dexOptions {
+        incremental true
     }
 }
 

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<smartwatch.context.project.WearableListItemLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<project.context.localization.wear.WearableListItemLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="80dip"
@@ -26,4 +26,4 @@
         android:textColor="@color/white"
         android:textSize="16sp" />
 
-</smartwatch.context.project.WearableListItemLayout>
+</project.context.localization.wear.WearableListItemLayout>

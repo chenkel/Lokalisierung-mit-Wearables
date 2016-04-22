@@ -24,7 +24,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <smartwatch.context.project.qr.barcode.scan.ui.ViewfinderView
+    <project.context.localization.glass.qr.barcode.scan.ui.ViewfinderView
         android:id="@+id/viewfinder_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
