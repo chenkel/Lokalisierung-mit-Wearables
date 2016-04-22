@@ -16,12 +16,17 @@
 
 package project.context.localization.glass.qr.barcode.scan;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.AttributeSet;
 import android.util.Log;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.DecodeHintType;
+import com.google.zxing.Result;
 import com.google.zxing.ResultPointCallback;
 //import com.jaxbot.glass.barcode.migrated.DecodeFormatManager;
 
@@ -35,7 +40,38 @@ import project.context.localization.glass.qr.barcode.migrated.DecodeFormatManage
 
 /**
  * This thread does all the heavy lifting of decoding the images.
+ * ---------------------------------------------------------------------------------------------
+ * <p>The code was imported from the following repository</p> https://github.com/jaxbot/glass-qrlens.
  *
+ * <p>Some changes that were made will be explained in the following section:</p>
+ * <ul>
+ *      <li>
+ *          In -- {@link CaptureActivity#onResume()} --
+ *          <p>Time out of QR Code Scanner extended</p>
+ *          <p>from 15 seconds to 60 seconds</p>
+ *
+ *     </li>
+ *     <li>
+ *         In -- {@link CaptureActivity#handleDecode(Result, Bitmap, float)} --
+ *         <p>Play Beep sound every time</p>
+ *     </li>
+ *     <li>
+ *         In -- {@link CaptureActivity#handleDecodeInternally(Result, Bitmap)} --
+ *         <p>Does not cancel timer.</p>
+ *         <p>Gets Text value from Qr Code and lookup location description by place id</p>
+ *         <p>Resets SurfaceView by calling onPause(),</p>
+ *         <p>re-initialising the camera and calling onResume()</p>
+ *     </li>
+ *     <li>
+ *         In -- {@link project.context.localization.glass.qr.barcode.scan.ui.ViewfinderView#ViewfinderView(Context, AttributeSet)} --
+ *         <p>Added LinearLayout with textView</p>
+ *     </li>
+ *     <li>
+ *         In -- {@link project.context.localization.glass.qr.barcode.scan.ui.ViewfinderView#onDraw(Canvas)} --
+ *         <p>Display resultText in TextView, adjust textView width and add it to the layout</p>
+ *     </li>
+ *</ul>
+ * ---------------------------------------------------------------------------------------------
  * @author dswitkin@google.com (Daniel Switkin)
  */
 final class DecodeThread extends Thread {

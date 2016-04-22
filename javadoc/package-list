@@ -1,3 +1,15 @@
+google.zxing.client.android.camera
+google.zxing.client.android.camera.open
 project.context.localization.common.db
 project.context.localization.common.helper
 project.context.localization.common.superclasses
+project.context.localization.glass.activities
+project.context.localization.glass.card
+project.context.localization.glass.qr.barcode
+project.context.localization.glass.qr.barcode.migrated
+project.context.localization.glass.qr.barcode.scan
+project.context.localization.glass.qr.barcode.scan.ui
+project.context.localization.glass.qr.qrlens
+project.context.localization.mobile
+project.context.localization.mobile.helper
+project.context.localization.wear

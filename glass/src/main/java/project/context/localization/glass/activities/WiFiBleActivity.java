@@ -33,16 +33,16 @@ import com.google.android.glass.widget.CardScrollView;
 import java.util.ArrayList;
 import java.util.List;
 
+import project.context.localization.common.helper.PositionHelper;
 import project.context.localization.common.superclasses.AverageMeasuresClass;
 import project.context.localization.common.superclasses.MeasureClass;
 import project.context.localization.glass.R;
 import project.context.localization.glass.card.CardAdapter;
 
 /**
- * Creates a card scroll view with examples of different image layout cards.
+ * Creates a card scroll view with the menu for the WiFi + BLE localization method.
  */
 public final class WiFiBleActivity extends Activity {
-
     private static final String TAG = WiFiBleActivity.class.getSimpleName();
 
     private static final int CARD_LOCALIZATION = 0;
@@ -70,7 +70,11 @@ public final class WiFiBleActivity extends Activity {
         mCardScroller.setAdapter(new CardAdapter(createCards(this)));
         setContentView(mCardScroller);
         setCardScrollerListener();
-
+        /**
+         * The Measure Class gets instantiated and the
+         * UI interface {@link MeasureClass#updateMeasurementsCount()}
+         * gets ignored, since it is not relevant for Google Glass
+         */
         mMeasureClass = new MeasureClass(this){
             @Override
             public void updateMeasurementsCount() {}
@@ -80,7 +84,9 @@ public final class WiFiBleActivity extends Activity {
     }
 
     /**
-     * Creates list of cards that showcase different type of {@link CardBuilder} API.
+     * Creates list of cards serving as the menu for the user.
+     * @param context The application context
+     * @return list with Cards
      */
     private List<CardBuilder> createCards(Context context) {
         ArrayList<CardBuilder> cards = new ArrayList<>();
@@ -170,17 +176,19 @@ public final class WiFiBleActivity extends Activity {
                     case CARD_SCAN7:
                     case CARD_SCAN8:
                         mMeasureClass.setScanCountMax(5);
-                        mMeasureClass.setPlaceString(String.valueOf(position));
+                        mMeasureClass.setPlaceString(PositionHelper.getMenuLabelForPosition(position));
                         mMeasureClass.measureWiFi();
                         break;
 
                     case CARD_CALCULATE:
                         mAverageMeasuresClass.calculateAverageMeasures();
                         break;
+
                     case CARD_DELETE:
                         soundEffect = Sounds.SUCCESS;
                         mMeasureClass.deleteAllMeasurements();
                         break;
+
                     default:
                         soundEffect = Sounds.ERROR;
                         Log.d(TAG, "Don't show anything");

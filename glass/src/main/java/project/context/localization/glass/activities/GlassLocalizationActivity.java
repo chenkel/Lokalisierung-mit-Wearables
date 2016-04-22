@@ -27,11 +27,13 @@ import project.context.localization.common.superclasses.LocalizationClass;
 import project.context.localization.glass.card.CardAdapter;
 
 
+/**
+ * The Glass Localization activity uses the {@link LocalizationClass} to determine
+ * the users location by WiFi Fingerprinting and Bluetooth Beacons in his vicinity.
+ */
 public class GlassLocalizationActivity extends Activity implements BeaconConsumer {
     private static final String TAG = GlassLocalizationActivity.class.getSimpleName();
 
-    // Index of api demo cards.
-    // Visible for testing.
     private static final int CARD_STATUS = 0;
 
     private CardScrollAdapter mAdapter;
@@ -55,6 +57,7 @@ public class GlassLocalizationActivity extends Activity implements BeaconConsume
 
         initializeBeaconManager();
 
+        /* Instantiate a LocalizationClass and override necessary UI interfaces */
         mLocalizationClass = new LocalizationClass(this) {
             @Override
             protected void updateLocalizationProgressUI(String foundPlaceId, String placeDescription) {
@@ -76,9 +79,11 @@ public class GlassLocalizationActivity extends Activity implements BeaconConsume
         };
         mLocalizationClass.startLocalization();
     }
-
+    
     /**
-     * Create list of API demo cards.
+     * Create Localization progress card.
+     * @param context The application context
+     * @return list with Cards
      */
     private List<CardBuilder> createCards(Context context) {
         ArrayList<CardBuilder> cards = new ArrayList<>();
@@ -89,6 +94,9 @@ public class GlassLocalizationActivity extends Activity implements BeaconConsume
         return cards;
     }
 
+    /**
+     * Initialize the BeaconManager to receive new beacons in range.
+     */
     private void initializeBeaconManager() {
         beaconManager = BeaconManager.getInstanceForApplication(this);
         beaconManager.getBeaconParsers().add(new BeaconParser().
@@ -96,6 +104,9 @@ public class GlassLocalizationActivity extends Activity implements BeaconConsume
         beaconManager.bind(this);
     }
 
+    /**
+     * Set the range notifier in onBeaconServiceConnect and start looking for beacons.
+     */
     @Override
     public void onBeaconServiceConnect() {
         beaconManager.setRangeNotifier(mLocalizationClass.rangeNotifier);
@@ -127,7 +138,7 @@ public class GlassLocalizationActivity extends Activity implements BeaconConsume
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Log.d(TAG, "Clicked view at position " + position + ", row-id " + id);
                 int soundEffect = Sounds.DISALLOWED;
-                // Play sound.
+                /* Play sound. */
                 AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
                 am.playSoundEffect(soundEffect);
             }

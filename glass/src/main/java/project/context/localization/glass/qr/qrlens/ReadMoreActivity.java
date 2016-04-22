@@ -3,8 +3,11 @@ package project.context.localization.glass.qr.qrlens;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.media.AudioManager;
 import android.os.Bundle;
+import android.util.AttributeSet;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -16,6 +19,7 @@ import com.google.android.glass.media.Sounds;
 import com.google.android.glass.widget.CardBuilder;
 import com.google.android.glass.widget.CardScrollAdapter;
 import com.google.android.glass.widget.CardScrollView;
+import com.google.zxing.Result;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,14 +27,46 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import project.context.localization.glass.R;
+import project.context.localization.glass.qr.barcode.scan.CaptureActivity;
 
+/**
+ * The ReadMoreActivity of QRLens.
+ *
+ * <p>The code was imported from the following repository</p> https://github.com/jaxbot/glass-qrlens.
+ *
+ * <p>Some changes that were made will be explained in the following section:</p>
+ * <ul>
+ *      <li>
+ *          In -- {@link CaptureActivity#onResume()} --
+ *          <p>Time out of QR Code Scanner extended</p>
+ *          <p>from 15 seconds to 60 seconds</p>
+ *
+ *     </li>
+ *     <li>
+ *         In -- {@link CaptureActivity#handleDecode(Result, Bitmap, float)} --
+ *         <p>Play Beep sound every time</p>
+ *     </li>
+ *     <li>
+ *         In -- {@link CaptureActivity#handleDecodeInternally(Result, Bitmap)} --
+ *         <p>Does not cancel timer.</p>
+ *         <p>Gets Text value from Qr Code and lookup location description by place id</p>
+ *         <p>Resets SurfaceView by calling onPause(),</p>
+ *         <p>re-initialising the camera and calling onResume()</p>
+ *     </li>
+ *     <li>
+ *         In -- {@link project.context.localization.glass.qr.barcode.scan.ui.ViewfinderView#ViewfinderView(Context, AttributeSet)} --
+ *         <p>Added LinearLayout with textView</p>
+ *     </li>
+ *     <li>
+ *         In -- {@link project.context.localization.glass.qr.barcode.scan.ui.ViewfinderView#onDraw(Canvas)} --
+ *         <p>Display resultText in TextView, adjust textView width and add it to the layout</p>
+ *     </li>
+ *</ul>
+ */
 public class ReadMoreActivity extends Activity {
     private List<CardBuilder> mCards;
     private CardScrollView mCardScrollView;
     private MyCardScrollAdapter mAdapter;
-
-    private boolean mNeedsReadMore;
-    private boolean invalid = false;
 
     private String mCardData;
 
@@ -45,7 +81,6 @@ public class ReadMoreActivity extends Activity {
         this.setResult(RESULT_CANCELED);
 
         context = this;
-        invalid = false;
 
         Intent data = getIntent();
         Bundle res = data.getExtras();
@@ -160,8 +195,6 @@ public class ReadMoreActivity extends Activity {
 
         mCardScrollView.setAdapter(mAdapter);
         mCardScrollView.activate();
-
-        mNeedsReadMore = false;
     }
 
     private class MyCardScrollAdapter extends CardScrollAdapter {

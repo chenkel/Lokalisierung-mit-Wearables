@@ -78,6 +78,8 @@ public final class CameraManager {
      * @throws IOException
      *             Indicates the camera driver failed to open.
      * @throws InterruptedException
+     *              Thrown when a waiting thread is activated before the condition it was waiting
+     *              for has been satisfied.
      */
     public synchronized void openDriver(SurfaceHolder holder)
             throws IOException, InterruptedException {
@@ -178,6 +180,7 @@ public final class CameraManager {
 
     /**
      * Convenience method
+     * @param newSetting the new settings for the camera
      */
     public synchronized void setTorch(boolean newSetting) {
         if (newSetting != configManager.getTorchState(camera)) {
@@ -263,6 +266,7 @@ public final class CameraManager {
      * Like {@link #getFramingRect} but coordinates are in terms of the preview
      * frame,
      * not UI / screen.
+     * @return Rect returns the framing rect in preview
      */
     public synchronized Rect getFramingRectInPreview() {
         if (framingRectInPreview == null) {

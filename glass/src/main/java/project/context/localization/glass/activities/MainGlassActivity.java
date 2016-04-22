@@ -1,19 +1,18 @@
 package project.context.localization.glass.activities;
 
-import com.google.android.glass.media.Sounds;
-import com.google.android.glass.widget.CardBuilder;
-import com.google.android.glass.widget.CardScrollAdapter;
-import com.google.android.glass.widget.CardScrollView;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.os.Bundle;
-import android.speech.RecognizerIntent;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+
+import com.google.android.glass.media.Sounds;
+import com.google.android.glass.widget.CardBuilder;
+import com.google.android.glass.widget.CardScrollAdapter;
+import com.google.android.glass.widget.CardScrollView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,14 +22,7 @@ import project.context.localization.glass.card.CardAdapter;
 import project.context.localization.glass.qr.barcode.scan.CaptureActivity;
 
 /**
- * An {@link Activity} showing a tuggable "Hello World!" card.
- * <p>
- * The main content view is composed of a one-card {@link CardScrollView} that provides tugging
- * feedback to the user when swipe gestures are detected.
- * If your Glassware intends to intercept swipe gestures, you should set the content view directly
- * and use a {@link com.google.android.glass.touchpad.GestureDetector}.
- *
- * @see <a href="https://developers.google.com/glass/develop/gdk/touch">GDK Developer Guide</a>
+ * The Main {@link Activity} showing the start menu to choose between the localization methods.
  */
 public class MainGlassActivity extends Activity {
 
@@ -57,7 +49,13 @@ public class MainGlassActivity extends Activity {
     }
 
     /**
-     * Create list of API demo cards.
+     * Creates list of cards serving as the menu for the user.
+     <p>
+     * First, the card for the QR code method.
+     * Second, the card for the combined localization method (WiFi + BLE Beacons).
+     *
+     * @param context The application context
+     * @return list with Cards
      */
     private List<CardBuilder> createCards(Context context) {
         ArrayList<CardBuilder> cards = new ArrayList<>();
@@ -115,30 +113,5 @@ public class MainGlassActivity extends Activity {
                 am.playSoundEffect(soundEffect);
             }
         });
-    }
-
-    @Override
-    public void startActivityForResult(Intent intent, int requestCode) {
-        if (requestCode == 0) {
-            List<String> results = intent.getStringArrayListExtra(
-                    RecognizerIntent.EXTRA_RESULTS);
-            String spokenText = results.get(0);
-            Log.w(TAG, spokenText);
-            // Do something with spokenText.
-        }
-        super.startActivityForResult(intent, requestCode);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode,
-                                    Intent data) {
-        if (requestCode == 0 && resultCode == RESULT_OK) {
-            List<String> results = data.getStringArrayListExtra(
-                    RecognizerIntent.EXTRA_RESULTS);
-            String spokenText = results.get(0);
-            Log.w(TAG, spokenText);
-            // Do something with spokenText.
-        }
-        super.onActivityResult(requestCode, resultCode, data);
     }
 }

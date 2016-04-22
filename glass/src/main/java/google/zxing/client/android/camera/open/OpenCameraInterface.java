@@ -27,7 +27,9 @@ public final class OpenCameraInterface {
     /**
      * Opens a rear-facing camera with {@link Camera#open(int)}, if one exists,
      * or opens camera 0.
-     * @throws InterruptedException
+     * @throws InterruptedException Thrown when a waiting thread is activated
+     * before the condition it was waiting for has been satisfied.
+     * @return Camera object
      */
     public static Camera open() throws InterruptedException {
 

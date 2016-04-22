@@ -19,9 +19,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
@@ -74,7 +76,38 @@ import project.context.localization.glass.qr.qrlens.MainActivity;
  * viewfinder to help the user place the barcode correctly, shows feedback as
  * the image processing
  * is happening, and then overlays the results when a scan is successful.
+ * ---------------------------------------------------------------------------------------------
+ * <p>The code was imported from the following repository</p> https://github.com/jaxbot/glass-qrlens.
  *
+ * <p>Some changes that were made will be explained in the following section:</p>
+ * <ul>
+ *      <li>
+ *          In -- {@link CaptureActivity#onResume()} --
+ *          <p>Time out of QR Code Scanner extended</p>
+ *          <p>from 15 seconds to 60 seconds</p>
+ *
+ *     </li>
+ *     <li>
+ *         In -- {@link CaptureActivity#handleDecode(Result, Bitmap, float)} --
+ *         <p>Play Beep sound every time</p>
+ *     </li>
+ *     <li>
+ *         In -- {@link CaptureActivity#handleDecodeInternally(Result, Bitmap)} --
+ *         <p>Does not cancel timer.</p>
+ *         <p>Gets Text value from Qr Code and lookup location description by place id</p>
+ *         <p>Resets SurfaceView by calling onPause(),</p>
+ *         <p>re-initialising the camera and calling onResume()</p>
+ *     </li>
+ *     <li>
+ *         In -- {@link project.context.localization.glass.qr.barcode.scan.ui.ViewfinderView#ViewfinderView(Context, AttributeSet)} --
+ *         <p>Added LinearLayout with textView</p>
+ *     </li>
+ *     <li>
+ *         In -- {@link project.context.localization.glass.qr.barcode.scan.ui.ViewfinderView#onDraw(Canvas)} --
+ *         <p>Display resultText in TextView, adjust textView width and add it to the layout</p>
+ *     </li>
+ *</ul>
+ * ---------------------------------------------------------------------------------------------
  * @author dswitkin@google.com (Daniel Switkin)
  * @author Sean Owen
  */
@@ -295,11 +328,7 @@ public final class CaptureActivity extends BaseGlassActivity implements
      *            A greyscale bitmap of the camera data which was decoded.
      */
     public void handleDecode(Result rawResult, Bitmap barcode, float scaleFactor) {
-
-        /*boolean fromLiveScan = barcode != null;
-        if (fromLiveScan) {
-            mBeepManager.playBeepSoundAndVibrate();
-        }*/
+        mInactivityTimer.onActivity();
 
         mBeepManager.playBeepSoundAndVibrate();
 
@@ -308,8 +337,6 @@ public final class CaptureActivity extends BaseGlassActivity implements
 
     // Put up our own UI for how to handle the decoded contents.
     private void handleDecodeInternally(Result rawResult, Bitmap barcode) {
-        /*mTimer.cancel();*/
-
         ParsedResult parsedResult = ResultParser.parseResult(rawResult);
         ArrayList<String> ar = new ArrayList<>();
         StringTokenizer st = new StringTokenizer(parsedResult.toString());

@@ -41,10 +41,6 @@
             android:exported="true"
             />
 
-        <activity android:name=".activities.QRCodeActivity"
-            android:exported="true"
-            />
-
         <activity android:name=".qr.barcode.scan.CaptureActivity"
             android:exported="true"
             />

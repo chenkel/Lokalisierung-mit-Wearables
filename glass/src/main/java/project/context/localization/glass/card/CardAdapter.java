@@ -32,6 +32,11 @@ public class CardAdapter extends CardScrollAdapter {
 
     private final List<CardBuilder> mCards;
 
+    /**
+     * Instantiates a new Card adapter.
+     *
+     * @param cards the cards
+     */
     public CardAdapter(List<CardBuilder> cards) {
         mCards = cards;
     }
