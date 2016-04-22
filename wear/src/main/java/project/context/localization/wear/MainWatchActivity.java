@@ -14,6 +14,11 @@ import java.util.ArrayList;
 import project.context.localization.common.helper.PositionHelper;
 import project.context.localization.common.superclasses.MeasureClass;
 
+/**
+ * The MainWatch activity adds the menu items as well as the
+ * ClickListeners to start associated activities.
+ *
+ */
 public class MainWatchActivity extends Activity {
     private static final String TAG = MainWatchActivity.class.getSimpleName();
 
@@ -26,7 +31,7 @@ public class MainWatchActivity extends Activity {
                     int clickedMenu = viewHolder.getLayoutPosition();
                     switch (clickedMenu) {
                         case WearableAdapter.ITEM_LOCALIZATION:
-                            startActivity(new Intent(MainWatchActivity.this, LocalizationActivity.class));
+                            startActivity(new Intent(MainWatchActivity.this, WatchLocalizationActivity.class));
                             break;
                         case PositionHelper.ITEM_SCAN11:
                         case PositionHelper.ITEM_SCAN12:
@@ -98,7 +103,6 @@ public class MainWatchActivity extends Activity {
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-        // Sample icons for the list
         ArrayList<Integer> mIcons = new ArrayList<>();
         mIcons.add(R.drawable.ic_action_locate);
         mIcons.add(R.drawable.ic_action_share);

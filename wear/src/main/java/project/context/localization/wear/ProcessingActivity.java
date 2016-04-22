@@ -1,6 +1,7 @@
 package project.context.localization.wear;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.WindowManager;
@@ -12,6 +13,17 @@ import java.util.Locale;
 import project.context.localization.common.superclasses.AverageMeasuresClass;
 import project.context.localization.common.superclasses.MeasureClass;
 
+/**
+ * The Processing activity is a reusable Activity for displaying the
+ * progress of measuring and calculating the average measurements.
+ *
+ * Since the implementation of {@link ProgressDialog} on Android Wear is
+ * poorly implemented (e. g. no swipe-left-to-cancel listener built in)
+ * this class serves as a custom Progress Dialog for Android Wear.
+ *
+ * Once again, UI interfacing methods of {@link MeasureClass} or {@link AverageMeasuresClass}
+ * are overridden in this context and custom behaviour is added.
+ */
 public class ProcessingActivity extends Activity {
     /*private static final String TAG = ProcessingActivity.class.getSimpleName();*/
 

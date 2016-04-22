@@ -15,8 +15,16 @@ import org.altbeacon.beacon.Region;
 
 import project.context.localization.common.superclasses.LocalizationClass;
 
-public class LocalizationActivity extends Activity implements BeaconConsumer {
-    /* private static final String TAG = LocalizationActivity.class.getSimpleName(); */
+/**
+ * The WatchLocalizationActivity uses the {@link LocalizationClass} to access
+ * functionality to localize the user with WiFi and Bluetooth.
+ *
+ * The abstract methods by {@link LocalizationClass} being required to implement
+ * serve the sole purpose to adapt to specific Design and UI paradigms on different devices.
+ * Thus, the description of specific behaviour can be found in {@link #onCreate(Bundle)}.
+ */
+public class WatchLocalizationActivity extends Activity implements BeaconConsumer {
+    /* private static final String TAG = WatchLocalizationActivity.class.getSimpleName(); */
 
     private BeaconManager beaconManager;
 
@@ -64,6 +72,9 @@ public class LocalizationActivity extends Activity implements BeaconConsumer {
         beaconManager.unbind(this);
     }
 
+    /**
+     * Initialize the BeaconManager to receive new beacons in range.
+     */
     private void initializeBeaconManager() {
         beaconManager = BeaconManager.getInstanceForApplication(this);
         beaconManager.getBeaconParsers().add(new BeaconParser().
@@ -71,6 +82,9 @@ public class LocalizationActivity extends Activity implements BeaconConsumer {
         beaconManager.bind(this);
     }
 
+    /**
+     * Set the range notifier in onBeaconServiceConnect and start looking for beacons.
+     */
     @Override
     public void onBeaconServiceConnect() {
         beaconManager.setRangeNotifier(mLocalizationClass.rangeNotifier);
