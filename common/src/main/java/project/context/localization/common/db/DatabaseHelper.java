@@ -172,7 +172,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * @param place the place id to filter the measurements table.
      * @return String with the number of distinct measurements of bssis and total measurements for place
      */
-    public String getMeasurementsNumberOfDistinctBssisForPlace(String place) {
+    public String getNumberOfDistinctMeasurementsByBssiForPlace(String place) {
         if (place == null || place.isEmpty()) {
             Log.w(TAG, "Place is empty.");
             return "0";

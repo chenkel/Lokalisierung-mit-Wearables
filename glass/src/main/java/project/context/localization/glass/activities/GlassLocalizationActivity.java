@@ -79,7 +79,7 @@ public class GlassLocalizationActivity extends Activity implements BeaconConsume
         };
         mLocalizationClass.startLocalization();
     }
-    
+
     /**
      * Create Localization progress card.
      * @param context The application context

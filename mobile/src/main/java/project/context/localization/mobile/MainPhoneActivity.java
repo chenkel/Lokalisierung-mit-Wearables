@@ -27,10 +27,18 @@ import java.util.List;
 import project.context.localization.common.superclasses.AverageMeasuresClass;
 import project.context.localization.mobile.helper.DBManager;
 
+/**
+ * The type Main phone activity presents the UI Elements to do all
+ * necessary steps for preparing and executing the localization of the user.
+ *
+ * It was more or less the playground to quickly develop an Android-based solution, which
+ * was easily portable to other device categories (i.e. Wearables)
+ */
 public class MainPhoneActivity extends Activity implements View.OnClickListener, BeaconConsumer {
     EditText editPlaceId;
     TextView textViewMeasuresCount;
     TextView textViewDebug;
+
     ArrayAdapter wifiArrayAdapter;
     private BeaconManager beaconManager;
     private PhoneLocalizationClass mLocalization;
@@ -38,9 +46,9 @@ public class MainPhoneActivity extends Activity implements View.OnClickListener,
     private PhoneMeasureClass mMeasure;
 
     /**
-     * The Output list.
+     * The Debug output list shows information about scanned WiFi APs.
      */
-    protected List<String> outputList;
+    protected List<String> debugOutputList;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -50,12 +58,10 @@ public class MainPhoneActivity extends Activity implements View.OnClickListener,
         setupWiFiAndBLE();
 
         mLocalization = new PhoneLocalizationClass(this);
-
         mMeasure = new PhoneMeasureClass(this);
-
         mAverage = new AverageMeasuresClass(this);
 
-        outputList = new ArrayList<>();
+        debugOutputList = new ArrayList<>();
 
         initUI();
     }
@@ -102,6 +108,11 @@ public class MainPhoneActivity extends Activity implements View.OnClickListener,
         buttonDeleteAllMeasurements.setOnClickListener(this);
     }
 
+    /**
+     * Initialise PlaceId field.
+     *
+     * Listens to textChanges and updates the measurement count accordingly.
+     */
     private void initializePlaceIdField() {
     /* Initialize editPlaceId and its listener for the editText field */
         editPlaceId = (EditText) findViewById(R.id.place_id);
@@ -127,10 +138,14 @@ public class MainPhoneActivity extends Activity implements View.OnClickListener,
         /* Register components from activity */
         final ListView wifiListView = (ListView) findViewById(R.id.listViewWifi);
         /* Setup ArrayAdapter displaying scan results */
-        wifiArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, outputList);
+        wifiArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, debugOutputList);
         wifiListView.setAdapter(wifiArrayAdapter);
     }
 
+    /**
+     * onClick Listener for the view object.
+     * @param view the main view
+     */
     public void onClick(View view) {
         reactToMenuClick(view);
     }
@@ -138,12 +153,12 @@ public class MainPhoneActivity extends Activity implements View.OnClickListener,
     private void reactToMenuClick(View view) {
         switch (view.getId()) {
             case R.id.wlan_localization:
-                outputList.clear();
+                debugOutputList.clear();
                 mLocalization.startLocalization();
                 break;
 
             case R.id.wlan_scan:
-                outputList.clear();
+                debugOutputList.clear();
                 mMeasure.measureWiFi();
                 break;
 
@@ -159,12 +174,17 @@ public class MainPhoneActivity extends Activity implements View.OnClickListener,
     //endregion
 
     //region WiFi and BLE Setup
+    /**
+     * Setup the WifiManager and BeaconManager.
+     */
     private void setupWiFiAndBLE() {
         initializeBeaconManager();
         checkIfWiFiIsEnabled();
     }
 
-
+    /**
+     * Initialize the WifiManager and activate the WiFi on the device.
+     */
     private void checkIfWiFiIsEnabled() {
         /* Enable Wi-Fi, if necessary */
         WifiManager wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
@@ -174,6 +194,9 @@ public class MainPhoneActivity extends Activity implements View.OnClickListener,
         }
     }
 
+    /**
+     * Initialize the BeaconManager to receive new beacons in range.
+     */
     private void initializeBeaconManager() {
         beaconManager = BeaconManager.getInstanceForApplication(this);
         beaconManager.getBeaconParsers().add(new BeaconParser().
@@ -181,6 +204,9 @@ public class MainPhoneActivity extends Activity implements View.OnClickListener,
         beaconManager.bind(this);
     }
 
+    /**
+     * Set the range notifier in onBeaconServiceConnect and start looking for beacons.
+     */
     @Override
     public void onBeaconServiceConnect() {
         beaconManager.setRangeNotifier(mLocalization.rangeNotifier);

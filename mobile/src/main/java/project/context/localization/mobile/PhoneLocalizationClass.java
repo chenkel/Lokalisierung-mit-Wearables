@@ -6,9 +6,17 @@ import android.os.Vibrator;
 
 import project.context.localization.common.superclasses.LocalizationClass;
 
+/**
+ * The PhoneLocalization class implements methods to manipulate the UI accordingly offered by the {@link LocalizationClass}.
+ */
 public class PhoneLocalizationClass extends LocalizationClass {
     private final Vibrator v;
 
+    /**
+     * Instantiates a new PhoneLocalization class.
+     *
+     * @param activity the activity {@link MainPhoneActivity}
+     */
     public PhoneLocalizationClass(Activity activity) {
         super(activity);
         v = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);

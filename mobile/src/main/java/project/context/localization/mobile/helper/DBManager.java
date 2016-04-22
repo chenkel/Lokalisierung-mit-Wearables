@@ -1,7 +1,5 @@
 package project.context.localization.mobile.helper;
 
-//all required import files
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -38,6 +36,16 @@ import project.context.localization.mobile.R;
 
 /**
  * Easy to use database manager found here: https://github.com/sanathp/DatabaseManager_For_Android
+ * <p>
+ * This class offers the convenience to view and
+ * manipulate the sqlite db on the Android device itself.
+ * </p>
+ * <p>
+ * !! NO CHANGES MADE TO THE FOLLOWING CODE !!
+ * </p>
+ * <p>
+ * !! PLEASE SEE THE REPOSITORY FOR MORE INFORMATION !!
+ * </p>
  */
 public class DBManager extends Activity implements OnItemClickListener {
 
