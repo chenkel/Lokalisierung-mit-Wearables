@@ -7,6 +7,11 @@ import android.support.wearable.view.WearableListView;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
 
+/**
+ * The WearableListItemLayout defines a Layout Implementation for List Items
+ *
+ * Also see: http://developer.android.com/training/wearables/ui/lists.html#layout-impl
+ */
 public class WearableListItemLayout extends LinearLayout
         implements WearableListView.OnCenterProximityListener {
 
@@ -17,14 +22,32 @@ public class WearableListItemLayout extends LinearLayout
     private final float mSmallCircleRadius;
     private CircledImageView mCircle;
 
+    /**
+     * Instantiates a new Wearable list item layout.
+     *
+     * @param context the context of the application
+     */
     public WearableListItemLayout(Context context) {
         this(context, null);
     }
 
+    /**
+     * Instantiates a new Wearable list item layout.
+     *
+     * @param context the context of the application
+     * @param attrs   the custom attributes
+     */
     public WearableListItemLayout(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
+    /**
+     * Instantiates a new Wearable list item layout.
+     *
+     * @param context  the context of the application
+     * @param attrs    the custom attributes
+     * @param defStyle the user-defined styles
+     */
     public WearableListItemLayout(Context context, AttributeSet attrs,
                                   int defStyle) {
         super(context, attrs, defStyle);

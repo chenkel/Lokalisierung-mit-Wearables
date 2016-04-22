@@ -16,16 +16,29 @@ import java.util.Locale;
 import project.context.localization.common.helper.PositionHelper;
 
 
+/**
+ * The WearableAdapter extends the {@link WearableListView.Adapter}.
+ *
+ * It creates an Adapter to populate the List with an Array of Items.
+ *
+ * Also see: http://developer.android.com/training/wearables/ui/lists.html#adapter
+ */
 class WearableAdapter extends WearableListView.Adapter {
     static final int ITEM_LOCALIZATION = 0;
-
     static final int ITEM_CALCULATE = 9;
     static final int ITEM_DELETE = 10;
+
     private final ArrayList<Integer> mItems;
     private final LayoutInflater mInflater;
     private final Resources mRes;
     private final Context mContext;
 
+    /**
+     * Instantiates a new WearableAdapter.
+     *
+     * @param context the context of the application
+     * @param items   the items to add given in by {@link MainWatchActivity}
+     */
     public WearableAdapter(Context context, ArrayList<Integer> items) {
         mInflater = LayoutInflater.from(context);
         mItems = items;
@@ -79,6 +92,11 @@ class WearableAdapter extends WearableListView.Adapter {
         private final CircledImageView mCircledImageView;
         private final TextView mItemTextView;
 
+        /**
+         * Instantiates a new Item view holder.
+         *
+         * @param itemView the item view
+         */
         public ItemViewHolder(View itemView) {
             super(itemView);
             mCircledImageView = (CircledImageView)

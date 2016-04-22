@@ -28,7 +28,7 @@
             android:fontFamily="sans-serif-light"
             android:gravity="bottom"
             android:text="@string/header_text"
-            android:textSize="20sp" />
+            android:textSize="24sp" />
 
     </RelativeLayout>
 

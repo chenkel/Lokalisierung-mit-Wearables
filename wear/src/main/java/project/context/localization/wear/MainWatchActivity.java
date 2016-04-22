@@ -81,10 +81,10 @@ public class MainWatchActivity extends Activity {
 
                 @Override
                 public void onAbsoluteScrollChange(int i) {
-                    if (i >= 0) {
-                        mHeader.setY(mHeader.getY() - i);
-                    } else {
-                        mHeader.setY(0.0F);
+                    if (i >= 0 && i <= 80) {
+                        mHeader.setY(-i);
+                    } else if (i > 80){
+                        mHeader.setY(-80);
                     }
                 }
 
@@ -104,15 +104,15 @@ public class MainWatchActivity extends Activity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         ArrayList<Integer> mIcons = new ArrayList<>();
-        mIcons.add(R.drawable.ic_action_locate);
-        mIcons.add(R.drawable.ic_action_share);
-        mIcons.add(R.drawable.ic_action_share);
-        mIcons.add(R.drawable.ic_action_share);
-        mIcons.add(R.drawable.ic_action_share);
-        mIcons.add(R.drawable.ic_action_share);
-        mIcons.add(R.drawable.ic_action_share);
-        mIcons.add(R.drawable.ic_action_share);
-        mIcons.add(R.drawable.ic_action_share);
+        mIcons.add(R.drawable.ic_red_door);
+        mIcons.add(R.drawable.ic_station);
+        mIcons.add(R.drawable.ic_station);
+        mIcons.add(R.drawable.ic_station);
+        mIcons.add(R.drawable.ic_station);
+        mIcons.add(R.drawable.ic_station);
+        mIcons.add(R.drawable.ic_station);
+        mIcons.add(R.drawable.ic_station);
+        mIcons.add(R.drawable.ic_station);
         mIcons.add(R.drawable.ic_action_select_all);
         mIcons.add(R.drawable.ic_action_delete);
 

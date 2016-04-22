@@ -2,10 +2,10 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Notausgang</string>
     <string name="header_text">Notausgang</string>
-    <string name="menu_measure_place" tools:ignore="PluralsCandidate">%1$s messen</string>
+    <string name="menu_measure_place" tools:ignore="PluralsCandidate">Punkt %1$s messen</string>
     <string name="menu_calculate_average">Berechne Durchschnitt</string>
     <string name="menu_delete_all_measurements">Alle Messungen löschen</string>
-    <string name="menu_start_localization">Start</string>
+    <string name="menu_start_localization">Hilfe!</string>
     <string name="processing_localization_running">Lokalisierung läuft</string>
     <string name="processing_measuring_default">0/10</string>
     <string name="processing_measuring_description">Messung der Signalstärke der WiFi-APs in der Umgebung läuft…</string>
