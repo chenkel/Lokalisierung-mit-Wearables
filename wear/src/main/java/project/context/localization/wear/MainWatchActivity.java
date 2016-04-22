@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import project.context.localization.common.helper.PositionHelper;
 import project.context.localization.common.superclasses.MeasureClass;
 
 public class MainWatchActivity extends Activity {
@@ -27,17 +28,17 @@ public class MainWatchActivity extends Activity {
                         case WearableAdapter.ITEM_LOCALIZATION:
                             startActivity(new Intent(MainWatchActivity.this, LocalizationActivity.class));
                             break;
-                        case WearableAdapter.ITEM_SCAN1:
-                        case WearableAdapter.ITEM_SCAN2:
-                        case WearableAdapter.ITEM_SCAN3:
-                        case WearableAdapter.ITEM_SCAN4:
-                        case WearableAdapter.ITEM_SCAN5:
-                        case WearableAdapter.ITEM_SCAN6:
-                        case WearableAdapter.ITEM_SCAN7:
-                        case WearableAdapter.ITEM_SCAN8:
+                        case PositionHelper.ITEM_SCAN11:
+                        case PositionHelper.ITEM_SCAN12:
+                        case PositionHelper.ITEM_SCAN21:
+                        case PositionHelper.ITEM_SCAN22:
+                        case PositionHelper.ITEM_SCAN31:
+                        case PositionHelper.ITEM_SCAN32:
+                        case PositionHelper.ITEM_SCAN41:
+                        case PositionHelper.ITEM_SCAN42:
                             Intent intent = new Intent(MainWatchActivity.this, ProcessingActivity.class);
                             intent.putExtra("mode", "measure");
-                            intent.putExtra("placeId", String.valueOf(clickedMenu));
+                            intent.putExtra("placeId", PositionHelper.getMenuLabelForPosition(clickedMenu));
                             startActivity(intent);
                             break;
 

@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import project.context.localization.common.helper.CalculationHelper;
+import project.context.localization.common.helper.PositionHelper;
 import project.context.localization.common.helper.WlanMeasurement;
 
 /**
@@ -39,10 +40,6 @@ public abstract class LocalizationClass extends CommonClass {
     private Integer blueRssi = -200; // initial value lower than any real value (here: rssi <= -100)
     private Integer redRssi = -200;
     private Integer yellowRssi = -200;
-
-    private final String[] bluePlaces = {"1"}; // placeIds in cell of blue beacon
-    private final String[] redPlaces = {"3"}; // placeIds in cell of red beacon
-    private final String[] yellowPlaces = {"5"}; // placeIds in cell of yellow beacon
 
     /**
      * The blue beacon's minor.
@@ -155,7 +152,7 @@ public abstract class LocalizationClass extends CommonClass {
     }
 
     /**
-     * Stop the continous localization by unregistering the scanResultReceiver
+     * Stop the continous localization and unregister the scanResultReceiver
      * and hide the progress output.
      */
     public void stopLocalization() {
@@ -196,8 +193,8 @@ public abstract class LocalizationClass extends CommonClass {
      * This method is the core of the localization process.
      * First all place ids are fetched.
      * Then the total distance (deviation in rssi) between
-     * the current measurements and the stored measurement places is calculated.
-     * In the end the smallest distance to the current measurement is returned
+     * the current measurement and the stored measurement of all places is calculated.
+     * In the end the smallest distance to the current measurement is notified to the user.
      */
     private void findClosestPlaceIdWithScanResults() {
         /* Sanity checks */
@@ -212,7 +209,7 @@ public abstract class LocalizationClass extends CommonClass {
 
         String foundPlaceId = findMinimalDistance(placeDistanceMap);
 
-        if (foundPlaceId != null){
+        if (foundPlaceId != null) {
             compareWithPriorPlaceAndNotify(priorPlaceId, foundPlaceId);
         }
         priorPlaceId = foundPlaceId;
@@ -221,9 +218,10 @@ public abstract class LocalizationClass extends CommonClass {
     }
 
     /**
-     * TODO: fill out this JavaDoc here!
+     * getPlacesList returns either a filtered place list by the found beacon cell or
+     * returns all of the measured places.
      *
-     * @return
+     * @return a list of places to test the current position against
      */
     private ArrayList<String> getPlacesList() {
 
@@ -240,17 +238,17 @@ public abstract class LocalizationClass extends CommonClass {
 
         /* Extend placeList by predefined list of placeIds for individual beacons */
         if (blueRssi > -70) {
-            Collections.addAll(placeList, bluePlaces);
+            Collections.addAll(placeList, PositionHelper.bluePlaces);
             beaconsFound = true;
         }
 
         if (redRssi > -70) {
-            Collections.addAll(placeList, redPlaces);
+            Collections.addAll(placeList, PositionHelper.redPlaces);
             beaconsFound = true;
         }
 
         if (yellowRssi > -75) {
-            Collections.addAll(placeList, yellowPlaces);
+            Collections.addAll(placeList, PositionHelper.yellowPlaces);
             beaconsFound = true;
         }
 
@@ -259,16 +257,17 @@ public abstract class LocalizationClass extends CommonClass {
             for (placeCursor.moveToFirst(); !placeCursor.isAfterLast(); placeCursor.moveToNext()) {
                 placeList.add(placeCursor.getString(0));
             }
-            placeCursor.close();
         }
+        placeCursor.close();
+
         return placeList;
     }
 
     /**
-     * TODO: fill out this JavaDoc here!
+     * Calculates the distance to every place given in the parameter and returns it as a map.
      *
-     * @param placeList
-     * @return
+     * @param placeList is the list of all relevant and potential places for the calculation
+     * @return a map of a place id and its corresponding distance to the current measurement
      */
     private HashMap<String, Double> calculateTotalDistanceToEveryPlace(ArrayList<String> placeList) {
     /*Am Ende wird jedem Ort eine sse zugeordnet*/
@@ -298,9 +297,9 @@ public abstract class LocalizationClass extends CommonClass {
     }
 
     /**
-     * TODO: fill out this JavaDoc here!
+     * Finds the minimum distance of the place distance map
      *
-     * @param placeDistanceMap
+     * @param placeDistanceMap contains every distance to the places from the current position.
      */
     private String findMinimalDistance(HashMap<String, Double> placeDistanceMap) {
         if (!placeDistanceMap.isEmpty()) {
@@ -320,13 +319,21 @@ public abstract class LocalizationClass extends CommonClass {
         }
     }
 
-    private void debugLocalization(HashMap<String, Double> placeDistanceMap, Map.Entry<String, Double> minEntry, String foundPlaceId) {
-        String outputTextview = "Der Ort ist: " + foundPlaceId + " mit Wert: " + minEntry.getValue() + "\n";
+    /**
+     * debugLocalization helps to understand and monitor the algorithm
+     * to find the closest place from the current measurement.
+     *
+     * @param placeDistanceMap      holds a map containing the place and the corresponding distance
+     * @param minPlaceDistanceEntry is the closest place to the current position or measurement
+     * @param foundPlaceId          is the id string of the closest place id
+     */
+    private void debugLocalization(HashMap<String, Double> placeDistanceMap, Map.Entry<String, Double> minPlaceDistanceEntry, String foundPlaceId) {
+        String outputTextview = "Der Ort ist: " + foundPlaceId + " mit Wert: " + minPlaceDistanceEntry.getValue() + "\n";
 
                 /*Mit steigendem Sicherheitswert ist der sse klein für die Lokation und groß für
                 die anderen Orte
                  */
-        double sicherheitSse = CalculationHelper.sicherheitsWert(minEntry.getValue(), placeDistanceMap);
+        double sicherheitSse = CalculationHelper.sicherheitsWert(minPlaceDistanceEntry.getValue(), placeDistanceMap);
         String sicherheitString = "Der Sicherheitswert ist: " + sicherheitSse + "\n";
 
         StringBuilder sbSse = new StringBuilder();
@@ -340,21 +347,22 @@ public abstract class LocalizationClass extends CommonClass {
         outputDetailedPlaceInfoDebug(textViewAveragesString);
     }
 
+    /**
+     * Compares the prior place to the new one and notifies if the zone of the place changed.
+     * Zones are separated by 10 to the power of x, where is x is the zone id.
+     *
+     * @param priorPlaceId prior place id
+     * @param foundPlaceId current (found) place id
+     */
     private void compareWithPriorPlaceAndNotify(String priorPlaceId, String foundPlaceId) {
-        if (priorPlaceId != null && !priorPlaceId.equals(foundPlaceId)) {
-            if ((priorPlaceId.equals("1") && foundPlaceId.equals("2")) ||
-                    (priorPlaceId.equals("2") && foundPlaceId.equals("1")) ||
-                    (priorPlaceId.equals("3") && foundPlaceId.equals("4")) ||
-                    (priorPlaceId.equals("4") && foundPlaceId.equals("3")) ||
-                    (priorPlaceId.equals("5") && foundPlaceId.equals("6")) ||
-                    (priorPlaceId.equals("6") && foundPlaceId.equals("5")) ||
-                    (priorPlaceId.equals("7") && foundPlaceId.equals("8")) ||
-                    (priorPlaceId.equals("8") && foundPlaceId.equals("7"))) {
-                Log.d(TAG, "PlaceId changed but description stays the same");
-            } else {
-                notifyLocationChange(priorPlaceId, foundPlaceId);
-                updateLocalizationProgressUI(foundPlaceId, getLocationDescription(foundPlaceId));
-            }
+
+        boolean zoneChanged = PositionHelper.getZoneWithPriorAndCurrentPlace(priorPlaceId, foundPlaceId);
+
+        if ((zoneChanged)) {
+            notifyLocationChange(priorPlaceId, foundPlaceId);
+            updateLocalizationProgressUI(foundPlaceId, PositionHelper.getCurrentZoneDescription());
+        } else {
+            Log.d(TAG, "Place changed but zone is still the same");
         }
     }
 
@@ -369,42 +377,6 @@ public abstract class LocalizationClass extends CommonClass {
         progress.setMessage(locationDescription);
     }
 
-    /**
-     * Returns the information to display the user at the current found place.
-     *
-     * @param foundPlaceId current found placeId String
-     * @return String to give a user a hint where to go next
-     */
-    private String getLocationDescription(String foundPlaceId) {
-        String sDescription = "";
-        switch (foundPlaceId) {
-            case "1":
-                sDescription = "Verlasse das Zimmer und gehe nach links";
-                break;
-            case "2":
-                sDescription = "Verlasse das Zimmer und gehe nach links";
-                break;
-            case "3":
-                sDescription = "Gehe durch die Glastür";
-                break;
-            case "4":
-                sDescription = "Gehe durch die Glastür";
-                break;
-            case "5":
-                sDescription = "Gehe nach rechts";
-                break;
-            case "6":
-                sDescription = "Gehe nach rechts";
-                break;
-            case "7":
-                sDescription = "Gehe durch die Notfalltür";
-                break;
-            case "8":
-                sDescription = "Gehe durch die Notfalltür";
-                break;
-        }
-        return sDescription;
-    }
 
     /**
      * Notify location change.

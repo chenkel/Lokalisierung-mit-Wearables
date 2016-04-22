@@ -13,17 +13,12 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Locale;
 
+import project.context.localization.common.helper.PositionHelper;
+
 
 class WearableAdapter extends WearableListView.Adapter {
     static final int ITEM_LOCALIZATION = 0;
-    static final int ITEM_SCAN1 = 1;
-    static final int ITEM_SCAN2 = 2;
-    static final int ITEM_SCAN3 = 3;
-    static final int ITEM_SCAN4 = 4;
-    static final int ITEM_SCAN5 = 5;
-    static final int ITEM_SCAN6 = 6;
-    static final int ITEM_SCAN7 = 7;
-    static final int ITEM_SCAN8 = 8;
+
     static final int ITEM_CALCULATE = 9;
     static final int ITEM_DELETE = 10;
     private final ArrayList<Integer> mItems;
@@ -55,15 +50,15 @@ class WearableAdapter extends WearableListView.Adapter {
             case ITEM_LOCALIZATION:
                 textView.setText(R.string.menu_start_localization);
                 break;
-            case ITEM_SCAN1:
-            case ITEM_SCAN2:
-            case ITEM_SCAN3:
-            case ITEM_SCAN4:
-            case ITEM_SCAN5:
-            case ITEM_SCAN6:
-            case ITEM_SCAN7:
-            case ITEM_SCAN8:
-                String menuText = String.format(Locale.getDefault(), mRes.getString(R.string.menu_measure_place), position);
+            case PositionHelper.ITEM_SCAN11:
+            case PositionHelper.ITEM_SCAN12:
+            case PositionHelper.ITEM_SCAN21:
+            case PositionHelper.ITEM_SCAN22:
+            case PositionHelper.ITEM_SCAN31:
+            case PositionHelper.ITEM_SCAN32:
+            case PositionHelper.ITEM_SCAN41:
+            case PositionHelper.ITEM_SCAN42:
+                String menuText = String.format(Locale.getDefault(), mRes.getString(R.string.menu_measure_place), PositionHelper.getMenuLabelForPosition(position));
                 textView.setText(menuText);
                 break;
             case ITEM_CALCULATE:
@@ -91,4 +86,6 @@ class WearableAdapter extends WearableListView.Adapter {
             mItemTextView = (TextView) itemView.findViewById(R.id.name);
         }
     }
+
+
 }
