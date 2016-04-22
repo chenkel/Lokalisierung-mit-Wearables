@@ -170,8 +170,8 @@ public final class WiFiBleActivity extends Activity {
                     case CARD_SCAN7:
                     case CARD_SCAN8:
                         mMeasureClass.setScanCountMax(5);
-                        mMeasureClass.setPlaceIdString(String.valueOf(position));
-                        mMeasureClass.measureWlan();
+                        mMeasureClass.setPlaceString(String.valueOf(position));
+                        mMeasureClass.measureWiFi();
                         break;
 
                     case CARD_CALCULATE:

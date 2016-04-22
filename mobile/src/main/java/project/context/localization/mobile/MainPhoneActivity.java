@@ -144,7 +144,7 @@ public class MainPhoneActivity extends Activity implements View.OnClickListener,
 
             case R.id.wlan_scan:
                 outputList.clear();
-                mMeasure.measureWlan();
+                mMeasure.measureWiFi();
                 break;
 
             case R.id.wlan_calculate_averages:

@@ -1,3 +1,3 @@
-smartwatch.context.common.db
-smartwatch.context.common.helper
-smartwatch.context.common.superclasses
+project.context.localization.common.db
+project.context.localization.common.helper
+project.context.localization.common.superclasses

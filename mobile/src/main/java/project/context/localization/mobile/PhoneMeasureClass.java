@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import project.context.localization.common.helper.WlanMeasurement;
+import project.context.localization.common.helper.WiFiMeasurement;
 import project.context.localization.common.superclasses.MeasureClass;
 
 public class PhoneMeasureClass extends MeasureClass {
@@ -15,19 +15,19 @@ public class PhoneMeasureClass extends MeasureClass {
     }
 
     @Override
-    protected void outputDebugInfos(List<WlanMeasurement> wlanMeasure) {
-                /* Sorting of WlanMeasurement */
-        Comparator<WlanMeasurement> wlanComparator = new Comparator<WlanMeasurement>() {
+    protected void outputDebugInfos(List<WiFiMeasurement> wiFiMeasurementList) {
+                /* Sorting of WiFiMeasurement */
+        Comparator<WiFiMeasurement> wlanComparator = new Comparator<WiFiMeasurement>() {
             @Override
-            public int compare(WlanMeasurement lhs, WlanMeasurement rhs) {
+            public int compare(WiFiMeasurement lhs, WiFiMeasurement rhs) {
                 return (lhs.getRssi() > rhs.getRssi() ? -1 : (lhs.getRssi() == rhs.getRssi() ? 0 : 1));
             }
         };
 
-        Collections.sort(wlanMeasure, wlanComparator);
+        Collections.sort(wiFiMeasurementList, wlanComparator);
 
                 /* only show last measurement in list */
-        for (WlanMeasurement ap : wlanMeasure) {
+        for (WiFiMeasurement ap : wiFiMeasurementList) {
             String helperString = "SSID: " + ap.getSsid()
                     + "\nRSSI: " + ap.getRssi()
                     + "\nBSSI: " + ap.getBssi();
@@ -39,10 +39,10 @@ public class PhoneMeasureClass extends MeasureClass {
 
     @Override
     public void updateMeasurementsCount() {
-        this.setPlaceIdString(((MainPhoneActivity) activity).editPlaceId.getText().toString());
+        this.setPlaceString(((MainPhoneActivity) activity).editPlaceId.getText().toString());
         //* Sanity checks *//*
-        if (!(placeIdString.isEmpty())) {
-            ((MainPhoneActivity) activity).textViewMeasuresCount.setText(db.getMeasurementsNumberOfDistinctBssisForPlace(placeIdString));
+        if (!(placeString.isEmpty())) {
+            ((MainPhoneActivity) activity).textViewMeasuresCount.setText(db.getMeasurementsNumberOfDistinctBssisForPlace(placeString));
         }
     }
 }

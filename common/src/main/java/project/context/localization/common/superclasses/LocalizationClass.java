@@ -26,7 +26,7 @@ import java.util.Map;
 
 import project.context.localization.common.helper.CalculationHelper;
 import project.context.localization.common.helper.PositionHelper;
-import project.context.localization.common.helper.WlanMeasurement;
+import project.context.localization.common.helper.WiFiMeasurement;
 
 /**
  * The abstract class LocalizationClass offers methods and attributes to locate a user by
@@ -34,7 +34,7 @@ import project.context.localization.common.helper.WlanMeasurement;
  */
 public abstract class LocalizationClass extends CommonClass {
     private static final String TAG = LocalizationClass.class.getSimpleName();
-    private final List<WlanMeasurement> wlanMeasure = new ArrayList<>();
+    private final List<WiFiMeasurement> wlanMeasure = new ArrayList<>();
     private String priorPlaceId = "";
 
     private Integer blueRssi = -200; // initial value lower than any real value (here: rssi <= -100)
@@ -98,7 +98,7 @@ public abstract class LocalizationClass extends CommonClass {
 
     /**
      * The BroadcastReceiver gets the results of the WiFi Scan and
-     * adds all the results to wlanMeasure.
+     * adds all the results to wiFiMeasurements.
      * After that find out the closest place in the db to the current one and
      * start another wifi scan (continous)
      */
@@ -110,7 +110,7 @@ public abstract class LocalizationClass extends CommonClass {
             int measurementCount = currentResults.size();
             if (measurementCount > 0) {
                 for (ScanResult result : currentResults) {
-                    wlanMeasure.add(new WlanMeasurement(result.BSSID, result.level, result.SSID));
+                    wlanMeasure.add(new WiFiMeasurement(result.BSSID, result.level, result.SSID));
                 }
 
                 findClosestPlaceIdWithScanResults();
@@ -272,11 +272,11 @@ public abstract class LocalizationClass extends CommonClass {
     private HashMap<String, Double> calculateTotalDistanceToEveryPlace(ArrayList<String> placeList) {
     /*Am Ende wird jedem Ort eine sse zugeordnet*/
         HashMap<String, Double> placeDistanceMap = new HashMap<>();
-        List<WlanMeasurement> wlanMeasurementsList = new ArrayList<>();
+        List<WiFiMeasurement> wiFiMeasurementsList = new ArrayList<>();
 
         for (String place : placeList) {
             /*Get all BSSI and corresponding RSSI for place*/
-            wlanMeasurementsList.clear();
+            wiFiMeasurementsList.clear();
 
             /*Fills the cursor with all BSSIDs and their RSSIs at the place*/
             Cursor avgRssiCursor = db.getAverageRssiByPlace(place);
@@ -284,13 +284,13 @@ public abstract class LocalizationClass extends CommonClass {
             bssi,rssi, ssid
             */
             for (avgRssiCursor.moveToFirst(); !avgRssiCursor.isAfterLast(); avgRssiCursor.moveToNext()) {
-                WlanMeasurement wlanMeasurement = new WlanMeasurement(avgRssiCursor.getString(0),
+                WiFiMeasurement wiFiMeasurement = new WiFiMeasurement(avgRssiCursor.getString(0),
                         avgRssiCursor.getInt(1), avgRssiCursor.getString(2));
-                wlanMeasurementsList.add(wlanMeasurement);
+                wiFiMeasurementsList.add(wiFiMeasurement);
             }
             avgRssiCursor.close();
 
-            double totalDistance = CalculationHelper.calculateDistance(wlanMeasure, wlanMeasurementsList);
+            double totalDistance = CalculationHelper.calculateDistance(wlanMeasure, wiFiMeasurementsList);
             placeDistanceMap.put(place, totalDistance);
         }
         return placeDistanceMap;
@@ -300,6 +300,7 @@ public abstract class LocalizationClass extends CommonClass {
      * Finds the minimum distance of the place distance map
      *
      * @param placeDistanceMap contains every distance to the places from the current position.
+     * @return a String that contains the place with the minimum distance
      */
     private String findMinimalDistance(HashMap<String, Double> placeDistanceMap) {
         if (!placeDistanceMap.isEmpty()) {
@@ -333,7 +334,7 @@ public abstract class LocalizationClass extends CommonClass {
                 /*Mit steigendem Sicherheitswert ist der sse klein für die Lokation und groß für
                 die anderen Orte
                  */
-        double sicherheitSse = CalculationHelper.sicherheitsWert(minPlaceDistanceEntry.getValue(), placeDistanceMap);
+        double sicherheitSse = CalculationHelper.securityValue(minPlaceDistanceEntry.getValue(), placeDistanceMap);
         String sicherheitString = "Der Sicherheitswert ist: " + sicherheitSse + "\n";
 
         StringBuilder sbSse = new StringBuilder();
@@ -356,7 +357,7 @@ public abstract class LocalizationClass extends CommonClass {
      */
     private void compareWithPriorPlaceAndNotify(String priorPlaceId, String foundPlaceId) {
 
-        boolean zoneChanged = PositionHelper.getZoneWithPriorAndCurrentPlace(priorPlaceId, foundPlaceId);
+        boolean zoneChanged = PositionHelper.isZoneDifferentWithPriorAndCurrentPlace(priorPlaceId, foundPlaceId);
 
         if ((zoneChanged)) {
             notifyLocationChange(priorPlaceId, foundPlaceId);

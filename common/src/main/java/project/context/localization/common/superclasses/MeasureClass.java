@@ -17,22 +17,47 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-import project.context.localization.common.helper.WlanMeasurement;
+import project.context.localization.common.helper.WiFiMeasurement;
 
 
+/**
+ * The Measure class offers a convenient method {@link #measureWiFi()} to start
+ * measuring a user's WiFi surrounding and define Fingerprints by {@link #setPlaceString(String)}
+ * After a predefined scan count {@link #setScanCountMax(int)}, the measurements
+ * are saved in the database. These entries are then used later
+ * in {@link AverageMeasuresClass} and {@link LocalizationClass} to aggregate
+ * WiFi-AP RSSis and to locate the user.
+ */
 public abstract class MeasureClass extends CommonClass {
     private static final String TAG = MeasureClass.class.getSimpleName();
+    /**
+     * The property defines the maximum count of scans.
+     */
     public int scanCountMax;
-    protected final List<WlanMeasurement> wlanMeasure = new ArrayList<>();
-    protected String placeIdString;
-    private long initTime = 0;
+    /**
+     * The Wlan measure list holds all scan results for the WiFI-Access point environment.
+     */
+    protected final List<WiFiMeasurement> wiFiMeasurements = new ArrayList<>();
+    /**
+     * The Place id string is used to assign the measurement to a place.
+     */
+    protected String placeString;
+    /**
+     * Scan count keeps track of the current scan iteration.
+     */
     private int scanCount;
+
+    /**
+     * The Broadcast receiver receives all WiFi Scan results and
+     * adds them to the wiFiMeasurements list.
+     * The method also updates the progress output, returns
+     * debugging information about the scanning.
+     * In the end the WiFi Scanning stops and all
+     * Measurements are saved in the DB asynchronously.
+     */
     private final BroadcastReceiver measureResultReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (initTime == 0) {
-                initTime = System.currentTimeMillis() / 1000;
-            }
             List<ScanResult> currentResults = wifiManager.getScanResults();
 
             int measurementCount = currentResults.size();
@@ -40,18 +65,14 @@ public abstract class MeasureClass extends CommonClass {
 
 
                 for (ScanResult result : currentResults) {
-                    wlanMeasure.add(new WlanMeasurement(
-                            result.BSSID,
-                            result.level,
-                            result.SSID
-                    ));
+                    wiFiMeasurements.add(new WiFiMeasurement(result.BSSID, result.level, result.SSID));
                 }
 
                 scanCount++;
                 updateProgressOutput(scanCount);
                     /* All scans finished */
                 if (scanCount >= scanCountMax) {
-                    outputDebugInfos(wlanMeasure);
+                    outputDebugInfos(wiFiMeasurements);
                     stopMeasuring();
                     new SaveMeasuresTask().execute();
                 } else {
@@ -65,6 +86,11 @@ public abstract class MeasureClass extends CommonClass {
         }
     };
 
+    /**
+     * Instantiates a new Measure class.
+     *
+     * @param activity a reference to the instantiating activity to access its UI elements
+     */
     public MeasureClass(Activity activity) {
         super(activity);
 
@@ -72,14 +98,30 @@ public abstract class MeasureClass extends CommonClass {
         scanCount = 0;
     }
 
+    /**
+     * Sets the max scan count.
+     *
+     * @param sMax the s max
+     */
     public void setScanCountMax(int sMax) {
         this.scanCountMax = sMax;
     }
 
-    public void setPlaceIdString(String placeIdString) {
-        this.placeIdString = placeIdString;
+    /**
+     * Sets place id string.
+     *
+     * @param placeString the place string
+     */
+    public void setPlaceString(String placeString) {
+        this.placeString = placeString;
     }
 
+    /**
+     * Stops measuring.
+     *
+     * Therefore it unregisters the result receiver.
+     * In the end it hides the progress dialog/output.
+     */
     public void stopMeasuring() {
         try {
             /* Stop the continous scan */
@@ -93,13 +135,20 @@ public abstract class MeasureClass extends CommonClass {
     }
 
 
-    public void measureWlan() {
-        if (placeIdString == null || placeIdString.isEmpty()) {
-            Log.e(TAG, "placeIdString empty");
+    /**
+     * Initiates the measuring process.
+     *
+     * This method gets called by the activities.
+     * In a first step, a result receiver for the WiFi results gets registered.
+     * Then, the WiFi scanning starts and a progress is shown to the user.
+     */
+    public void measureWiFi() {
+        if (placeString == null || placeString.isEmpty()) {
+            Log.e(TAG, "placeString empty");
             return;
         }
 
-        wlanMeasure.clear();
+        wiFiMeasurements.clear();
 
         scanCount = 0;
 
@@ -113,6 +162,12 @@ public abstract class MeasureClass extends CommonClass {
         showMeasureProgress();
     }
 
+    /**
+     * Show measure progress in progress output.
+     *
+     * Should be overridden by devices like Moto 360
+     * to be substituted by other UI elements, that fit the plattform best.
+     */
     protected void showMeasureProgress() {
         progress = new ProgressDialog(getActivity());
 
@@ -125,36 +180,51 @@ public abstract class MeasureClass extends CommonClass {
         progress.show();
     }
 
-    protected void outputDebugInfos(List<WlanMeasurement> wlanMeasure) {
-        Log.d(TAG, wlanMeasure.toString());
+    /**
+     * Output debug infos.
+     *
+     * @param wiFiMeasurementList the list containing measurement results
+     *                            of the WiFi access points in the current area.
+     */
+    protected void outputDebugInfos(List<WiFiMeasurement> wiFiMeasurementList) {
+        Log.d(TAG, wiFiMeasurementList.toString());
     }
 
+    /**
+     * Show save progress.
+     */
     protected void showMeasuresSaveProgress() {
         progress.setTitle("Alle Messdaten werden gespeichert...");
         progress.setMessage("");
         progress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        progress.setMax(wlanMeasure.size());
+        progress.setMax(wiFiMeasurements.size());
         progress.show();
     }
 
+    /**
+     * Delete all measurements.
+     */
     public void deleteAllMeasurements() {
         db.deleteAllMeasurements();
         updateMeasurementsCount();
         Toast.makeText(getActivity(), "Alles Messungen wurden gelöscht", Toast.LENGTH_SHORT).show();
     }
 
+    /**
+     * Delete all measurements for a specific place.
+     */
     public void deleteAllMeasurementsForPlace() {
-        if (placeIdString == null || placeIdString.isEmpty()) {
+        if (placeString == null || placeString.isEmpty()) {
             Toast.makeText(getActivity(), "Bitte geben Sie eine Ort-ID an.", Toast.LENGTH_SHORT).show();
             return;
         }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Messungen löschen...");
-        builder.setMessage("Wirklich alle Messungen zu Ort-ID " + placeIdString + " löschen?");
+        builder.setMessage("Wirklich alle Messungen zu Ort-ID " + placeString + " löschen?");
         builder.setPositiveButton("Ja", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                db.deleteMeasurementForPlaceId(placeIdString);
+                db.deleteMeasurementForPlaceId(placeString);
                 updateMeasurementsCount();
                 dialog.dismiss();
             }
@@ -170,8 +240,18 @@ public abstract class MeasureClass extends CommonClass {
 
     }
 
+    /**
+     * Update measurements count.
+     *
+     * Normally gets called after new measurements are
+     * saved in the db, so that changes can be queried after they are done.
+     */
     public abstract void updateMeasurementsCount();
 
+    /**
+     * SaveMeasuresTask is an Async Task that saves all
+     * the measurements in the db and displays the progress to the user.
+     */
     private class SaveMeasuresTask extends AsyncTask<Void, Integer, Integer> {
         @Override
         protected void onPreExecute() {
@@ -182,10 +262,10 @@ public abstract class MeasureClass extends CommonClass {
         protected Integer doInBackground(Void... arg0) {
             int scansCount = 0;
             try {
-                for (WlanMeasurement ap : wlanMeasure) {
+                for (WiFiMeasurement ap : wiFiMeasurements) {
                     /* create a new record in DB */
-                    long affectedRow = db.addMeasurementsRecords(ap.getBssi(), ap.getSsid(), ap.getRssi(), placeIdString);
-                    if (affectedRow == -1){
+                    long affectedRow = db.addMeasurementsRecords(ap.getBssi(), ap.getSsid(), ap.getRssi(), placeString);
+                    if (affectedRow == -1) {
                         Log.e(TAG, "Error inserting average Records");
                     }
 

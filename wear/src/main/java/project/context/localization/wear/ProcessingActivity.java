@@ -54,7 +54,7 @@ public class ProcessingActivity extends Activity {
                         @Override
                         protected void showMeasuresSaveProgress() {
                             descriptionTextView.setText(R.string.processing_measurements_save);
-                            progressBar.setMax(wlanMeasure.size());
+                            progressBar.setMax(wiFiMeasurements.size());
                             allowDestroy = true;
                         }
 
@@ -77,8 +77,8 @@ public class ProcessingActivity extends Activity {
                         }
                     };
                     String placeId = res.getString("placeId");
-                    mMeasureClass.setPlaceIdString(placeId);
-                    mMeasureClass.measureWlan();
+                    mMeasureClass.setPlaceString(placeId);
+                    mMeasureClass.measureWiFi();
 
                     break;
                 case "average":
