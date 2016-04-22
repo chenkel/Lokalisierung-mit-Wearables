@@ -16,16 +16,29 @@ import java.util.Locale;
 import project.context.localization.common.helper.PositionHelper;
 
 
+/**
+ * The WearableAdapter extends the {@link WearableListView.Adapter}.
+ *
+ * It create an Adapter to populate the List with an Array of Items.
+ *
+ * Also see: http://developer.android.com/training/wearables/ui/lists.html#adapter
+ */
 class WearableAdapter extends WearableListView.Adapter {
     static final int ITEM_LOCALIZATION = 0;
-
     static final int ITEM_CALCULATE = 9;
     static final int ITEM_DELETE = 10;
+
     private final ArrayList<Integer> mItems;
     private final LayoutInflater mInflater;
     private final Resources mRes;
     private final Context mContext;
 
+    /**
+     * Instantiates a new WearableAdapter.
+     *
+     * @param context the context of the application
+     * @param items   the items to add given in by {@link MainWatchActivity}
+     */
     public WearableAdapter(Context context, ArrayList<Integer> items) {
         mInflater = LayoutInflater.from(context);
         mItems = items;
@@ -40,12 +53,9 @@ class WearableAdapter extends WearableListView.Adapter {
     }
 
     @Override
-    public void onBindViewHolder(WearableListView.ViewHolder viewHolder,
+    public void onBindViewHolder(WearableListView.ViewHolder holder,
                                  int position) {
-        ItemViewHolder itemViewHolder = (ItemViewHolder) viewHolder;
-        CircledImageView circledView = itemViewHolder.mCircledImageView;
-        circledView.setImageResource(mItems.get(position));
-        TextView textView = itemViewHolder.mItemTextView;
+        TextView textView = (TextView) holder.itemView.findViewById(R.id.name);
         switch (position) {
             case ITEM_LOCALIZATION:
                 textView.setText(R.string.menu_start_localization);
@@ -68,6 +78,7 @@ class WearableAdapter extends WearableListView.Adapter {
                 textView.setText(R.string.menu_delete_all_measurements);
                 break;
         }
+        holder.itemView.setTag(position);
     }
 
     @Override
@@ -75,15 +86,13 @@ class WearableAdapter extends WearableListView.Adapter {
         return mItems.size();
     }
 
-    private static class ItemViewHolder extends WearableListView.ViewHolder {
-        private final CircledImageView mCircledImageView;
-        private final TextView mItemTextView;
-
+    // Provide a reference to the type of views you're using
+    public static class ItemViewHolder extends WearableListView.ViewHolder {
+        private TextView textView;
         public ItemViewHolder(View itemView) {
             super(itemView);
-            mCircledImageView = (CircledImageView)
-                    itemView.findViewById(R.id.circle);
-            mItemTextView = (TextView) itemView.findViewById(R.id.name);
+            // find the text view within the custom item's layout
+            textView = (TextView) itemView.findViewById(R.id.name);
         }
     }
 
