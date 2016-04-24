@@ -5,7 +5,6 @@
     android:layout_height="match_parent">
 
     <RelativeLayout
-        android:id="@+id/frame_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_box="left|bottom|right">
@@ -29,7 +28,7 @@
             android:fontFamily="sans-serif-light"
             android:gravity="bottom"
             android:text="@string/header_text"
-            android:textSize="20sp" />
+            android:textSize="24sp" />
 
     </RelativeLayout>
 

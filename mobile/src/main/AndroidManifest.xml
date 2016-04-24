@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="smartwatch.context.project">
+    package="project.context.localization.mobile">
 
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
@@ -14,65 +14,27 @@
     <application
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
+        android:keepScreenOn="true"
         android:label="@string/app_name"
         android:theme="@style/AppTheme"
-        android:keepScreenOn="true"
         tools:ignore="GoogleAppIndexingWarning">
         <activity
-            android:name=".activities.TitleScreen"
+            android:name=".MainPhoneActivity"
             android:label="@string/app_name">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-        <activity
-            android:name=".activities.WlanActivity"
-            android:label="@string/title_activity_wlan"
-            android:parentActivityName=".activities.TitleScreen">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.TitleScreen" />
-        </activity>
-        <activity
-            android:name=".activities.BleActivity"
-            android:label="@string/title_activity_ble"
-            android:parentActivityName=".activities.TitleScreen">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.TitleScreen" />
-        </activity>
-        <activity
-            android:name=".activities.QrcodeActivity"
-            android:label="@string/title_activity_qrcode"
-            android:parentActivityName=".activities.TitleScreen">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.TitleScreen" />
-        </activity>
-        <activity
-            android:name=".activities.GraphicActivity"
-            android:parentActivityName=".activities.TitleScreen">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.TitleScreen" />
+
         </activity>
         <activity
             android:name=".helper.DBManager"
-            android:parentActivityName=".activities.TitleScreen">
+            android:parentActivityName=".MainPhoneActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.TitleScreen" />
+                android:value=".MainPhoneActivity" />
         </activity>
-
-        <service
-            android:enabled="true"
-            android:name="smartwatch.context.common.helper.BluetoothData">
-            <intent-filter>
-                <action android:name="com.project.BLUETOOTHSERVICE" />
-            </intent-filter>
-        </service>
 
     </application>
 

@@ -126,9 +126,9 @@ final class CameraConfigurationManager {
     /**
      * See http://stackoverflow.com/a/19434459/552902
      *
-     * @param mCamera
+     * @param camera: object for camera access.
      */
-    public static void googleGlassXE10WorkAround(Camera camera) {
+    private static void googleGlassXE10WorkAround(Camera camera) {
         Camera.Parameters params = camera.getParameters();
         params.setPreviewFpsRange(30000, 30000);
         params.setPreviewSize(640, 360);
@@ -229,7 +229,7 @@ final class CameraConfigurationManager {
         }
 
         // Sort by size, descending
-        List<Camera.Size> supportedPreviewSizes = new ArrayList<Camera.Size>(
+        List<Camera.Size> supportedPreviewSizes = new ArrayList<>(
                 rawSupportedSizes);
         Collections.sort(supportedPreviewSizes, new Comparator<Camera.Size>() {
             @Override
