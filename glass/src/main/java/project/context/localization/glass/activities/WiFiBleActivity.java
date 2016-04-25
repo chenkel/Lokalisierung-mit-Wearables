@@ -33,7 +33,7 @@ import com.google.android.glass.widget.CardScrollView;
 import java.util.ArrayList;
 import java.util.List;
 
-import project.context.localization.common.helper.PositionHelper;
+import project.context.localization.common.helper.PositionsHelper;
 import project.context.localization.common.superclasses.AverageMeasuresClass;
 import project.context.localization.common.superclasses.MeasureClass;
 import project.context.localization.glass.R;
@@ -176,7 +176,7 @@ public final class WiFiBleActivity extends Activity {
                     case CARD_SCAN7:
                     case CARD_SCAN8:
                         mMeasureClass.setScanCountMax(5);
-                        mMeasureClass.setPlaceString(PositionHelper.getMenuLabelForPosition(position));
+                        mMeasureClass.setPlaceString(PositionsHelper.getMenuLabelForPosition(position));
                         mMeasureClass.measureWiFi();
                         break;
 

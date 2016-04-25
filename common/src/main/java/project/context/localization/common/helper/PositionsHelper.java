@@ -5,7 +5,7 @@ package project.context.localization.common.helper;
  * The Position helper offers commonly used methods and attributes for resolving
  * information about places and their relating zone descriptions.
  */
-public class PositionHelper {
+public class PositionsHelper {
     /**
      * The constant ITEM_SCAN11 indicates its position in the menu at 1.
      */
@@ -113,7 +113,7 @@ public class PositionHelper {
     /**
      * Returns the information to display the user at the current found place.
      *
-     * The currentZone is stored in the PositionHelper, thus, does not need
+     * The currentZone is stored in the PositionsHelper, thus, does not need
      * to be passed into this method.
      *
      * @return String to give a user a hint where to go next

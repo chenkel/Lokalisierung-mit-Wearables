@@ -13,7 +13,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Locale;
 
-import project.context.localization.common.helper.PositionHelper;
+import project.context.localization.common.helper.PositionsHelper;
 
 
 /**
@@ -63,15 +63,15 @@ class WearableAdapter extends WearableListView.Adapter {
             case ITEM_LOCALIZATION:
                 textView.setText(R.string.menu_start_localization);
                 break;
-            case PositionHelper.ITEM_SCAN11:
-            case PositionHelper.ITEM_SCAN12:
-            case PositionHelper.ITEM_SCAN21:
-            case PositionHelper.ITEM_SCAN22:
-            case PositionHelper.ITEM_SCAN31:
-            case PositionHelper.ITEM_SCAN32:
-            case PositionHelper.ITEM_SCAN41:
-            case PositionHelper.ITEM_SCAN42:
-                String menuText = String.format(Locale.getDefault(), mRes.getString(R.string.menu_measure_place), PositionHelper.getMenuLabelForPosition(position));
+            case PositionsHelper.ITEM_SCAN11:
+            case PositionsHelper.ITEM_SCAN12:
+            case PositionsHelper.ITEM_SCAN21:
+            case PositionsHelper.ITEM_SCAN22:
+            case PositionsHelper.ITEM_SCAN31:
+            case PositionsHelper.ITEM_SCAN32:
+            case PositionsHelper.ITEM_SCAN41:
+            case PositionsHelper.ITEM_SCAN42:
+                String menuText = String.format(Locale.getDefault(), mRes.getString(R.string.menu_measure_place), PositionsHelper.getMenuLabelForPosition(position));
                 textView.setText(menuText);
                 break;
             case ITEM_CALCULATE:

@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import project.context.localization.common.helper.CalculationHelper;
-import project.context.localization.common.helper.PositionHelper;
+import project.context.localization.common.helper.PositionsHelper;
 import project.context.localization.common.helper.WiFiMeasurement;
 
 /**
@@ -238,17 +238,17 @@ public abstract class LocalizationClass extends CommonClass {
 
         /* Extend placeList by predefined list of placeIds for individual beacons */
         if (blueRssi > -70) {
-            Collections.addAll(placeList, PositionHelper.bluePlaces);
+            Collections.addAll(placeList, PositionsHelper.bluePlaces);
             beaconsFound = true;
         }
 
         if (redRssi > -70) {
-            Collections.addAll(placeList, PositionHelper.redPlaces);
+            Collections.addAll(placeList, PositionsHelper.redPlaces);
             beaconsFound = true;
         }
 
         if (yellowRssi > -75) {
-            Collections.addAll(placeList, PositionHelper.yellowPlaces);
+            Collections.addAll(placeList, PositionsHelper.yellowPlaces);
             beaconsFound = true;
         }
 
@@ -357,11 +357,11 @@ public abstract class LocalizationClass extends CommonClass {
      */
     private void compareWithPriorPlaceAndNotify(String priorPlaceId, String foundPlaceId) {
 
-        boolean zoneChanged = PositionHelper.isZoneDifferentWithPriorAndCurrentPlace(priorPlaceId, foundPlaceId);
+        boolean zoneChanged = PositionsHelper.isZoneDifferentWithPriorAndCurrentPlace(priorPlaceId, foundPlaceId);
 
         if ((zoneChanged)) {
             notifyLocationChange(priorPlaceId, foundPlaceId);
-            updateLocalizationProgressUI(foundPlaceId, PositionHelper.getCurrentZoneDescription());
+            updateLocalizationProgressUI(foundPlaceId, PositionsHelper.getCurrentZoneDescription());
         } else {
             Log.d(TAG, "Place changed but zone is still the same");
         }
