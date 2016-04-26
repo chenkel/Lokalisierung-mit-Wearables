@@ -76,7 +76,7 @@ public abstract class CommonClass {
      */
     protected void hideProgressOutput(){
         if (progress != null) {
-            Log.w(TAG, "progress is not null");
+//            Log.w(TAG, "progress is not null");
             progress.dismiss();
         }
     }

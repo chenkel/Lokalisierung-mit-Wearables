@@ -46,14 +46,6 @@ public final class WiFiBleActivity extends Activity {
     private static final String TAG = WiFiBleActivity.class.getSimpleName();
 
     private static final int CARD_LOCALIZATION = 0;
-    private static final int CARD_SCAN1 = 1;
-    private static final int CARD_SCAN2 = 2;
-    private static final int CARD_SCAN3 = 3;
-    private static final int CARD_SCAN4 = 4;
-    private static final int CARD_SCAN5 = 5;
-    private static final int CARD_SCAN6 = 6;
-    private static final int CARD_SCAN7 = 7;
-    private static final int CARD_SCAN8 = 8;
     private static final int CARD_CALCULATE = 9;
     private static final int CARD_DELETE = 10;
 
@@ -97,35 +89,35 @@ public final class WiFiBleActivity extends Activity {
                 .setFootnote(R.string.wifi_ble_localization_footnote));
 
         cards.add(new CardBuilder(context, CardBuilder.Layout.COLUMNS)
-                .setText(getString(R.string.wifi_ble_scan_place1))
+                .setText(getString(R.string.wifi_ble_scan_place11))
                 .setIcon(R.drawable.ic_station));
 
         cards.add(new CardBuilder(context, CardBuilder.Layout.COLUMNS)
-                .setText(getString(R.string.wifi_ble_scan_place2))
+                .setText(getString(R.string.wifi_ble_scan_place12))
                 .setIcon(R.drawable.ic_station));
 
         cards.add(new CardBuilder(context, CardBuilder.Layout.COLUMNS)
-                .setText(getString(R.string.wifi_ble_scan_place3))
+                .setText(getString(R.string.wifi_ble_scan_place21))
                 .setIcon(R.drawable.ic_station));
 
         cards.add(new CardBuilder(context, CardBuilder.Layout.COLUMNS)
-                .setText(getString(R.string.wifi_ble_scan_place4))
+                .setText(getString(R.string.wifi_ble_scan_place22))
                 .setIcon(R.drawable.ic_station));
 
         cards.add(new CardBuilder(context, CardBuilder.Layout.COLUMNS)
-                .setText(getString(R.string.wifi_ble_scan_place5))
+                .setText(getString(R.string.wifi_ble_scan_place31))
                 .setIcon(R.drawable.ic_station));
 
         cards.add(new CardBuilder(context, CardBuilder.Layout.COLUMNS)
-                .setText(getString(R.string.wifi_ble_scan_place6))
+                .setText(getString(R.string.wifi_ble_scan_place32))
                 .setIcon(R.drawable.ic_station));
 
         cards.add(new CardBuilder(context, CardBuilder.Layout.COLUMNS)
-                .setText(getString(R.string.wifi_ble_scan_place7))
+                .setText(getString(R.string.wifi_ble_scan_place41))
                 .setIcon(R.drawable.ic_station));
 
         cards.add(new CardBuilder(context, CardBuilder.Layout.COLUMNS)
-                .setText(getString(R.string.wifi_ble_scan_place7))
+                .setText(getString(R.string.wifi_ble_scan_place42))
                 .setIcon(R.drawable.ic_station));
 
         cards.add(new CardBuilder(context, CardBuilder.Layout.COLUMNS)
@@ -167,14 +159,14 @@ public final class WiFiBleActivity extends Activity {
                         startActivity(new Intent(WiFiBleActivity.this, GlassLocalizationActivity.class));
                         break;
 
-                    case CARD_SCAN1:
-                    case CARD_SCAN2:
-                    case CARD_SCAN3:
-                    case CARD_SCAN4:
-                    case CARD_SCAN5:
-                    case CARD_SCAN6:
-                    case CARD_SCAN7:
-                    case CARD_SCAN8:
+                    case PositionsHelper.ITEM_SCAN11:
+                    case PositionsHelper.ITEM_SCAN12:
+                    case PositionsHelper.ITEM_SCAN21:
+                    case PositionsHelper.ITEM_SCAN22:
+                    case PositionsHelper.ITEM_SCAN31:
+                    case PositionsHelper.ITEM_SCAN32:
+                    case PositionsHelper.ITEM_SCAN41:
+                    case PositionsHelper.ITEM_SCAN42:
                         mMeasureClass.setScanCountMax(5);
                         mMeasureClass.setPlaceString(PositionsHelper.getMenuLabelForPosition(position));
                         mMeasureClass.measureWiFi();

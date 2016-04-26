@@ -55,8 +55,10 @@ import com.google.zxing.client.result.ResultParser;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.Timer;
@@ -337,18 +339,17 @@ public final class CaptureActivity extends BaseGlassActivity implements
 
     // Put up our own UI for how to handle the decoded contents.
     private void handleDecodeInternally(Result rawResult, Bitmap barcode) {
-        ParsedResult parsedResult = ResultParser.parseResult(rawResult);
-        ArrayList<String> ar = new ArrayList<>();
-        StringTokenizer st = new StringTokenizer(parsedResult.toString());
-        while (st.hasMoreTokens()) {
-            String theString = st.nextToken();
-            Log.e(TAG, theString);
-            ar.add(theString);
+        String parsedResult = ResultParser.parseResult(rawResult).toString();
+        List<String> ar;
+
+        parsedResult = parsedResult.replaceAll("[^-?0-9]+", " ");
+        ar = Arrays.asList(parsedResult.trim().split(" "));
+
+        if (ar.size() > 0){
+            mViewfinderView.resultText = getLocationDescription(ar.get(0));
+        } else {
+            Log.d(TAG, "No valid Id was found in the QR Code.");
         }
-
-        mViewfinderView.resultText = getLocationDescription(ar.get(1));
-//        Toast.makeText(this, parsedResult.toString(), Toast.LENGTH_LONG).show();
-
 
         this.onPause();
 
@@ -430,6 +431,9 @@ public final class CaptureActivity extends BaseGlassActivity implements
                 break;
             case "7":
                 sDescription = "Gehe durch die Notfalltür";
+                break;
+            default:
+                sDescription = "Dieser QR-Code ist keinem Ort zugewiesen...";
                 break;
         }
         return sDescription;
