@@ -13,6 +13,7 @@ import java.util.ArrayList;
 
 import project.context.localization.common.helper.PositionsHelper;
 import project.context.localization.common.superclasses.MeasureClass;
+import project.context.localization.wear.list.WearableAdapter;
 
 /**
  * The MainWatch activity adds the menu items as well as the

@@ -1,4 +1,4 @@
-package project.context.localization.wear;
+package project.context.localization.wear.list;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 import project.context.localization.common.helper.PositionsHelper;
+import project.context.localization.wear.MainWatchActivity;
+import project.context.localization.wear.R;
 
 
 /**
@@ -23,10 +25,10 @@ import project.context.localization.common.helper.PositionsHelper;
  *
  * Also see: http://developer.android.com/training/wearables/ui/lists.html#adapter
  */
-class WearableAdapter extends WearableListView.Adapter {
-    static final int ITEM_LOCALIZATION = 0;
-    static final int ITEM_CALCULATE = 9;
-    static final int ITEM_DELETE = 10;
+public class WearableAdapter extends WearableListView.Adapter {
+    public static final int ITEM_LOCALIZATION = 0;
+    public static final int ITEM_CALCULATE = 9;
+    public static final int ITEM_DELETE = 10;
 
     private final ArrayList<Integer> mItems;
     private final LayoutInflater mInflater;

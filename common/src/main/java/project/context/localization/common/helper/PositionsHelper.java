@@ -94,10 +94,10 @@ public class PositionsHelper {
         int iPriorPlace = -1;
         int iFoundPlace = -2;
 
-        if (!priorPlace.isEmpty()) {
+        if (priorPlace != null && !priorPlace.isEmpty()) {
             iPriorPlace = Integer.valueOf(priorPlace);
         }
-        if (!currentPlace.isEmpty()) {
+        if (currentPlace != null && !currentPlace.isEmpty()) {
             iFoundPlace = Integer.valueOf(currentPlace);
         }
 

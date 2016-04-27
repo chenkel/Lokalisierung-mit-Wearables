@@ -41,6 +41,8 @@ public abstract class LocalizationClass extends CommonClass {
     private Integer redRssi = -200;
     private Integer yellowRssi = -200;
 
+    private long beaconFoundTime;
+
     /**
      * The blue beacon's minor.
      */
@@ -70,16 +72,19 @@ public abstract class LocalizationClass extends CommonClass {
                         switch (measuredBeacon.getIdentifier(2).toString()) {
                             case blueMinor:
                                 setBlueRssi(measuredBeacon.getRssi());
+                                setBeaconFoundTime(System.currentTimeMillis());
                                 Log.i(TAG, "0++++ Blaues Beacons");
                                 break;
 
                             case redMinor:
                                 setRedRssi(measuredBeacon.getRssi());
+                                setBeaconFoundTime(System.currentTimeMillis());
                                 Log.i(TAG, "++0++ Rotes Beacons");
                                 break;
 
                             case yellowMinor:
                                 setYellowRssi(measuredBeacon.getRssi());
+                                setBeaconFoundTime(System.currentTimeMillis());
                                 Log.i(TAG, "++++0 Gelbes Beacons");
                                 break;
 
@@ -236,21 +241,28 @@ public abstract class LocalizationClass extends CommonClass {
         boolean beaconsFound = false;
         placeList.clear();
 
-        /* Extend placeList by predefined list of placeIds for individual beacons */
-        if (blueRssi > -70) {
-            Collections.addAll(placeList, PositionsHelper.bluePlaces);
-            beaconsFound = true;
+        if (beaconSignalNotTooOld()){
+            /* Extend placeList by predefined list of placeIds for individual beacons */
+            if (blueRssi > -90) {
+                Collections.addAll(placeList, PositionsHelper.bluePlaces);
+                beaconsFound = true;
+
+            }
+
+            if (redRssi > -90) {
+                Collections.addAll(placeList, PositionsHelper.redPlaces);
+                beaconsFound = true;
+            }
+
+            if (yellowRssi > -90) {
+                Collections.addAll(placeList, PositionsHelper.yellowPlaces);
+                beaconsFound = true;
+
+            }
+        } else {
+            Log.d(TAG, "Beacons not seen for more than 5 seconds.");
         }
 
-        if (redRssi > -70) {
-            Collections.addAll(placeList, PositionsHelper.redPlaces);
-            beaconsFound = true;
-        }
-
-        if (yellowRssi > -75) {
-            Collections.addAll(placeList, PositionsHelper.yellowPlaces);
-            beaconsFound = true;
-        }
 
         if (!beaconsFound) {
             /* Saves all places to placeList */
@@ -406,5 +418,13 @@ public abstract class LocalizationClass extends CommonClass {
 
     private void setYellowRssi(Integer yellowRssi) {
         this.yellowRssi = yellowRssi;
+    }
+
+    public void setBeaconFoundTime(long beaconFoundTime) {
+        this.beaconFoundTime = beaconFoundTime;
+    }
+
+    public boolean beaconSignalNotTooOld(){
+        return (System.currentTimeMillis() - beaconFoundTime < 5000);
     }
 }

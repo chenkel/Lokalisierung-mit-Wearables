@@ -1,4 +1,4 @@
-package project.context.localization.wear;
+package project.context.localization.wear.list;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -6,6 +6,8 @@ import android.support.wearable.view.CircledImageView;
 import android.support.wearable.view.WearableListView;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
+
+import project.context.localization.wear.R;
 
 /**
  * The WearableListItemLayout defines a Layout Implementation for List Items
