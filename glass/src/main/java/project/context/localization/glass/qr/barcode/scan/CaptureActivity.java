@@ -332,6 +332,11 @@ public final class CaptureActivity extends BaseGlassActivity implements
     public void handleDecode(Result rawResult, Bitmap barcode, float scaleFactor) {
         mInactivityTimer.onActivity();
 
+        /*boolean fromLiveScan = barcode != null;
+        if (fromLiveScan) {
+            mBeepManager.playBeepSoundAndVibrate();
+        }*/
+
         mBeepManager.playBeepSoundAndVibrate();
 
         handleDecodeInternally(rawResult, barcode);
@@ -339,7 +344,15 @@ public final class CaptureActivity extends BaseGlassActivity implements
 
     // Put up our own UI for how to handle the decoded contents.
     private void handleDecodeInternally(Result rawResult, Bitmap barcode) {
+        /* mTimer.cancel(); */
+
         String parsedResult = ResultParser.parseResult(rawResult).toString();
+
+        /* Intent intent = new Intent(this, MainGlassActivity.class);
+        intent.putExtra("qr_type", parsedResult.getType().toString());
+        intent.putExtra("qr_data", parsedResult.toString());
+        startActivityForResult(intent, 2); */
+
         List<String> ar;
 
         parsedResult = parsedResult.replaceAll("[^-?0-9]+", " ");
@@ -367,10 +380,7 @@ public final class CaptureActivity extends BaseGlassActivity implements
 
         this.onResume();
 
-        /*Intent intent = new Intent(this, MainGlassActivity.class);
-        intent.putExtra("qr_type", parsedResult.getType().toString());
-        intent.putExtra("qr_data", parsedResult.toString());
-        startActivityForResult(intent, 2);*/
+
     }
 
     private void initCamera(SurfaceHolder surfaceHolder) {

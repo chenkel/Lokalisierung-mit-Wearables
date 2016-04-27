@@ -48,45 +48,6 @@ public abstract class MeasureClass extends CommonClass {
     private int scanCount;
 
     /**
-     * The Broadcast receiver receives all WiFi Scan results and
-     * adds them to the wiFiMeasurements list.
-     * The method also updates the progress output, returns
-     * debugging information about the scanning.
-     * In the end the WiFi Scanning stops and all
-     * Measurements are saved in the DB asynchronously.
-     */
-    private final BroadcastReceiver measureResultReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            List<ScanResult> currentResults = wifiManager.getScanResults();
-
-            int measurementCount = currentResults.size();
-            if (measurementCount > 0) {
-
-
-                for (ScanResult result : currentResults) {
-                    wiFiMeasurements.add(new WiFiMeasurement(result.BSSID, result.level, result.SSID));
-                }
-
-                scanCount++;
-                updateProgressOutput(scanCount);
-                    /* All scans finished */
-                if (scanCount >= scanCountMax) {
-                    outputDebugInfos(wiFiMeasurements);
-                    stopMeasuring();
-                    new SaveMeasuresTask().execute();
-                } else {
-                    wifiManager.startScan();
-                }
-
-            } else {
-                stopMeasuring();
-                Toast.makeText(context, "Keine APs in der Umgebung gefunden", Toast.LENGTH_SHORT).show();
-            }
-        }
-    };
-
-    /**
      * Instantiates a new Measure class.
      *
      * @param activity a reference to the instantiating activity to access its UI elements
@@ -118,7 +79,7 @@ public abstract class MeasureClass extends CommonClass {
 
     /**
      * Stops measuring.
-     *
+     * <p>
      * Therefore it unregisters the result receiver.
      * In the end it hides the progress dialog/output.
      */
@@ -134,10 +95,9 @@ public abstract class MeasureClass extends CommonClass {
         }
     }
 
-
     /**
      * Initiates the measuring process.
-     *
+     * <p>
      * This method gets called by the activities.
      * In a first step, a result receiver for the WiFi results gets registered.
      * Then, the WiFi scanning starts and a progress is shown to the user.
@@ -162,9 +122,10 @@ public abstract class MeasureClass extends CommonClass {
         showMeasureProgress();
     }
 
+
     /**
      * Show measure progress in progress output.
-     *
+     * <p>
      * Should be overridden by devices like Moto 360
      * to be substituted by other UI elements, that fit the plattform best.
      */
@@ -242,11 +203,12 @@ public abstract class MeasureClass extends CommonClass {
 
     /**
      * Update measurements count.
-     *
+     * <p>
      * Normally gets called after new measurements are
      * saved in the db, so that changes can be queried after they are done.
      */
     public abstract void updateMeasurementsCount();
+
 
     /**
      * SaveMeasuresTask is an Async Task that saves all
@@ -287,4 +249,42 @@ public abstract class MeasureClass extends CommonClass {
             stopMeasuring();
         }
     }
+
+    /**
+     * The Broadcast receiver receives all WiFi Scan results and
+     * adds them to the wiFiMeasurements list.
+     * The method also updates the progress output, returns
+     * debugging information about the scanning.
+     * In the end the WiFi Scanning stops and all
+     * Measurements are saved in the DB asynchronously.
+     */
+    private final BroadcastReceiver measureResultReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            List<ScanResult> currentResults = wifiManager.getScanResults();
+
+            int measurementCount = currentResults.size();
+            if (measurementCount > 0) {
+                for (ScanResult result : currentResults) {
+                    wiFiMeasurements.add(new WiFiMeasurement(result.BSSID, result.level, result.SSID));
+                }
+
+                scanCount++;
+                updateProgressOutput(scanCount);
+                if (scanCount >= scanCountMax) {
+                /* All scans finished */
+                    outputDebugInfos(wiFiMeasurements);
+                    stopMeasuring();
+                    new SaveMeasuresTask().execute();
+                } else {
+                    /* Still some scans to perform */
+                    wifiManager.startScan();
+                }
+
+            } else {
+                stopMeasuring();
+                Toast.makeText(context, "Keine APs in der Umgebung gefunden", Toast.LENGTH_SHORT).show();
+            }
+        }
+    };
 }

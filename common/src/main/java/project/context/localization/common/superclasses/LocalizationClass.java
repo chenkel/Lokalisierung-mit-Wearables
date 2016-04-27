@@ -101,33 +101,6 @@ public abstract class LocalizationClass extends CommonClass {
         }
     };
 
-    /**
-     * The BroadcastReceiver gets the results of the WiFi Scan and
-     * adds all the results to wiFiMeasurements.
-     * After that find out the closest place in the db to the current one and
-     * start another wifi scan (continous)
-     */
-    private final BroadcastReceiver localizationScanResultReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            List<ScanResult> currentResults = wifiManager.getScanResults();
-
-            int measurementCount = currentResults.size();
-            if (measurementCount > 0) {
-                for (ScanResult result : currentResults) {
-                    wlanMeasure.add(new WiFiMeasurement(result.BSSID, result.level, result.SSID));
-                }
-
-                findClosestPlaceIdWithScanResults();
-                wifiManager.startScan();
-
-            } else {
-                stopLocalization();
-
-                Toast.makeText(context, "Keine APs in der Umgebung gefunden", Toast.LENGTH_SHORT).show();
-            }
-        }
-    };
 
     /**
      * Instantiates the LocalizationClass.
@@ -208,8 +181,10 @@ public abstract class LocalizationClass extends CommonClass {
             stopLocalization();
             return;
         }
+
         ArrayList<String> placeList = getPlacesList();
         if (placeList == null) return;
+
         HashMap<String, Double> placeDistanceMap = calculateTotalDistanceToEveryPlace(placeList);
 
         String foundPlaceId = findMinimalDistance(placeDistanceMap);
@@ -217,8 +192,8 @@ public abstract class LocalizationClass extends CommonClass {
         if (foundPlaceId != null) {
             compareWithPriorPlaceAndNotify(priorPlaceId, foundPlaceId);
         }
-        priorPlaceId = foundPlaceId;
 
+        priorPlaceId = foundPlaceId;
         wlanMeasure.clear();
     }
 
@@ -241,7 +216,7 @@ public abstract class LocalizationClass extends CommonClass {
         boolean beaconsFound = false;
         placeList.clear();
 
-        if (beaconSignalNotTooOld()){
+        if (beaconSignalNotTooOld()) {
             /* Extend placeList by predefined list of placeIds for individual beacons */
             if (blueRssi > -90) {
                 Collections.addAll(placeList, PositionsHelper.bluePlaces);
@@ -402,7 +377,9 @@ public abstract class LocalizationClass extends CommonClass {
     /**
      * Output detailed debugging information debug.
      *
-     * @param output the output showing the found place,               its deviations of other APs and               an confidence value for the found place
+     * @param output the output showing the found place,
+     *               its deviations of other APs and
+     *               an confidence value for the found place
      */
     protected void outputDetailedPlaceInfoDebug(String output) {
         /*Log.i(TAG, output);*/
@@ -424,7 +401,37 @@ public abstract class LocalizationClass extends CommonClass {
         this.beaconFoundTime = beaconFoundTime;
     }
 
-    public boolean beaconSignalNotTooOld(){
+    public boolean beaconSignalNotTooOld() {
         return (System.currentTimeMillis() - beaconFoundTime < 5000);
     }
+
+    /**
+     * The BroadcastReceiver gets the results of the WiFi Scan and
+     * adds all the results to wiFiMeasurements.
+     * After that find out the closest place in the db to the current one and
+     * start another wifi scan (continous)
+     */
+    private final BroadcastReceiver localizationScanResultReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            List<ScanResult> currentResults = wifiManager.getScanResults();
+
+            int measurementCount = currentResults.size();
+            if (measurementCount > 0) {
+                for (ScanResult result : currentResults) {
+                    wlanMeasure.add(new WiFiMeasurement(result.BSSID, result.level, result.SSID));
+                }
+                /* Call localization algorithm */
+                findClosestPlaceIdWithScanResults();
+
+                /* And start again: Continous scan */
+                wifiManager.startScan();
+
+            } else {
+                stopLocalization();
+
+                Toast.makeText(context, "Keine APs in der Umgebung gefunden", Toast.LENGTH_SHORT).show();
+            }
+        }
+    };
 }

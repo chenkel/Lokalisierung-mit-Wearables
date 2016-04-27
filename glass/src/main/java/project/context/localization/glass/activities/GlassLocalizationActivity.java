@@ -77,6 +77,7 @@ public class GlassLocalizationActivity extends Activity implements BeaconConsume
             protected void showLocalizationProgressOutput() {
             }
         };
+        /* Localization starts right from start */
         mLocalizationClass.startLocalization();
     }
 

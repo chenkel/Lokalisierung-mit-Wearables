@@ -9,20 +9,27 @@ Lokalisierung mit Hilfe von WiFi-Fingerprinting, BLE Beacons und QR-Code auf Goo
 	```
 	
 2. Öffne das heruntergeladene Projekt in Android Studio 2.0.
+3. Gradle wird automatisch die benötigten Abhängigkeiten für die einzelnen Module herunterladen.
+4. In dem Projekt befinden sich nun die vier Module:
+    1. **common**
+    2. **glass**
+    3. **mobile**
+    4. **wear**.
 
-In dem Projekt befinden sich vier Module: **common**, **glass**, **mobile** und **wear**.
-Gradle wird automatisch die benötigten Abhängigkeiten für die einzelnen Module herunterladen.
 
 ## Kompilieren und Starten
+1. Das betreffende Gerät sollte bereits vorher angeschlossen und/oder gepaired sein.
 
-Wähle zunächst eine der drei Konfigurationen (*mobile*, *glass* oder *wear*) aus und starte das Programm mit **Run** in Android Studio. 
+2. Wähle dann eine der drei Konfigurationen aus:
 
-Dabei sollte das betreffende Gerät bereits vorher angeschlossen oder gepaired sein.
+    ***glass:*** Die Glassware für Google Glass.
 
-**Beachte für Google Glass** muss die *Run Configuration* angepasst werden. Dabei wählt man unter
+    ***mobile:*** Die App für Android  Smartphones zum schnellen Testen.
 
-*Launch Options* --> **Specified Activity** und dann 
-*Activity* --> **smartwatch.context.project.activities.MainActivity**
+    ***wear:***  Die App für Android Wear (getestet auf Motorola Moto 360).
+
+3. Starte im Anschluss die App mit dem Befehl **Run** in Android Studio.
+
 	
 ## Debugging von Android Wear Geräten (wie z. B. Moto 360) über Bluetooth
 1. Installiere Android Wear App auf einem anderen Android Gerät (Smartphone od. Tablet).
